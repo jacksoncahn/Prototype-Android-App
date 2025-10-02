@@ -9,11 +9,11 @@ on:
       - main
 
 jobs:
-  # Run cleaning process only if workflow is triggered by the non-Kotlin/KMP-App-Template-Native repository.
+  # Run cleaning process only if workflow is triggered by the non-Kotlin/Mapnook-kotlin repository.
   template-cleanup:
     name: Template Cleanup  
     runs-on: ubuntu-latest
-    if: github.event.repository.name != 'KMP-App-Template-Native' || github.repository_owner != 'Kotlin'
+    if: github.event.repository.name != 'Mapnook-kotlin' || github.repository_owner != 'jacksoncahn'
     permissions:
       contents: write
     steps:

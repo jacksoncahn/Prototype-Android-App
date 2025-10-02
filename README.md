@@ -7,6 +7,7 @@ This is a basic Kotlin Multiplatform app template for Android and iOS. It includ
 
 > The template is also available [with shared UI written in Compose Multiplatform](https://github.com/kotlin/KMP-App-Template).
 >
+> since cloning and using this template for Mapnook, the following link does not apply
 > The [`amper` branch](https://github.com/Kotlin/KMP-App-Template-Native/tree/amper) showcases the same project configured with [Amper](https://github.com/JetBrains/amper).
 
 ![Screenshots of the app](images/screenshots.png)
@@ -30,3 +31,10 @@ And the following Android-specific dependencies:
 - [Jetpack Compose](https://developer.android.com/jetpack/compose)
 - [Navigation component](https://developer.android.com/jetpack/compose/navigation)
 - [Coil](https://github.com/coil-kt/coil) for image loading
+
+
+**Since cloning and reusing the template for Mapnook-Kotlin:**
+
+Changed all mentions of the original repo name "KMP-App-Template-Native" to "Mapnook-kotlin", and all mentions of the original repo owner "Kotlin" to "jacksoncahn"
+
+Will have to go through code and remove setup for the API this template uses; need to check the Config file for the iOS App

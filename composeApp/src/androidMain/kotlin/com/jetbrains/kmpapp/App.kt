@@ -20,6 +20,7 @@ object ListDestination
 @Serializable
 data class DetailDestination(val objectId: Int)
 
+//test comment for committing and pushing
 @Composable
 fun App() {
     MaterialTheme(

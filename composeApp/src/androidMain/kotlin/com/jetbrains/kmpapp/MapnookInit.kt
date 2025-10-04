@@ -6,7 +6,7 @@ import com.jetbrains.kmpapp.screens.DetailViewModel
 import com.jetbrains.kmpapp.screens.ListViewModel
 import org.koin.dsl.module
 
-class MuseumApp : Application() {
+class MapnookInit : Application() {
     override fun onCreate() {
         super.onCreate()
         initKoin(

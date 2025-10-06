@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -15,25 +15,38 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Place
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.rememberCameraPositionState
 import com.jetbrains.kmpapp.components.Searchbar
 
 @Composable
 fun Home() {
-    // Use a Box as the main container. It makes aligning children independently much easier.
     Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight(),
+        modifier = Modifier.fillMaxSize(),
     ) {
-        // 1. Align the Searchbar to the Top-End of the Box.
+        // Set the initial camera position to Prague.
+        val prague = LatLng(50.0755, 14.4378)
+        val cameraPositionState = rememberCameraPositionState {
+            position = CameraPosition.fromLatLngZoom(prague, 12f)
+        }
+
+        // The GoogleMap composable fills the entire screen and is the bottom layer.
+        GoogleMap(
+            modifier = Modifier.fillMaxSize(),
+            cameraPositionState = cameraPositionState
+        )
+
+        // UI elements are placed on top of the map
         Row(
             modifier = Modifier
                 .align(Alignment.TopEnd) // Align this whole Row to the top-right.
@@ -44,15 +57,18 @@ fun Home() {
             Searchbar(modifier = Modifier.fillMaxWidth(.8f))
         }
 
-        // 2. Align the button Column to the Center-End of the Box.
         Column(
             modifier = Modifier
                 .align(Alignment.CenterEnd),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Column(
-                modifier = Modifier.padding(horizontal = 8.dp)
-                    .background(color = Color.Gray, shape = RoundedCornerShape(8.dp)),
+                modifier = Modifier
+                    .padding(horizontal = 8.dp)
+                    .background(
+                        color = MaterialTheme.colorScheme.surfaceVariant,
+                        shape = RoundedCornerShape(8.dp)
+                    ),
             ) {
                 IconButton(onClick = { /*TODO*/ }) {
                     Icon(Icons.Default.Settings, contentDescription = "Settings", modifier = Modifier.size(32.dp))
@@ -66,17 +82,15 @@ fun Home() {
             }
             Spacer(modifier = Modifier.height(4.dp))
 
-            IconButton(onClick = { /*TODO*/ }, modifier = Modifier.background(color = Color.Gray, shape = RoundedCornerShape(8.dp))) {
-                IconButton(onClick = { /*TODO*/ }) {
-                    Icon(Icons.Default.Place, contentDescription = "Build", modifier = Modifier.size(32.dp))
-                }
+            IconButton(
+                onClick = { /*TODO*/ },
+                modifier = Modifier.background(
+                    color = MaterialTheme.colorScheme.surfaceVariant,
+                    shape = RoundedCornerShape(8.dp)
+                )
+            ) {
+                Icon(Icons.Default.Place, contentDescription = "Place", modifier = Modifier.size(32.dp))
             }
         }
     }
 }
-
-//@Preview
-//@Composable
-//fun PreviewHome() {
-//    Home()
-//}

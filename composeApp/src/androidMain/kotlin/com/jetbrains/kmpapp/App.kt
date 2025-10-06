@@ -57,7 +57,7 @@ fun App() {
                     navRoute,
                     Modifier
                         .align(Alignment.TopStart)
-                        .padding(horizontal = 8.dp)
+                        .padding(8.dp)
                 )
 
                 NavHost(navController, startDestination = "home") {

@@ -28,7 +28,7 @@ import androidx.compose.ui.window.Popup
 
 @Composable
 fun MenuContent(navigation: MutableState<String>) {
-    Column(modifier = Modifier.background(color = Color.Black, shape = RoundedCornerShape(4.dp)).width(IntrinsicSize.Max).padding(vertical = 8.dp)) {
+    Column(modifier = Modifier.background(color = Color.Black, shape = RoundedCornerShape(8.dp)).width(IntrinsicSize.Max).padding(vertical = 8.dp)) {
 
         Row(modifier = Modifier.clickable { navigation.value = "settings" }.padding(all = 8.dp)) {
             Icon(imageVector = Icons.Filled.AccountCircle, contentDescription = null, tint = Color.White)

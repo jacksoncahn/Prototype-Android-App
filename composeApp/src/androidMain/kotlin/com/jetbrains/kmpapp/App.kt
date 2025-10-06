@@ -17,6 +17,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.LayoutCoordinates
+import androidx.compose.ui.zIndex
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
@@ -53,17 +54,18 @@ fun App() {
             Box(
                 modifier = Modifier.fillMaxSize().padding(innerPadding)
             ) {
+                NavHost(navController, startDestination = "home") {
+                    composable("home") { Home() }
+                    composable("settings") { Settings()}
+                }
+
                 Menu(
                     navRoute,
                     Modifier
                         .align(Alignment.TopStart)
                         .padding(8.dp)
+                        .zIndex(1f)
                 )
-
-                NavHost(navController, startDestination = "home") {
-                    composable("home") { Home() }
-                    composable("settings") { Settings()}
-                }
             }
         }
     }

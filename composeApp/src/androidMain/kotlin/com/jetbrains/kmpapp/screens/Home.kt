@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.jetbrains.kmpapp.components.Searchbar
 
@@ -43,7 +44,8 @@ fun Home() {
         // The GoogleMap composable fills the entire screen and is the bottom layer.
         GoogleMap(
             modifier = Modifier.fillMaxSize(),
-            cameraPositionState = cameraPositionState
+            cameraPositionState = cameraPositionState,
+            uiSettings = MapUiSettings(zoomControlsEnabled = false)
         )
 
         // UI elements are placed on top of the map

@@ -6,6 +6,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -15,39 +16,38 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun Searchbar() {
+fun Searchbar(modifier: Modifier) {
     var text by remember { mutableStateOf("") }
-
+    var isUnfocused by remember { mutableStateOf(true) }
+    val placeholder = if (isUnfocused) "Find your adventure" else "Search for anything"
     TextField(
         value = text,
         onValueChange = { text = it },
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .onFocusChanged { focusState ->
+                isUnfocused = !focusState.isFocused
+            },
+        singleLine = true,
         shape = RoundedCornerShape(50.dp),
-        // 1. Replaced `label` with `placeholder` to prevent the text from moving up.
-        placeholder = {
-            Text("Find your adventure", color = Color.Gray)
-        },
+        placeholder = { Text(text = placeholder) },
         trailingIcon = {
             IconButton(onClick = { search() }) {
-                Icon(Icons.Filled.Search, contentDescription = "Search", tint = Color.Gray)
+                Icon(Icons.Filled.Search, contentDescription = "Search")
             }
         },
         colors = TextFieldDefaults.colors(
-            focusedContainerColor = Color.Black,
-            unfocusedContainerColor = Color.Black,
-            disabledContainerColor = Color.Black,
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
-            // 2. Made both focused and unfocused text colors consistent.
-            focusedTextColor = Color.LightGray,
-            unfocusedTextColor = Color.LightGray,
-            cursorColor = Color.LightGray
-        )
+            disabledIndicatorColor = Color.Transparent,
+        ),
+        textStyle = MaterialTheme.typography.titleMedium
     )
 }
 
@@ -58,6 +58,5 @@ fun search() {
 @Preview
 @Composable
 fun SearchbarPreview() {
-    //Scaffold is not available in commonMain, so we use a Box for preview
-        Searchbar()
+    Searchbar(modifier = Modifier)
 }

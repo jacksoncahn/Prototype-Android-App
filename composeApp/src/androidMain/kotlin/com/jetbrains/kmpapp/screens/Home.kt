@@ -29,6 +29,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
@@ -37,6 +38,7 @@ import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.jetbrains.kmpapp.components.Searchbar
+import com.jetbrains.kmpapp.theme.AppThemeObject
 import kotlinx.coroutines.launch
 
 @Composable
@@ -79,7 +81,7 @@ fun Home() {
             Column(
                 modifier = Modifier
                     .background(
-                        color = MaterialTheme.colorScheme.surfaceVariant,
+                        color = AppThemeObject.colors.foreground,
                         shape = RoundedCornerShape(8.dp)
                     ),
             ) {
@@ -111,7 +113,7 @@ fun Home() {
                 onClick = { /*TODO*/ },
                 modifier = Modifier
                     .background(
-                        color = MaterialTheme.colorScheme.surfaceVariant,
+                        color = AppThemeObject.colors.foreground,
                         shape = RoundedCornerShape(8.dp)
                     )
             ) {

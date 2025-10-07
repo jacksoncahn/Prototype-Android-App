@@ -23,9 +23,14 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.jetbrains.kmpapp.screens.About
+import com.jetbrains.kmpapp.screens.AddPlaceOrEvent
+import com.jetbrains.kmpapp.screens.Contact
+import com.jetbrains.kmpapp.screens.FAQ
 import com.jetbrains.kmpapp.screens.Home
+import com.jetbrains.kmpapp.screens.MyLists
 import com.jetbrains.kmpapp.screens.Settings
-
+import com.jetbrains.kmpapp.theme.AppTheme
 //test comment for committing and pushing
 //@SuppressLint("UnrememberedMutableState")
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -37,8 +42,6 @@ fun App() {
 
     val navController = rememberNavController()
 
-//    var menuButtonCoords = remember { mutableStateOf<LayoutCoordinates?>(null) }
-
     LaunchedEffect(navRoute.value) {
         if (navRoute.value.isNotEmpty()) {
             navController.navigate(navRoute.value)
@@ -47,9 +50,7 @@ fun App() {
         }
     }
 
-    MaterialTheme(
-        colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
-    ) {
+    AppTheme {
 
             Box(
                 modifier = Modifier.fillMaxSize()
@@ -57,6 +58,11 @@ fun App() {
                 NavHost(navController, startDestination = "home") {
                     composable("home") { Home() }
                     composable("settings") { Settings()}
+                    composable(route = "faq") { FAQ() }
+                    composable(route = "about") {About()}
+                    composable(route = "addplaceorevent") { AddPlaceOrEvent() }
+                    composable(route = "contact") { Contact() }
+                    composable("mylists") { MyLists() }
                 }
 
                 Menu(

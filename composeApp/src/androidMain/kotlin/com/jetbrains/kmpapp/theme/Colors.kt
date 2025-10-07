@@ -94,7 +94,7 @@ val darkPalette = AppColors(
 )
 
 // 3. Create a CompositionLocal to provide the colors down the tree
-val LocalAppColors = staticCompositionLocalOf { lightPalette }
+val LocalAppColors = staticCompositionLocalOf { darkPalette }
 
 @Composable
 fun AppTheme(
@@ -102,7 +102,8 @@ fun AppTheme(
     content: @Composable () -> Unit
 ) {
     // 1. Select the correct palette
-    val colors = if (useDarkTheme) darkPalette else lightPalette
+//    val colors = if (useDarkTheme) darkPalette else lightPalette
+    val colors = darkPalette
 
     // 2. Provide the selected palette to the LocalAppColors object
     CompositionLocalProvider(LocalAppColors provides colors) {

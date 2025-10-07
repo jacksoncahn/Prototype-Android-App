@@ -1,13 +1,11 @@
 package com.jetbrains.kmpapp
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.outlined.AddCircle
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -16,14 +14,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.TopStart
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import org.jetbrains.compose.resources.painterResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
+import androidx.compose.foundation.clickable
+import androidx.compose.ui.res.painterResource
 
 
 @Composable
@@ -92,8 +92,6 @@ fun MenuContent(navigation: MutableState<String>) {
             Spacer(modifier = Modifier.size(16.dp))
             Text("About", color = Color.White, style = MaterialTheme.typography.titleMedium)
         }
-
-
     }
 }
 
@@ -102,13 +100,8 @@ fun Menu(navigation: MutableState<String>, modifier: Modifier = Modifier) {
     var showMenu by remember { mutableStateOf(false) }
 
     Box(modifier = modifier) {
-        IconButton(onClick = { showMenu = !showMenu }, modifier = Modifier.size(56.dp).background(Color.Red)) {
-            Icon(
-                imageVector = Icons.Default.Menu,
-                contentDescription = "Menu",
-                tint = Color.Black,
-                modifier = Modifier.fillMaxSize(.8f)
-            )
+        IconButton(onClick = { showMenu = !showMenu }, modifier = Modifier.size(56.dp).background(color = Color.Black, shape = CircleShape)) {
+            Icon(painter = painterResource(R.drawable.logo), contentDescription = "Menu", modifier = Modifier.size(32.dp), tint = Color.White)
         }
 
         if (showMenu) {

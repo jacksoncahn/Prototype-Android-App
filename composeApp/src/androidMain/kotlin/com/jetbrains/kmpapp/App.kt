@@ -50,9 +50,9 @@ fun App() {
     MaterialTheme(
         colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
     ) {
-        Scaffold() { innerPadding ->
+
             Box(
-                modifier = Modifier.fillMaxSize().padding(innerPadding)
+                modifier = Modifier.fillMaxSize()
             ) {
                 NavHost(navController, startDestination = "home") {
                     composable("home") { Home() }
@@ -63,10 +63,9 @@ fun App() {
                     navRoute,
                     Modifier
                         .align(Alignment.TopStart)
-                        .padding(8.dp)
+                        .padding(horizontal = 8.dp, vertical = 24.dp)
                         .zIndex(1f)
                 )
             }
-        }
     }
 }

@@ -35,6 +35,7 @@ kotlin {
             implementation(libs.coil.network.ktor)
             implementation(libs.maps.compose)
             implementation(libs.play.services.maps)
+            implementation("androidx.compose.material:material-icons-extended-android:1.7.8")
         }
         commonMain.dependencies {
             implementation(compose.runtime)

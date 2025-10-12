@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
@@ -55,12 +56,12 @@ fun App() {
     MaterialTheme(
         colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
     ) {
-
+        Scaffold { innerPadding ->
             Box(
                 modifier = Modifier.fillMaxSize()
             ) {
                 NavHost(navController, startDestination = "home") {
-                    composable("home") { Home() }
+                    composable("home") { Home(modifier = Modifier.padding(innerPadding)) }
                     composable("settings") { Settings()}
                     composable(route = "faq") { FAQ() }
                     composable(route = "about") {About()}
@@ -74,9 +75,11 @@ fun App() {
                     navRoute,
                     Modifier
                         .align(Alignment.TopStart)
-                        .padding(horizontal = 8.dp, vertical = 24.dp)
-                        .zIndex(1f)
+                        .padding(innerPadding)
+                        .zIndex(1f),
                 )
             }
+        }
+
     }
 }

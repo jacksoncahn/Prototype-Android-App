@@ -1,0 +1,40 @@
+package com.jetbrains.kmpapp.components
+
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Remove
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+
+
+@Composable
+fun LocationCard(modifier: Modifier, number: Int) {
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(all = 16.dp)
+            .height(200.dp),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 8.dp
+        )
+    ) {
+        IconButton(onClick = { /*TODO*/ }) {
+            Icon(
+                Icons.Default.Remove,
+                contentDescription = "remove card",
+                modifier = Modifier,
+                tint = Color.Black
+            )
+        }
+        Text(text = number.toString())
+    }
+}

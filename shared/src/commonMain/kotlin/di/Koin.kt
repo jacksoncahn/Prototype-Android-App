@@ -1,10 +1,10 @@
-package com.jetbrains.kmpapp.di
+package di
 
-import com.jetbrains.kmpapp.data.InMemoryMuseumStorage
-import com.jetbrains.kmpapp.data.KtorMuseumApi
-import com.jetbrains.kmpapp.data.MuseumApi
-import com.jetbrains.kmpapp.data.MuseumRepository
-import com.jetbrains.kmpapp.data.MuseumStorage
+import data.InMemoryMuseumStorage
+import data.KtorMuseumApi
+import data.MuseumApi
+import data.MuseumRepository
+import data.MuseumStorage
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.http.ContentType

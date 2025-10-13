@@ -1,6 +1,7 @@
 package com.jetbrains.kmpapp
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -34,22 +35,20 @@ import com.jetbrains.kmpapp.screens.MyLists
 import com.jetbrains.kmpapp.screens.Settings
 //test comment for committing and pushing
 //@SuppressLint("UnrememberedMutableState")
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+//@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 
 @Composable
 fun App() {
 
     var navRoute = remember { mutableStateOf("") }
 
-    val navController = rememberNavController()
+//    var listRoute = remember {mutableStateOf("wanttogo")}
 
-//    var menuButtonCoords = remember { mutableStateOf<LayoutCoordinates?>(null) }
+    val navController = rememberNavController()
 
     LaunchedEffect(navRoute.value) {
         if (navRoute.value.isNotEmpty()) {
             navController.navigate(navRoute.value)
-            // Optional: Reset the navRoute so it can be triggered again
-            navRoute.value = ""
         }
     }
 
@@ -67,8 +66,7 @@ fun App() {
                     composable(route = "about") {About()}
                     composable(route = "addplaceorevent") { AddPlaceOrEvent() }
                     composable(route = "contact") { Contact() }
-                    composable("settings") { Settings() }
-                    composable("mylists") { MyLists(navController) } // Pass the NavController here
+                    composable("mylists") { MyLists(navController)} // Pass the NavController here
                 }
 
                 Menu(

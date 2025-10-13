@@ -99,7 +99,7 @@ fun MenuContent(navigation: MutableState<String>) {
 fun Menu(navigation: MutableState<String>, modifier: Modifier = Modifier) {
     var showMenu by remember { mutableStateOf(false) }
 
-    Box(modifier = modifier) {
+    Box(modifier = modifier.padding(horizontal = 8.dp)) {
         IconButton(onClick = { showMenu = !showMenu }, modifier = Modifier.size(56.dp).background(color = Color.Black, shape = CircleShape)) {
             Icon(painter = painterResource(R.drawable.logo), contentDescription = "Menu", modifier = Modifier.size(32.dp), tint = Color.White)
         }

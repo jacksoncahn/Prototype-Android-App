@@ -1,11 +1,13 @@
 package com.jetbrains.kmpapp
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
@@ -23,20 +25,28 @@ import com.jetbrains.kmpapp.screens.About
 import com.jetbrains.kmpapp.screens.AddPlaceOrEvent
 import com.jetbrains.kmpapp.screens.Contact
 import com.jetbrains.kmpapp.screens.FAQ
+import com.jetbrains.kmpapp.screens.About
+import com.jetbrains.kmpapp.screens.AddPlaceOrEvent
+import com.jetbrains.kmpapp.screens.Contact
+import com.jetbrains.kmpapp.screens.FAQ
 import com.jetbrains.kmpapp.screens.Home
 import com.jetbrains.kmpapp.screens.MyLists
+import com.jetbrains.kmpapp.screens.MyLists
 import com.jetbrains.kmpapp.screens.Settings
-import com.jetbrains.kmpapp.theme.AppTheme
 //test comment for committing and pushing
 //@SuppressLint("UnrememberedMutableState")
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+//@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 
 @Composable
 fun App() {
 
     var navRoute = remember { mutableStateOf("") }
 
+//    var listRoute = remember {mutableStateOf("wanttogo")}
+
     val navController = rememberNavController()
+
+//    var menuButtonCoords = remember { mutableStateOf<LayoutCoordinates?>(null) }
 
     LaunchedEffect(navRoute.value) {
         if (navRoute.value.isNotEmpty()) {
@@ -46,29 +56,32 @@ fun App() {
         }
     }
 
-    AppTheme {
-
+    MaterialTheme(
+        colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
+    ) {
+        Scaffold { innerPadding ->
             Box(
                 modifier = Modifier.fillMaxSize()
             ) {
                 NavHost(navController, startDestination = "home") {
-                    composable("home") { Home() }
+                    composable("home") { Home(modifier = Modifier.padding(innerPadding)) }
                     composable("settings") { Settings()}
                     composable(route = "faq") { FAQ() }
                     composable(route = "about") {About()}
                     composable(route = "addplaceorevent") { AddPlaceOrEvent() }
                     composable(route = "contact") { Contact() }
-                    composable("settings") { Settings() }
-                    composable("mylists") { MyLists(navController) } // Pass the NavController here
+                    composable("mylists") { MyLists(navController)} // Pass the NavController here
                 }
 
                 Menu(
                     navRoute,
                     Modifier
                         .align(Alignment.TopStart)
-                        .padding(horizontal = 8.dp, vertical = 24.dp)
-                        .zIndex(1f)
+                        .padding(innerPadding)
+                        .zIndex(1f),
                 )
             }
+        }
+
     }
 }

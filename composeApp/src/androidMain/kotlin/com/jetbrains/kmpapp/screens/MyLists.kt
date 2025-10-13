@@ -17,6 +17,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,17 +26,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.jetbrains.kmpapp.components.ListCard
 
 @Composable
 fun MyLists(navController: NavController) { // NavController is now a parameter
-    var selectedListType by remember { mutableStateOf("want to go") }
+    var selectedListType by remember { mutableStateOf("wanttogo") }
 
     Box(modifier = Modifier.fillMaxSize()) { // Use a Box to allow overlaying the button
         IconButton(
-            onClick = { navController.popBackStack() }, // Navigates back
+            onClick = { navController.navigate("home") }, // Navigates back
             modifier = Modifier
                 .align(Alignment.TopEnd)
                 .padding(top = 16.dp, end = 8.dp) // Added padding to move the button
@@ -112,15 +116,16 @@ fun MyLists(navController: NavController) { // NavController is now a parameter
             }
 
             // Display content based on the selected type.
-            if (selectedListType == "want to go") {
+            if (selectedListType == "wanttogo") {
                 Text("Lists of future locations")
             } else if (selectedListType == "visited") {
                 Text("Lists of visited locations")
             } else if (selectedListType == "skipped") {
                 Text("Lists of skipped locations")
-            } else if (selectedListType == "not for me") {
+            } else if (selectedListType == "notforme") {
                 Text("Lists of locations not for you")
             }
         }
     }
 }
+

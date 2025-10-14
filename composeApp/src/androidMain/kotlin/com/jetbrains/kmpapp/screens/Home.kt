@@ -1,5 +1,6 @@
 package com.jetbrains.kmpapp.screens
 
+import android.content.ContentValues.TAG
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -21,13 +22,12 @@ import androidx.compose.material.icons.filled.Radar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.BottomCenter
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
@@ -38,13 +38,23 @@ import com.google.maps.android.compose.rememberCameraPositionState
 import com.jetbrains.kmpapp.components.Searchbar
 import com.jetbrains.kmpapp.components.ActivityCard
 import com.jetbrains.kmpapp.theme.AppThemeObject
+import com.mapnook.api.MyPostsViewModel
 import kotlinx.coroutines.launch
+import android.util.Log
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.runtime.MutableState
+import androidx.compose.ui.unit.dp
+import com.google.maps.android.compose.MarkerState
+import com.google.maps.android.compose.Marker
+import androidx.compose.runtime.mutableStateOf
+import com.mapnook.api.Post
 
-@Composable
-fun Home(modifier: Modifier) {
 
-    val listOfActivities = remember { mutableStateListOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10) }
-    var detailView = remember {mutableStateOf(false)}
+@Composable fun Home(modifier: Modifier, viewModel: MyPostsViewModel, isLoading: MutableState<Boolean>) {
+
+    val detailView = remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -55,97 +65,121 @@ fun Home(modifier: Modifier) {
             position = CameraPosition.fromLatLngZoom(prague, 12f)
         }
 
+        val locations = remember { mutableStateOf(listOf<Post>()) }
+
         val scope = rememberCoroutineScope()
+
 
         // The GoogleMap composable fills the entire screen and is the bottom layer.
         GoogleMap(
             modifier = Modifier.fillMaxSize(),
             cameraPositionState = cameraPositionState,
             uiSettings = MapUiSettings(zoomControlsEnabled = false)
-        )
-
-        // UI elements are placed on top of the map
-        Row(
-            modifier = modifier
-                .align(Alignment.TopEnd)
-                .fillMaxWidth()
-                .padding(horizontal = 8.dp),
-            horizontalArrangement = Arrangement.End
         ) {
-            Searchbar(modifier = Modifier.fillMaxWidth(.8f))
+            if (!isLoading.value) {
+                val locations = viewModel.posts
+                locations.forEach { post ->
+                    val lat = post.location.getOrNull(0)
+                    val lng = post.location.getOrNull(1)
+    //                println("loKati&n $lat, $lng")
+                    if (lat != null && lng != null) {
+                        Marker(
+                            state = MarkerState(position = LatLng(lat, lng)),
+                            title = post.name
+                        )
+                    }
+                }
+            }
+
         }
 
-        Column(
-            modifier = Modifier
-                .align(Alignment.CenterEnd)
-                .padding(end = 8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
+            // UI elements are placed on top of the map
+            Row(
+                modifier = modifier
+                    .align(Alignment.TopEnd)
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp),
+                horizontalArrangement = Arrangement.End
+            ) {
+                Searchbar(modifier = Modifier.fillMaxWidth(.8f))
+            }
+
             Column(
                 modifier = Modifier
-                    .background(
-                        color = AppThemeObject.colors.foreground,
-                        shape = RoundedCornerShape(8.dp)
-                    ),
+                    .align(Alignment.CenterEnd)
+                    .padding(end = 8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                IconButton(
-                    onClick = {
-                        scope.launch {
-                            cameraPositionState.animate(CameraUpdateFactory.zoomIn())
+                Column(
+                    modifier = Modifier
+                        .background(
+                            color = AppThemeObject.colors.foreground,
+                            shape = RoundedCornerShape(8.dp)
+                        ),
+                ) {
+                    IconButton(
+                        onClick = {
+                            scope.launch {
+                                cameraPositionState.animate(CameraUpdateFactory.zoomIn())
+                            }
                         }
+                    ) {
+                        Icon(
+                            Icons.Default.Add,
+                            contentDescription = "Settings",
+                            modifier = Modifier.size(24.dp)
+                        )
                     }
-                ) {
-                    Icon(
-                        Icons.Default.Add,
-                        contentDescription = "Settings",
-                        modifier = Modifier.size(24.dp)
-                    )
+                    IconButton(
+                        onClick = {
+                            scope.launch {
+                                cameraPositionState.animate(CameraUpdateFactory.zoomOut())
+                            }
+                        },
+                    ) {
+                        Icon(
+                            Icons.Default.Remove,
+                            contentDescription = "Build",
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+                    IconButton(onClick = { /*TODO*/ }) {
+                        Icon(
+                            Icons.Default.ArrowUpward,
+                            contentDescription = "Build",
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
                 }
+                Spacer(modifier = Modifier.height(4.dp))
+
                 IconButton(
-                    onClick = {
-                        scope.launch {
-                            cameraPositionState.animate(CameraUpdateFactory.zoomOut())
-                        }
-                    },
+                    onClick = { /*TODO*/ },
+                    modifier = Modifier
+                        .background(
+                            color = AppThemeObject.colors.foreground,
+                            shape = RoundedCornerShape(8.dp)
+                        )
                 ) {
                     Icon(
-                        Icons.Default.Remove,
-                        contentDescription = "Build",
-                        modifier = Modifier.size(24.dp)
-                    )
-                }
-                IconButton(onClick = { /*TODO*/ }) {
-                    Icon(
-                        Icons.Default.ArrowUpward,
-                        contentDescription = "Build",
+                        Icons.Default.Radar,
+                        contentDescription = "Place",
                         modifier = Modifier.size(24.dp)
                     )
                 }
             }
-            Spacer(modifier = Modifier.height(4.dp))
 
-            IconButton(
-                onClick = { /*TODO*/ },
+            Box(
                 modifier = Modifier
-                    .background(
-                        color = AppThemeObject.colors.foreground,
-                        shape = RoundedCornerShape(8.dp)
-                    )
+                    .align(BottomCenter)
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp)
             ) {
-                Icon(
-                    Icons.Default.Radar,
-                    contentDescription = "Place",
-                    modifier = Modifier.size(24.dp)
-                )
-            }
-        }
-
-        Box(modifier = Modifier.align(BottomCenter).fillMaxWidth()) {
-            listOfActivities.forEachIndexed { index, i ->
-                ActivityCard(modifier = Modifier.padding(bottom = 8 * i.dp).align(BottomCenter), number = i, detailView = detailView)
+                viewModel.posts.forEach { post ->
+                    ActivityCard(detailView = detailView, post = post, modifier = Modifier)
+                }
             }
         }
     }
-}
 
 

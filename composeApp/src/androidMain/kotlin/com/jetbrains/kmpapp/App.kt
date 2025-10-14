@@ -12,12 +12,15 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.zIndex
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -33,6 +36,9 @@ import com.jetbrains.kmpapp.screens.Home
 import com.jetbrains.kmpapp.screens.MyLists
 import com.jetbrains.kmpapp.screens.MyLists
 import com.jetbrains.kmpapp.screens.Settings
+import com.mapnook.api.MyPostsViewModel
+import com.mapnook.api.Post
+
 //test comment for committing and pushing
 //@SuppressLint("UnrememberedMutableState")
 //@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -40,13 +46,23 @@ import com.jetbrains.kmpapp.screens.Settings
 @Composable
 fun App() {
 
+    val viewModel: MyPostsViewModel = viewModel()
+    var isLoading = remember { mutableStateOf(true) }
+
+
+    LaunchedEffect(viewModel.posts) {
+        try {
+            isLoading.value = true
+            viewModel.fetchPosts()
+            isLoading.value = false
+        } catch(e: Exception) {
+            Log.e("App", "Error fetching posts")
+        }
+    }
+
     var navRoute = remember { mutableStateOf("") }
 
-//    var listRoute = remember {mutableStateOf("wanttogo")}
-
     val navController = rememberNavController()
-
-//    var menuButtonCoords = remember { mutableStateOf<LayoutCoordinates?>(null) }
 
     LaunchedEffect(navRoute.value) {
         if (navRoute.value.isNotEmpty()) {
@@ -64,7 +80,7 @@ fun App() {
                 modifier = Modifier.fillMaxSize()
             ) {
                 NavHost(navController, startDestination = "home") {
-                    composable("home") { Home(modifier = Modifier.padding(innerPadding)) }
+                    composable("home") { Home(modifier = Modifier.padding(innerPadding),viewModel, isLoading = isLoading) }
                     composable("settings") { Settings()}
                     composable(route = "faq") { FAQ() }
                     composable(route = "about") {About()}

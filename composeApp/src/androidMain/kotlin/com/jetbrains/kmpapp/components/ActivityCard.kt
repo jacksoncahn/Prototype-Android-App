@@ -33,7 +33,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.BottomEnd
 import androidx.compose.ui.Alignment.Companion.BottomStart
 import androidx.compose.ui.Modifier
@@ -46,19 +45,20 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import com.jetbrains.kmpapp.R
-import kotlin.math.round
+import com.mapnook.api.MyPostsViewModel
+import com.mapnook.api.Post
 
 @Composable
-fun ActivityCard(modifier: Modifier, number: Int, detailView: MutableState<Boolean>) {
+fun ActivityCard(modifier: Modifier, detailView: MutableState<Boolean>, post: Post) {
     if (detailView.value) {
-        ActivityCardLarge(modifier = modifier.padding(bottom = 32.dp), number = number, detailView)
+        ActivityCardLarge(modifier = modifier.padding(bottom = 32.dp), detailView, post)
     } else {
-        ActivityCardSmall(modifier = modifier.padding(bottom = 32.dp), number = number, detailView)
+        ActivityCardSmall(modifier = modifier.padding(bottom = 32.dp), detailView, post)
     }
 }
 
 @Composable
-fun ActivityCardLarge(modifier: Modifier, number: Int, detailView: MutableState<Boolean>) {
+fun ActivityCardLarge(modifier: Modifier, detailView: MutableState<Boolean>, post: Post) {
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -71,47 +71,41 @@ fun ActivityCardLarge(modifier: Modifier, number: Int, detailView: MutableState<
         Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
             Box(modifier = Modifier.fillMaxWidth()) {
 
-                Image(painter = painterResource(id = R.drawable.placeholder_loc), contentDescription = "Location background", modifier = Modifier.height(200.dp).fillMaxWidth(), contentScale = ContentScale.Crop)
+                Text((post.primaryImageId?: "image id not available"))
+
+//                Image(painter = painterResource(id = R.drawable.placeholder_loc), contentDescription = "Location background", modifier = Modifier.height(200.dp).fillMaxWidth(), contentScale = ContentScale.Crop)
 
                 IconButton(onClick = { detailView.value = false }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.5f), shape = RoundedCornerShape(8.dp)).align(TopEnd)) {
                     Icon(Icons.AutoMirrored.Filled.CallReceived, contentDescription = "Enlarge")
                 }
 
                 Column(horizontalAlignment = Start, modifier = Modifier.padding(all = 8.dp).background(color = Color.White.copy(alpha = 0.3f), shape = RoundedCornerShape(8.dp))) {
-                    Text(text = "Title English", style = MaterialTheme.typography.bodyLarge, modifier = Modifier.padding(horizontal = 4.dp).padding(top = 4.dp))
-                    Text(text = "Title Czech", modifier = Modifier.padding(horizontal = 4.dp).padding(bottom = 4.dp))
+                    Text(text = (post.name?: "no name available"), style = MaterialTheme.typography.bodyLarge, modifier = Modifier.padding(horizontal = 4.dp).padding(top = 4.dp))
+                    Text(text = (post.nativeName?: "no native name available"), modifier = Modifier.padding(horizontal = 4.dp).padding(bottom = 4.dp))
                 }
 
-                Row(modifier = Modifier.align(BottomEnd).padding(8.dp)) {
-                    Row() {
-                        IconButton(onClick = { /*TODO*/ }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.5f), shape = RoundedCornerShape(8.dp))) {
-                            Icon(Icons.Default.ThumbUp, contentDescription = "want to go")
-                        }
+                Row(modifier = Modifier.align(BottomEnd).padding(16.dp)) {
+                    IconButton(onClick = { /*TODO*/ }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.5f), shape = RoundedCornerShape(8.dp))) {
+                        Icon(Icons.Default.ThumbUp, contentDescription = "want to go")
                     }
                     Spacer(modifier = Modifier.padding(horizontal = 8.dp))
-                    Row() {
-                        IconButton(onClick = { /*TODO*/ }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.5f), shape = RoundedCornerShape(8.dp))) {
-                            Icon(Icons.Default.ThumbDown, contentDescription = "not for me")
-                        }
+                    IconButton(onClick = { /*TODO*/ }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.5f), shape = RoundedCornerShape(8.dp))) {
+                        Icon(Icons.Default.ThumbDown, contentDescription = "not for me")
                     }
                 }
 
-                Row(modifier = Modifier.align(BottomStart).padding(8.dp)) {
-                    Row() {
-                        IconButton(onClick = { /*TODO*/ }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.5f), shape = RoundedCornerShape(8.dp))) {
-                            Icon(Icons.AutoMirrored.Filled.Redo, contentDescription = "want to go")
-                        }
+                Row(modifier = Modifier.align(BottomStart).padding(16.dp)) {
+                    IconButton(onClick = { /*TODO*/ }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.5f), shape = RoundedCornerShape(8.dp))) {
+                        Icon(Icons.AutoMirrored.Filled.Redo, contentDescription = "want to go")
                     }
                     Spacer(modifier = Modifier.padding(horizontal = 8.dp))
-                    Row() {
-                        IconButton(onClick = { /*TODO*/ }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.5f), shape = RoundedCornerShape(8.dp))) {
-                            Icon(Icons.Default.RemoveRedEye, contentDescription = "not for me")
-                        }
+                    IconButton(onClick = { /*TODO*/ }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.5f), shape = RoundedCornerShape(8.dp))) {
+                        Icon(Icons.Default.RemoveRedEye, contentDescription = "not for me")
                     }
                 }
             }
 
-            Text(text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam quis sem at magna sodales consectetur. Interdum et malesuada fames ac ante ipsum primis in faucibus. Integer hendrerit dui vel lorem scelerisque, sed venenatis leo ullamcorper. Fusce efficitur tristique risus sed varius. Sed facilisis suscipit neque sit amet commodo. Fusce sagittis augue tincidunt velit bibendum, quis commodo urna iaculis. Aliquam bibendum nunc blandit massa molestie, sit amet porta massa facilisis. Praesent sed congue lectus.", modifier = Modifier.padding(16.dp))
+            Text(text = (post.description?: "no description available"), modifier = Modifier.padding(16.dp))
 
             Column() {
                 Text("Tags", fontSize = MaterialTheme.typography.titleMedium.fontSize, modifier = Modifier.padding(all = 16.dp))
@@ -174,7 +168,7 @@ fun ActivityCardLarge(modifier: Modifier, number: Int, detailView: MutableState<
 }
 
 @Composable
-fun ActivityCardSmall(modifier: Modifier, number: Int, detailView: MutableState<Boolean>) {
+fun ActivityCardSmall(modifier: Modifier, detailView: MutableState<Boolean>, post: Post) {
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -185,56 +179,48 @@ fun ActivityCardSmall(modifier: Modifier, number: Int, detailView: MutableState<
         )
 
     ) {
-        Box(modifier = Modifier.fillMaxWidth()) {
+        Box(modifier = Modifier.fillMaxSize()) {
 
-            Image(painter = painterResource(id = R.drawable.placeholder_loc), contentDescription = "Location background", modifier = Modifier.fillMaxSize(), contentScale = ContentScale.Crop)
+//            Image(painter = painterResource(id = R.drawable.placeholder_loc), contentDescription = "Location background", modifier = Modifier.fillMaxSize(), contentScale = ContentScale.Crop)
+
+            Text((post.primaryImageId?: "image id not available"))
 
             IconButton(onClick = { detailView.value = true }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.5f), shape = RoundedCornerShape(8.dp)).align(TopEnd)) {
                 Icon(Icons.AutoMirrored.Filled.CallMade, contentDescription = "Enlarge")
             }
 
-            Row(modifier = Modifier.align(BottomEnd).padding(8.dp)) {
-                Row() {
-                    IconButton(onClick = { /*TODO*/ }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.5f), shape = RoundedCornerShape(8.dp))) {
-                        Icon(Icons.Default.ThumbUp, contentDescription = "want to go")
-                    }
-                }
-                Spacer(modifier = Modifier.padding(horizontal = 8.dp))
-                Row() {
-                    IconButton(onClick = { /*TODO*/ }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.5f), shape = RoundedCornerShape(8.dp))) {
-                        Icon(Icons.Default.ThumbDown, contentDescription = "not for me")
-                    }
-                }
-            }
-
-            Row(modifier = Modifier.align(BottomStart).padding(8.dp)) {
-                Row() {
-                    IconButton(onClick = { /*TODO*/ }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.5f), shape = RoundedCornerShape(8.dp))) {
-                        Icon(Icons.AutoMirrored.Filled.Redo, contentDescription = "want to go")
-                    }
-                }
-                Spacer(modifier = Modifier.padding(horizontal = 8.dp))
-                Row() {
-                    IconButton(onClick = { /*TODO*/ }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.5f), shape = RoundedCornerShape(8.dp))) {
-                        Icon(Icons.Default.RemoveRedEye, contentDescription = "not for me")
-                    }
-                }
-            }
-
             Column(horizontalAlignment = Start, modifier = Modifier.padding(all = 16.dp).background(color = Color.White.copy(alpha = 0.3f), shape = RoundedCornerShape(8.dp))) {
-                Text(text = "Title English", style = MaterialTheme.typography.bodyLarge, modifier = Modifier.padding(horizontal = 4.dp).padding(top = 4.dp))
-                Text(text = "Title Czech", modifier = Modifier.padding(horizontal = 4.dp).padding(bottom = 4.dp))
+                Text(text = post.name?: "no name available", style = MaterialTheme.typography.bodyLarge, modifier = Modifier.padding(horizontal = 4.dp).padding(top = 4.dp))
+                Text(text = post.nativeName?: "no native name available", modifier = Modifier.padding(horizontal = 4.dp).padding(bottom = 4.dp))
+            }
+
+            Row(modifier = Modifier.align(BottomEnd).padding(16.dp)) {
+                IconButton(onClick = { /*TODO*/ }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.5f), shape = RoundedCornerShape(8.dp))) {
+                        Icon(Icons.Default.ThumbUp, contentDescription = "want to go")
+                }
+                Spacer(modifier = Modifier.padding(horizontal = 8.dp))
+                IconButton(onClick = { /*TODO*/ }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.5f), shape = RoundedCornerShape(8.dp))) {
+                        Icon(Icons.Default.ThumbDown, contentDescription = "not for me")
+                }
+            }
+
+            Row(modifier = Modifier.align(BottomStart).padding(16.dp)) {
+                IconButton(onClick = { /*TODO*/ }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.5f), shape = RoundedCornerShape(8.dp))) {
+                        Icon(Icons.AutoMirrored.Filled.Redo, contentDescription = "want to go")
+                }
+                Spacer(modifier = Modifier.padding(horizontal = 8.dp))
+                IconButton(onClick = { /*TODO*/ }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.5f), shape = RoundedCornerShape(8.dp))) {
+                        Icon(Icons.Default.RemoveRedEye, contentDescription = "not for me")
+                }
             }
         }
-
-
     }
 }
 
-@Composable
-@Preview
-fun ActivityDetailPreview() {
-    Row(modifier = Modifier.fillMaxHeight(), horizontalArrangement = Arrangement.Center, verticalAlignment = CenterVertically) {
-        ActivityCard(Modifier, 1, detailView = remember { mutableStateOf(false) })
-    }
-}
+//@Composable
+//@Preview
+//fun ActivityDetailPreview() {
+//    Row(modifier = Modifier.fillMaxHeight(), horizontalArrangement = Arrangement.Center, verticalAlignment = CenterVertically) {
+//        ActivityCard(Modifier, detailView = remember { mutableStateOf(false) })
+//    }
+//}

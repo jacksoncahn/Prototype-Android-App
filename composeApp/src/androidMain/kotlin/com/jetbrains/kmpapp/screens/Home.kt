@@ -1,6 +1,5 @@
 package com.jetbrains.kmpapp.screens
 
-import android.content.ContentValues.TAG
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -14,7 +13,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowUpward
@@ -22,13 +20,11 @@ import androidx.compose.material.icons.filled.Radar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.BottomCenter
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.times
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
@@ -44,6 +40,7 @@ import android.util.Log
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.unit.dp
 import com.google.maps.android.compose.MarkerState
@@ -69,19 +66,18 @@ import com.mapnook.api.Post
 
         val scope = rememberCoroutineScope()
 
-
-        // The GoogleMap composable fills the entire screen and is the bottom layer.
         GoogleMap(
             modifier = Modifier.fillMaxSize(),
             cameraPositionState = cameraPositionState,
             uiSettings = MapUiSettings(zoomControlsEnabled = false)
         ) {
+
             if (!isLoading.value) {
-                val locations = viewModel.posts
-                locations.forEach { post ->
-                    val lat = post.location.getOrNull(0)
-                    val lng = post.location.getOrNull(1)
-    //                println("loKati&n $lat, $lng")
+                val activities = viewModel.posts
+                activities.forEach { post ->
+                    val lng = post.location.getOrNull(0)
+                    val lat = post.location.getOrNull(1)
+                    println("loKati&n $lat, $lng")
                     if (lat != null && lng != null) {
                         Marker(
                             state = MarkerState(position = LatLng(lat, lng)),

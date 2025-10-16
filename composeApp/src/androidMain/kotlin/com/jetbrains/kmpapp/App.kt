@@ -49,7 +49,6 @@ fun App() {
     val viewModel: MyPostsViewModel = viewModel()
     var isLoading = remember { mutableStateOf(true) }
 
-
     LaunchedEffect(viewModel.posts) {
         try {
             isLoading.value = true

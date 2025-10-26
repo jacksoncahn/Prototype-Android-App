@@ -36,20 +36,21 @@ import com.jetbrains.kmpapp.components.ActivityCard
 import com.jetbrains.kmpapp.theme.AppThemeObject
 import com.mapnook.api.MyPostsViewModel
 import kotlinx.coroutines.launch
-import android.util.Log
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
-import androidx.compose.runtime.LaunchedEffect
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.LocalActivity
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.unit.dp
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.Marker
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mapnook.api.Post
 
+@Composable fun Home(modifier: Modifier, isLoading: MutableState<Boolean>) {
 
-@Composable fun Home(modifier: Modifier, viewModel: MyPostsViewModel, isLoading: MutableState<Boolean>) {
+    val viewModel: MyPostsViewModel = viewModel(
+        viewModelStoreOwner = LocalActivity.current as ComponentActivity
+    )
 
     val detailView = remember { mutableStateOf(false) }
 
@@ -78,9 +79,11 @@ import com.mapnook.api.Post
                     val lng = post.location.getOrNull(0)
                     val lat = post.location.getOrNull(1)
                     println("loKati&n $lat, $lng")
-                    if (lat != null && lng != null) {
+                    if (lat != null && lng != null && post.imageUrl != null) {
+//                        val bitmapState = bitmapDescriptorFromUrl(LocalContext.current, post.imageUrl)
                         Marker(
-                            state = MarkerState(position = LatLng(lat, lng)),
+                            state = MarkerState(LatLng(lat, lng)),
+//                            icon = bitmapState.value,
                             title = post.name
                         )
                     }

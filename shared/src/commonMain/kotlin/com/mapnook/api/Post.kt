@@ -1,9 +1,8 @@
 package com.mapnook.api
 
-
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import kotlinx.serialization.json.JsonElement
-
 
 @Serializable
 data class Post(
@@ -25,5 +24,10 @@ data class Post(
     val importance: Int?,
     val createdAt: String?,
     val updatedAt: String?,
-    val deletedAt: String?
+    val deletedAt: String?,
+
+    //imageUrl is a variable because it is re-assigned in getPosts()
+    //imageUrl is also Transient so the Post class can fully match w/ JSON
+    //must set it to null in the constructor, otherwise it will throw an error
+    @Transient var imageUrl: String? = null,
 )

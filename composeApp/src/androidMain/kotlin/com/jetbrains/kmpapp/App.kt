@@ -2,6 +2,8 @@ package com.jetbrains.kmpapp
 
 import android.annotation.SuppressLint
 import android.util.Log
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,12 +20,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.zIndex
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import bitmapDescriptorFromUrl
 import com.jetbrains.kmpapp.screens.About
 import com.jetbrains.kmpapp.screens.AddPlaceOrEvent
 import com.jetbrains.kmpapp.screens.Contact
@@ -46,14 +50,20 @@ import com.mapnook.api.Post
 @Composable
 fun App() {
 
-    val viewModel: MyPostsViewModel = viewModel()
+    val viewModel: MyPostsViewModel = viewModel(
+        viewModelStoreOwner = LocalActivity.current as ComponentActivity
+    )
+
     var isLoading = remember { mutableStateOf(true) }
 
-    LaunchedEffect(viewModel.posts) {
+    //fetches posts when component loads
+    LaunchedEffect(Unit) {
         try {
             isLoading.value = true
             viewModel.fetchPosts()
             isLoading.value = false
+            if (viewModel.posts.isNotEmpty()) {
+            }
         } catch(e: Exception) {
             Log.e("App", "Error fetching posts")
         }
@@ -79,7 +89,7 @@ fun App() {
                 modifier = Modifier.fillMaxSize()
             ) {
                 NavHost(navController, startDestination = "home") {
-                    composable("home") { Home(modifier = Modifier.padding(innerPadding),viewModel, isLoading = isLoading) }
+                    composable("home") { Home(modifier = Modifier.padding(innerPadding), isLoading = isLoading) }
                     composable("settings") { Settings()}
                     composable(route = "faq") { FAQ() }
                     composable(route = "about") {About()}

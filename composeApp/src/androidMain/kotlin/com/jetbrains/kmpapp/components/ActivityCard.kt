@@ -1,5 +1,7 @@
 package com.jetbrains.kmpapp.components
 
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -30,21 +32,19 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment.Companion.BottomEnd
 import androidx.compose.ui.Alignment.Companion.BottomStart
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Alignment.Companion.Start
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.Alignment.Companion.TopEnd
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import org.jetbrains.compose.ui.tooling.preview.Preview
-import com.jetbrains.kmpapp.R
+import androidx.lifecycle.viewmodel.compose.viewModel
+import coil3.compose.AsyncImage
+import com.jetbrains.kmpapp.MainActivity
 import com.mapnook.api.MyPostsViewModel
 import com.mapnook.api.Post
 
@@ -59,6 +59,12 @@ fun ActivityCard(modifier: Modifier, detailView: MutableState<Boolean>, post: Po
 
 @Composable
 fun ActivityCardLarge(modifier: Modifier, detailView: MutableState<Boolean>, post: Post) {
+
+    //should access shared viewModel for posts
+    val viewModel: MyPostsViewModel = viewModel(
+        viewModelStoreOwner = LocalActivity.current as ComponentActivity
+    )
+
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -71,11 +77,14 @@ fun ActivityCardLarge(modifier: Modifier, detailView: MutableState<Boolean>, pos
         Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
             Box(modifier = Modifier.fillMaxWidth()) {
 
-                Text((post.primaryImageId?: "image id not available"))
-
-//                Image(painter = painterResource(id = R.drawable.placeholder_loc), contentDescription = "Location background", modifier = Modifier.height(200.dp).fillMaxWidth(), contentScale = ContentScale.Crop)
-
-                IconButton(onClick = { detailView.value = false }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.5f), shape = RoundedCornerShape(8.dp)).align(TopEnd)) {
+                AsyncImage(
+                    model = post.imageUrl,
+                    contentDescription = post.name,
+                    modifier = Modifier.fillMaxWidth(),
+                    contentScale = ContentScale.Crop
+                )
+                
+                IconButton(onClick = { detailView.value = false }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp)).align(TopEnd)) {
                     Icon(Icons.AutoMirrored.Filled.CallReceived, contentDescription = "Enlarge")
                 }
 
@@ -85,21 +94,21 @@ fun ActivityCardLarge(modifier: Modifier, detailView: MutableState<Boolean>, pos
                 }
 
                 Row(modifier = Modifier.align(BottomEnd).padding(16.dp)) {
-                    IconButton(onClick = { /*TODO*/ }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.5f), shape = RoundedCornerShape(8.dp))) {
+                    IconButton(onClick = { /*TODO*/ }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp))) {
                         Icon(Icons.Default.ThumbUp, contentDescription = "want to go")
                     }
                     Spacer(modifier = Modifier.padding(horizontal = 8.dp))
-                    IconButton(onClick = { /*TODO*/ }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.5f), shape = RoundedCornerShape(8.dp))) {
+                    IconButton(onClick = { /*TODO*/ }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp))) {
                         Icon(Icons.Default.ThumbDown, contentDescription = "not for me")
                     }
                 }
 
                 Row(modifier = Modifier.align(BottomStart).padding(16.dp)) {
-                    IconButton(onClick = { /*TODO*/ }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.5f), shape = RoundedCornerShape(8.dp))) {
+                    IconButton(onClick = { /*TODO*/ }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp))) {
                         Icon(Icons.AutoMirrored.Filled.Redo, contentDescription = "want to go")
                     }
                     Spacer(modifier = Modifier.padding(horizontal = 8.dp))
-                    IconButton(onClick = { /*TODO*/ }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.5f), shape = RoundedCornerShape(8.dp))) {
+                    IconButton(onClick = { /*TODO*/ }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp))) {
                         Icon(Icons.Default.RemoveRedEye, contentDescription = "not for me")
                     }
                 }
@@ -138,37 +147,18 @@ fun ActivityCardLarge(modifier: Modifier, detailView: MutableState<Boolean>, pos
                 Text(text = "Links")
                 Text("this is not a real link")
             }
-            Column(modifier = Modifier.padding(16.dp)) {
-                Text("SCROLLTEST")
-            }
-            Column(modifier = Modifier.padding(16.dp)) {
-                Text("SCROLLTEST")
-            }
-            Column(modifier = Modifier.padding(16.dp)) {
-                Text("SCROLLTEST")
-            }
-            Column(modifier = Modifier.padding(16.dp)) {
-                Text("SCROLLTEST")
-            }
-            Column(modifier = Modifier.padding(16.dp)) {
-                Text("SCROLLTEST")
-            }
-            Column(modifier = Modifier.padding(16.dp)) {
-                Text("SCROLLTEST")
-            }
-            Column(modifier = Modifier.padding(16.dp)) {
-                Text("SCROLLTEST")
-            }
-
-
-
-
         }
     }
 }
 
 @Composable
 fun ActivityCardSmall(modifier: Modifier, detailView: MutableState<Boolean>, post: Post) {
+
+    //should access shared viewModel for posts
+    val viewModel: MyPostsViewModel = viewModel(
+        viewModelStoreOwner = LocalActivity.current as ComponentActivity
+    )
+
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -181,11 +171,14 @@ fun ActivityCardSmall(modifier: Modifier, detailView: MutableState<Boolean>, pos
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
 
-//            Image(painter = painterResource(id = R.drawable.placeholder_loc), contentDescription = "Location background", modifier = Modifier.fillMaxSize(), contentScale = ContentScale.Crop)
+            AsyncImage(
+                model = post.imageUrl,
+                contentDescription = post.name,
+                modifier = Modifier.fillMaxWidth(),
+                contentScale = ContentScale.Crop
+            )
 
-            Text((post.primaryImageId?: "image id not available"))
-
-            IconButton(onClick = { detailView.value = true }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.5f), shape = RoundedCornerShape(8.dp)).align(TopEnd)) {
+            IconButton(onClick = { detailView.value = true }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp)).align(TopEnd)) {
                 Icon(Icons.AutoMirrored.Filled.CallMade, contentDescription = "Enlarge")
             }
 
@@ -195,22 +188,22 @@ fun ActivityCardSmall(modifier: Modifier, detailView: MutableState<Boolean>, pos
             }
 
             Row(modifier = Modifier.align(BottomEnd).padding(16.dp)) {
-                IconButton(onClick = { /*TODO*/ }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.5f), shape = RoundedCornerShape(8.dp))) {
+                IconButton(onClick = { viewModel.activityInteraction("like", post) }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp))) {
                         Icon(Icons.Default.ThumbUp, contentDescription = "want to go")
                 }
                 Spacer(modifier = Modifier.padding(horizontal = 8.dp))
-                IconButton(onClick = { /*TODO*/ }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.5f), shape = RoundedCornerShape(8.dp))) {
+                IconButton(onClick = { viewModel.activityInteraction("dislike", post) }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp))) {
                         Icon(Icons.Default.ThumbDown, contentDescription = "not for me")
                 }
             }
 
             Row(modifier = Modifier.align(BottomStart).padding(16.dp)) {
-                IconButton(onClick = { /*TODO*/ }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.5f), shape = RoundedCornerShape(8.dp))) {
-                        Icon(Icons.AutoMirrored.Filled.Redo, contentDescription = "want to go")
+                IconButton(onClick = { viewModel.activityInteraction("skip", post) }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp))) {
+                        Icon(Icons.AutoMirrored.Filled.Redo, contentDescription = "skip")
                 }
                 Spacer(modifier = Modifier.padding(horizontal = 8.dp))
-                IconButton(onClick = { /*TODO*/ }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.5f), shape = RoundedCornerShape(8.dp))) {
-                        Icon(Icons.Default.RemoveRedEye, contentDescription = "not for me")
+                IconButton(onClick = { viewModel.activityInteraction("visited", post) }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp))) {
+                        Icon(Icons.Default.RemoveRedEye, contentDescription = "already visited")
                 }
             }
         }

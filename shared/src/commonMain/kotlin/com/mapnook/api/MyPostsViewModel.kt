@@ -12,6 +12,10 @@ class MyPostsViewModel : ViewModel() {
     // 1. Create a state to hold the list of posts for your UI.
     var posts by mutableStateOf<List<Post>>(emptyList())
         private set // Make it read-only from the outside
+    var visited by mutableStateOf<List<Post>>(emptyList())
+        private set
+    var wanttogo by mutableStateOf<List<Post>>(emptyList())
+        private set
 
     // 2. A function to trigger the network request.
     fun fetchPosts() {
@@ -24,6 +28,27 @@ class MyPostsViewModel : ViewModel() {
                 // It's crucial to handle potential errors,
                 // like no internet connection.
                 println("Error fetching posts: ${e.message}")
+            }
+        }
+    }
+
+    fun activityInteraction(action: String, post: Post) {
+        when (action) {
+            "visited" -> {
+                visited += post
+                posts -= post
+            }
+            "like" -> {
+                wanttogo += post
+                posts -= post
+            }
+            "skip" -> {
+                //hopefully this triggers the UI to reload and it updates accordingly
+                posts -= post
+            }
+            "dislike" -> {
+                //hopefully this triggers the UI to reload and it updates accordingly
+                posts -= post
             }
         }
     }

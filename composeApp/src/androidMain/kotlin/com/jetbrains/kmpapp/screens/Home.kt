@@ -20,6 +20,8 @@ import androidx.compose.material.icons.filled.Radar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -39,15 +41,26 @@ import kotlinx.coroutines.launch
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.LocalActivity
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.unit.dp
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.Marker
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
+import bitmapDescriptorFromUrl
+import com.google.android.gms.maps.model.BitmapDescriptor
+import com.google.maps.android.compose.Circle
 import com.google.android.gms.maps.model.MapStyleOptions
+import com.google.android.gms.tasks.Tasks.await
 import com.jetbrains.kmpapp.R
 import com.mapnook.api.Post
+
+data class Marker (
+    val lat: Double?,
+    val lng: Double?,
+    val icon: BitmapDescriptor?
+)
 
 @Composable fun Home(modifier: Modifier, isLoading: MutableState<Boolean>) {
 
@@ -57,6 +70,8 @@ import com.mapnook.api.Post
 
     val detailView = remember { mutableStateOf(false) }
 
+    val markers = remember { mutableStateListOf<Marker>() }
+
     Box(
         modifier = Modifier.fillMaxSize(),
     ) {
@@ -65,8 +80,6 @@ import com.mapnook.api.Post
         val cameraPositionState = rememberCameraPositionState {
             position = CameraPosition.fromLatLngZoom(prague, 12f)
         }
-
-        val locations = remember { mutableStateOf(listOf<Post>()) }
 
         val scope = rememberCoroutineScope()
 
@@ -85,12 +98,12 @@ import com.mapnook.api.Post
                     val lat = post.location.getOrNull(1)
                     println("loKati&n $lat, $lng")
                     if (lat != null && lng != null && post.imageUrl != null) {
-//                        val bitmapState = bitmapDescriptorFromUrl(LocalContext.current, post.imageUrl)
-                        Marker(
-                            state = MarkerState(LatLng(lat, lng)),
-//                            icon = bitmapState.value,
-                            title = post.name
-                        )
+                        val iconState by bitmapDescriptorFromUrl(LocalContext.current, post.imageUrl)
+                            Marker(
+                                state = MarkerState(LatLng(lat, lng)),
+                                icon = iconState,
+                                title = post.name,
+                            )
                     }
                 }
             }

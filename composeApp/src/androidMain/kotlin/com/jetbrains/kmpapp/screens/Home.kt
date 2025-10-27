@@ -43,7 +43,10 @@ import androidx.compose.ui.unit.dp
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.Marker
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.google.android.gms.maps.model.MapStyleOptions
+import com.jetbrains.kmpapp.R
 import com.mapnook.api.Post
 
 @Composable fun Home(modifier: Modifier, isLoading: MutableState<Boolean>) {
@@ -70,7 +73,9 @@ import com.mapnook.api.Post
         GoogleMap(
             modifier = Modifier.fillMaxSize(),
             cameraPositionState = cameraPositionState,
-            uiSettings = MapUiSettings(zoomControlsEnabled = false)
+            uiSettings = MapUiSettings(zoomControlsEnabled = false),
+            properties = com.google.maps.android.compose.MapProperties(
+                mapStyleOptions = MapStyleOptions.loadRawResourceStyle(LocalContext.current, R.raw.maps_style))
         ) {
 
             if (!isLoading.value) {

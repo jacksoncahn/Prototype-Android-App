@@ -14,13 +14,6 @@
     ]
   },
   {
-    "featureType": "administrative",
-    "elementType": "labels",
-    "stylers": [
-      { "visibility": "off" }
-    ]
-  },
-  {
     "featureType": "road",
     "elementType": "labels.icon",
     "stylers": [

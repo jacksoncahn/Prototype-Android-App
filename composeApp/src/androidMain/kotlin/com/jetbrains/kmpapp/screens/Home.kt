@@ -62,6 +62,10 @@ data class Marker (
     val icon: BitmapDescriptor?
 )
 
+//fun goToActivity(viewModel: MyPostsViewModel, name: String) {
+//    forEach { post ->
+//}
+
 @Composable fun Home(modifier: Modifier, isLoading: MutableState<Boolean>) {
 
     val viewModel: MyPostsViewModel = viewModel(
@@ -99,11 +103,12 @@ data class Marker (
                     println("loKati&n $lat, $lng")
                     if (lat != null && lng != null && post.imageUrl != null) {
                         val iconState by bitmapDescriptorFromUrl(LocalContext.current, post.imageUrl)
-                            Marker(
-                                state = MarkerState(LatLng(lat, lng)),
-                                icon = iconState,
-                                title = post.name,
-                            )
+                        Marker(
+                            state = MarkerState(LatLng(lat, lng)),
+                            icon = iconState,
+                            title = post.name,
+//                            onClick = {/*TODO*/}
+                        )
                     }
                 }
             }

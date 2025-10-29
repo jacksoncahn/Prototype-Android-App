@@ -12,10 +12,20 @@ class MyPostsViewModel : ViewModel() {
     // 1. Create a state to hold the list of posts for your UI.
     var posts by mutableStateOf<List<Post>>(emptyList())
         private set // Make it read-only from the outside
+    var visiblePosts by mutableStateOf<List<Post>>(emptyList())
+
     var visited by mutableStateOf<List<Post>>(emptyList())
         private set
     var wanttogo by mutableStateOf<List<Post>>(emptyList())
         private set
+
+    var skipped by mutableStateOf<List<Post>>(emptyList())
+        private set
+
+    var notforme by mutableStateOf<List<Post>>(emptyList())
+        private set
+
+    var selectedPost by mutableStateOf<Post?>(null)
 
     // 2. A function to trigger the network request.
     fun fetchPosts() {
@@ -24,6 +34,9 @@ class MyPostsViewModel : ViewModel() {
             try {
                 val fetchedPosts = ApiClient.getPosts()
                 posts = fetchedPosts
+                visiblePosts = fetchedPosts
+                selectedPost = visiblePosts[0]
+                println("post: $selectedPost")
             } catch (e: Exception) {
                 // It's crucial to handle potential errors,
                 // like no internet connection.
@@ -33,23 +46,44 @@ class MyPostsViewModel : ViewModel() {
     }
 
     fun activityInteraction(action: String, post: Post) {
+//        println("activityInteraction called with action: $action and post: ${post.name}, liked: ${post.liked}, visited: ${post.visited}, skipped: ${post.skipped}, disliked: ${post.disliked}")
+        println("post name ${post.name}")
         when (action) {
             "visited" -> {
-                visited += post
-                posts -= post
+                if (!post.visited) {
+                    post.visited = true
+                    visited += post
+                    println("visited: ${visited.size}")
+                }
+                visiblePosts -= post
             }
             "like" -> {
-                wanttogo += post
-                posts -= post
+                if (!post.liked) {
+                    post.liked = true
+                    wanttogo += post
+                }
+                visiblePosts -= post
             }
             "skip" -> {
-                //hopefully this triggers the UI to reload and it updates accordingly
-                posts -= post
+                if (!post.skipped) {
+                    post.skipped = true
+                    skipped += post
+                }
+                visiblePosts -= post
             }
             "dislike" -> {
-                //hopefully this triggers the UI to reload and it updates accordingly
-                posts -= post
+                if (!post.disliked) {
+                    post.disliked = true
+                    notforme += post
+                }
+                visiblePosts -= post
             }
         }
+        if (!visiblePosts.isEmpty()) {
+            selectedPost = visiblePosts[0]
+        } else {
+            selectedPost = null
+        }
+        }
     }
-}
+

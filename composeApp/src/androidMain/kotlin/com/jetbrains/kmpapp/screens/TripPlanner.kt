@@ -18,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -31,7 +32,7 @@ fun TripPlanner(ids: String?, viewModel: MyPostsViewModel, navController: NavCon
     val idList = ids?.split(",")?.filter { it.isNotBlank() } ?: emptyList()
 
     // Combine all lists from the viewmodel that could contain the selected posts
-    val allPosts = viewModel.wanttogo + viewModel.visited + viewModel.posts
+    val allPosts = viewModel.posts
     
     // Find the full Post objects that match the received IDs
     val selectedPosts = allPosts.filter { post -> idList.contains(post.id) }
@@ -41,12 +42,13 @@ fun TripPlanner(ids: String?, viewModel: MyPostsViewModel, navController: NavCon
             onClick = { navController.popBackStack() }, // Navigates back
             modifier = Modifier
                 .align(Alignment.TopEnd)
-                .padding(top = 16.dp, end = 8.dp)
+                .padding(top = 16.dp, end = 8.dp),
         ) {
             Icon(
                 Icons.Default.Close,
                 contentDescription = "Close",
-                modifier = Modifier.size(48.dp)
+                modifier = Modifier.size(48.dp),
+                tint = Color.White
             )
         }
 
@@ -56,12 +58,13 @@ fun TripPlanner(ids: String?, viewModel: MyPostsViewModel, navController: NavCon
                 text = "My Trip",
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center,
-                fontSize = 24.sp
+                fontSize = 24.sp,
+                color = Color.White
             )
             
             if (selectedPosts.isEmpty()) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text("Trip Planner: Start a new trip from the menu!")
+                    Text("Trip Planner: Start a new trip from the menu!", color = Color.White)
                 }
             } else {
                 LazyColumn(modifier = Modifier.padding(top = 8.dp)) {

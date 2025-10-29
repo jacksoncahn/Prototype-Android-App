@@ -11,10 +11,12 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -34,6 +36,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.BottomEnd
 import androidx.compose.ui.Alignment.Companion.BottomStart
 import androidx.compose.ui.Modifier
@@ -50,6 +55,10 @@ import com.mapnook.api.Post
 
 @Composable
 fun ActivityCard(modifier: Modifier, detailView: MutableState<Boolean>, post: Post) {
+    LaunchedEffect(detailView.value) {
+        println("DetailView: ${detailView.value}")
+    }
+
     if (detailView.value) {
         ActivityCardLarge(modifier = modifier.padding(bottom = 32.dp), detailView, post)
     } else {
@@ -65,6 +74,8 @@ fun ActivityCardLarge(modifier: Modifier, detailView: MutableState<Boolean>, pos
         viewModelStoreOwner = LocalActivity.current as ComponentActivity
     )
 
+    val descriptionLarge = remember {mutableStateOf(false)}
+
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -74,7 +85,10 @@ fun ActivityCardLarge(modifier: Modifier, detailView: MutableState<Boolean>, pos
             defaultElevation = 8.dp
         )
     ) {
-        Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+        Column(
+            modifier = Modifier.verticalScroll(rememberScrollState())
+                .background(color = Color.Black)
+        ) {
             Box(modifier = Modifier.fillMaxWidth()) {
 
                 AsyncImage(
@@ -83,69 +97,84 @@ fun ActivityCardLarge(modifier: Modifier, detailView: MutableState<Boolean>, pos
                     modifier = Modifier.fillMaxWidth(),
                     contentScale = ContentScale.Crop
                 )
-                
-                IconButton(onClick = { detailView.value = false }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp)).align(TopEnd)) {
-                    Icon(Icons.AutoMirrored.Filled.CallReceived, contentDescription = "Enlarge")
+
+
+                Box(modifier = Modifier.padding(16.dp).align(TopEnd)) {
+                    IconButton(onClick = { detailView.value = false }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp))) {
+                        Icon(Icons.AutoMirrored.Filled.CallReceived, contentDescription = "Enlarge")
+                    }
                 }
 
-                Column(horizontalAlignment = Start, modifier = Modifier.padding(all = 8.dp).background(color = Color.White.copy(alpha = 0.3f), shape = RoundedCornerShape(8.dp))) {
-                    Text(text = (post.name?: "no name available"), style = MaterialTheme.typography.bodyLarge, modifier = Modifier.padding(horizontal = 4.dp).padding(top = 4.dp))
-                    Text(text = (post.nativeName?: "no native name available"), modifier = Modifier.padding(horizontal = 4.dp).padding(bottom = 4.dp))
+
+                Column(horizontalAlignment = Start, modifier = Modifier.padding(all = 16.dp).width(250.dp)) {
+                    Text(
+                        text = post.name?: "no name available",
+                        style = MaterialTheme.typography.headlineSmall.copy(
+                            color = Color.White,
+                            shadow = androidx.compose.ui.graphics.Shadow(color = Color.Black, blurRadius = 8f)
+                        ),
+                        modifier = Modifier.padding(horizontal = 4.dp).padding(top = 4.dp))
                 }
 
                 Row(modifier = Modifier.align(BottomEnd).padding(16.dp)) {
-                    IconButton(onClick = { /*TODO*/ }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp))) {
+                    IconButton(onClick = {viewModel.activityInteraction("like", post) }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp))) {
                         Icon(Icons.Default.ThumbUp, contentDescription = "want to go")
                     }
                     Spacer(modifier = Modifier.padding(horizontal = 8.dp))
-                    IconButton(onClick = { /*TODO*/ }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp))) {
+                    IconButton(onClick = {viewModel.activityInteraction("dislike", post) }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp))) {
                         Icon(Icons.Default.ThumbDown, contentDescription = "not for me")
                     }
                 }
 
                 Row(modifier = Modifier.align(BottomStart).padding(16.dp)) {
-                    IconButton(onClick = { /*TODO*/ }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp))) {
-                        Icon(Icons.AutoMirrored.Filled.Redo, contentDescription = "want to go")
+                    IconButton(onClick = {viewModel.activityInteraction("skip", post) }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp))) {
+                        Icon(Icons.AutoMirrored.Filled.Redo, contentDescription = "skip activity")
                     }
                     Spacer(modifier = Modifier.padding(horizontal = 8.dp))
-                    IconButton(onClick = { /*TODO*/ }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp))) {
-                        Icon(Icons.Default.RemoveRedEye, contentDescription = "not for me")
+                    IconButton(onClick = { viewModel.activityInteraction("visited", post) }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp))) {
+                        Icon(Icons.Default.RemoveRedEye, contentDescription = "mark already visited")
                     }
                 }
             }
 
-            Text(text = (post.description?: "no description available"), modifier = Modifier.padding(16.dp))
+            if (descriptionLarge.value) {
+                Text(
+                    color = Color.White,
+                    text = (post.description?: "no description available"),
+                    modifier = Modifier.padding(16.dp).clickable { descriptionLarge.value = false }
+                )
+            } else {
+                Text(
+                    color = Color.White,
+                    text = post.summary?: "no summary available",
+                    maxLines = 3,
+                    modifier = Modifier.padding(16.dp).clickable { descriptionLarge.value = true }
+                )
+            }
 
-            Column() {
-                Text("Tags", fontSize = MaterialTheme.typography.titleMedium.fontSize, modifier = Modifier.padding(all = 16.dp))
+            Column {
+                Text(
+                    "Tags",
+                    fontSize = MaterialTheme.typography.titleLarge.fontSize,
+                    modifier = Modifier.padding(all = 16.dp),
+                    color = Color.White
+                )
                 FlowRow {
-                    Box(modifier = Modifier.padding(8.dp)) {
-                        Text("tag1******", modifier = Modifier.padding(8.dp).background(color = Color.Gray, shape = RoundedCornerShape(8.dp)))
-                    }
-                    Box(modifier = Modifier.padding(8.dp)) {
-                        Text("tag1******", modifier = Modifier.padding(8.dp).background(color = Color.Gray, shape = RoundedCornerShape(8.dp)))
-                    }
-                    Box(modifier = Modifier.padding(8.dp)) {
-                        Text("tag1******", modifier = Modifier.padding(8.dp).background(color = Color.Gray, shape = RoundedCornerShape(8.dp)))
-                    }
-                    Box(modifier = Modifier.padding(8.dp)) {
-                        Text("tag1******", modifier = Modifier.padding(8.dp).background(color = Color.Gray, shape = RoundedCornerShape(8.dp)))
-                    }
-                    Box(modifier = Modifier.padding(8.dp)) {
-                        Text("tag1******", modifier = Modifier.padding(8.dp).background(color = Color.Gray, shape = RoundedCornerShape(8.dp)))
-                    }
-                    Box(modifier = Modifier.padding(8.dp)) {
-                        Text("tag1******", modifier = Modifier.padding(8.dp).background(color = Color.Gray, shape = RoundedCornerShape(8.dp)))
-                    }
-                    Box(modifier = Modifier.padding(8.dp)) {
-                        Text("tag1******", modifier = Modifier.padding(8.dp).background(color = Color.Gray, shape = RoundedCornerShape(8.dp)))
+                    post.tags?.forEach { tag ->
+                        Box(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+                            Text(
+                                color = Color.White,
+                                text = tag,
+                                modifier = Modifier.background(color = Color.Gray, shape = RoundedCornerShape(8.dp)).padding(8.dp)
+                            )
+                        }
                     }
                 }
             }
 
             Column(modifier = Modifier.padding(16.dp)) {
-                Text(text = "Links")
-                Text("this is not a real link")
+                Text(text = "Links", color = Color.White)
+                Text("fakelink@url.com", color = Color.White)
             }
         }
     }
@@ -178,14 +207,21 @@ fun ActivityCardSmall(modifier: Modifier, detailView: MutableState<Boolean>, pos
                 contentScale = ContentScale.Crop
             )
 
-            IconButton(onClick = { detailView.value = true }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp)).align(TopEnd)) {
-                Icon(Icons.AutoMirrored.Filled.CallMade, contentDescription = "Enlarge")
+            Box(modifier = Modifier.padding(16.dp).align(TopEnd)) {
+                IconButton(onClick = { detailView.value = true }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp))) {
+                    Icon(Icons.AutoMirrored.Filled.CallMade, contentDescription = "Enlarge")
+                }
             }
 
-            Column(horizontalAlignment = Start, modifier = Modifier.padding(all = 16.dp).background(color = Color.White.copy(alpha = 0.3f), shape = RoundedCornerShape(8.dp))) {
-                Text(text = post.name?: "no name available", style = MaterialTheme.typography.bodyLarge, modifier = Modifier.padding(horizontal = 4.dp).padding(top = 4.dp))
-                Text(text = post.nativeName?: "no native name available", modifier = Modifier.padding(horizontal = 4.dp).padding(bottom = 4.dp))
-            }
+            Column(horizontalAlignment = Start, modifier = Modifier.padding(all = 16.dp).width(250.dp)) {
+                Text(
+                    text = post.name?: "no name available",
+                    style = MaterialTheme.typography.headlineSmall.copy(
+                        color = Color.White,
+                        shadow = androidx.compose.ui.graphics.Shadow(color = Color.Black, blurRadius = 8f)
+                    ),
+                    modifier = Modifier.padding(horizontal = 4.dp).padding(top = 4.dp))
+             }
 
             Row(modifier = Modifier.align(BottomEnd).padding(16.dp)) {
                 IconButton(onClick = { viewModel.activityInteraction("like", post) }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp))) {

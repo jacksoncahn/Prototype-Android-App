@@ -30,4 +30,8 @@ data class Post(
     //imageUrl is also Transient so the Post class can fully match w/ JSON
     //must set it to null in the constructor, otherwise it will throw an error
     @Transient var imageUrl: String? = null,
+    @Transient var liked: Boolean = false,
+    @Transient var visited: Boolean = false,
+    @Transient var disliked: Boolean = false,
+    @Transient var skipped: Boolean = false
 )

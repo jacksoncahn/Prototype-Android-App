@@ -20,7 +20,6 @@ import androidx.compose.material.icons.filled.Radar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -35,26 +34,24 @@ import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.jetbrains.kmpapp.components.Searchbar
 import com.jetbrains.kmpapp.components.ActivityCard
-import com.jetbrains.kmpapp.theme.AppThemeObject
 import com.mapnook.api.MyPostsViewModel
 import kotlinx.coroutines.launch
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.LocalActivity
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.unit.dp
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.Marker
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import bitmapDescriptorFromUrl
 import com.google.android.gms.maps.model.BitmapDescriptor
-import com.google.maps.android.compose.Circle
 import com.google.android.gms.maps.model.MapStyleOptions
-import com.google.android.gms.tasks.Tasks.await
 import com.jetbrains.kmpapp.R
-import com.mapnook.api.Post
 
 data class Marker (
     val lat: Double?,
@@ -62,8 +59,8 @@ data class Marker (
     val icon: BitmapDescriptor?
 )
 
-//fun goToActivity(viewModel: MyPostsViewModel, name: String) {
-//    forEach { post ->
+//fun generateMarkers(viewModel: MyPostsViewModel, name: String) {
+//    forEach() post ->
 //}
 
 @Composable fun Home(modifier: Modifier, isLoading: MutableState<Boolean>) {
@@ -73,8 +70,6 @@ data class Marker (
     )
 
     val detailView = remember { mutableStateOf(false) }
-
-    val markers = remember { mutableStateListOf<Marker>() }
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -96,7 +91,7 @@ data class Marker (
         ) {
 
             if (!isLoading.value) {
-                val activities = viewModel.posts
+                val activities = viewModel.visiblePosts
                 activities.forEach { post ->
                     val lng = post.location.getOrNull(0)
                     val lat = post.location.getOrNull(1)
@@ -107,14 +102,17 @@ data class Marker (
                             state = MarkerState(LatLng(lat, lng)),
                             icon = iconState,
                             title = post.name,
-//                            onClick = {/*TODO*/}
+                            onClick = {
+                                viewModel.selectedPost = post
+                                true // onClick for Marker expects a Boolean return value
+                            }
                         )
                     }
                 }
             }
 
         }
-
+//
             // UI elements are placed on top of the map
             Row(
                 modifier = modifier
@@ -135,7 +133,7 @@ data class Marker (
                 Column(
                     modifier = Modifier
                         .background(
-                            color = AppThemeObject.colors.foreground,
+                            color = Color.White.copy(alpha = 0.7f),
                             shape = RoundedCornerShape(8.dp)
                         ),
                 ) {
@@ -179,7 +177,8 @@ data class Marker (
                     onClick = { /*TODO*/ },
                     modifier = Modifier
                         .background(
-                            color = AppThemeObject.colors.foreground,
+//                            color = AppThemeObject.colors.foreground,
+                            color = Color.White.copy(alpha = 0.7f),
                             shape = RoundedCornerShape(8.dp)
                         )
                 ) {
@@ -197,8 +196,9 @@ data class Marker (
                     .fillMaxWidth()
                     .padding(bottom = 16.dp)
             ) {
-                viewModel.posts.forEach { post ->
-                    ActivityCard(detailView = detailView, post = post, modifier = Modifier)
+                // Show ActivityCard only for the selected post
+                viewModel.selectedPost?.let { selectedPost ->
+                    ActivityCard(detailView = detailView, post = selectedPost, modifier = Modifier)
                 }
             }
         }

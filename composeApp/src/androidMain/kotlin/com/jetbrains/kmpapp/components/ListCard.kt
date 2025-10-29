@@ -26,6 +26,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 import com.jetbrains.kmpapp.R
 import com.mapnook.api.Post
 
@@ -46,21 +47,16 @@ fun ListCard(
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // TODO: Replace with an AsyncImage to load post.imageUrl
-        Image(
-            painterResource(id = R.drawable.placeholder_loc),
-            contentDescription = post.name,
-            modifier = Modifier
-                .padding(8.dp)
-                .height(80.dp)
-                .width(80.dp)
-                .clip(RoundedCornerShape(8.dp)),
-            contentScale = ContentScale.Crop
+        AsyncImage(
+            model = post.imageUrl,
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.padding(8.dp).clip(RoundedCornerShape(8.dp))
         )
 
         Column(modifier = Modifier.padding(horizontal = 8.dp).widthIn(max = 150.dp).height(70.dp)) {
             Text(post.name ?: "Unnamed Location", style = MaterialTheme.typography.bodyLarge)
-            post.nativeName?.let { Text(it) }
+//            post.nativeName?.let { Text(it) }
         }
 
         Spacer(modifier = Modifier.weight(1f))

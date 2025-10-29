@@ -19,7 +19,7 @@ object ApiClient {
     suspend fun getPosts(): List<Post> {
         val data: List<Post> = client.get("https://mapnook.com/api/activities").body()
         for (post in data) {
-            println("post: ${post.name}")
+            println("post: ${post.name}, ${post.id}, ${post.tags}")
             if (post.primaryImageId != null) {
                 post.imageUrl = getImageUrl(post.primaryImageId, 300, 300)
             }

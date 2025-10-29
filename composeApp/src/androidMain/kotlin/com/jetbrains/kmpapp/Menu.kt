@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.foundation.clickable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.res.painterResource
 
 
@@ -47,12 +48,12 @@ fun MenuContent(navigation: MutableState<String>) {
             Text("My Lists", color = Color.White, style = MaterialTheme.typography.titleMedium)
             Spacer(modifier = Modifier.height(8.dp))
 
-            Row(modifier = Modifier.clickable { navigation.value = "mylists" }.padding(vertical = 8.dp)) {
+            Row(modifier = Modifier.clickable { navigation.value = "wanttogo" }.padding(vertical = 8.dp)) {
                 Icon(imageVector = Icons.Outlined.AddCircle, contentDescription = "Want to go", tint = Color.White)
                 Spacer(modifier = Modifier.size(16.dp))
                 Text("Want to go", color = Color.White, style = MaterialTheme.typography.titleMedium)
             }
-            Row(modifier = Modifier.clickable { navigation.value = "mylists" }.padding(vertical = 8.dp)) {
+            Row(modifier = Modifier.clickable { navigation.value = "visited" }.padding(vertical = 8.dp)) {
                 Icon(imageVector = Icons.Outlined.AddCircle, contentDescription = "Visited", tint = Color.White)
                 Spacer(modifier = Modifier.size(16.dp))
                 Text("Visited", color = Color.White, style = MaterialTheme.typography.titleMedium)
@@ -96,11 +97,18 @@ fun MenuContent(navigation: MutableState<String>) {
 }
 
 @Composable
-fun Menu(navigation: MutableState<String>, modifier: Modifier = Modifier) {
+fun Menu(navigation: MutableState<String>, page: MutableState<String>, modifier: Modifier = Modifier) {
+    LaunchedEffect(Unit) {
+        println("Route changed, navigation value: ${page.value}")
+    }
     var showMenu by remember { mutableStateOf(false) }
 
     Box(modifier = modifier.padding(horizontal = 8.dp)) {
-        IconButton(onClick = { showMenu = !showMenu }, modifier = Modifier.size(56.dp).background(color = Color.Black, shape = CircleShape)) {
+        IconButton(
+            onClick = { showMenu = !showMenu },
+            modifier = Modifier.size(56.dp).background(
+                color = if (page.value == "home") Color.Black else Color(0xFF1F1F1F), shape = CircleShape
+            )) {
             Icon(painter = painterResource(R.drawable.logo), contentDescription = "Menu", modifier = Modifier.size(32.dp), tint = Color.White)
         }
 
@@ -116,8 +124,8 @@ fun Menu(navigation: MutableState<String>, modifier: Modifier = Modifier) {
     }
 }
 
-@Composable
-@Preview
-fun MenuPreview() {
-    Menu(remember { mutableStateOf("") })
-}
+//@Composable
+//@Preview
+//fun MenuPreview() {
+//    Menu(remember { mutableStateOf("") })
+//}

@@ -73,7 +73,9 @@ fun TripPlanner(ids: String?, viewModel: MyPostsViewModel, navController: NavCon
                             post = post,
                             isSelected = false, // Not selectable on this screen
                             onCheckedChange = {}, // No action
-                            showCheckbox = false // Hide the checkbox
+                            showCheckbox = false, // Hide the checkbox,
+                            //does nothing for now; does not navigate to home and make selectedPost = post
+                            onClicked = { Unit }
                         )
                     }
                 }

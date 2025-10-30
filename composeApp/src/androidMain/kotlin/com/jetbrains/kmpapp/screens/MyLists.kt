@@ -109,7 +109,8 @@ fun MyLists(navController: NavController, viewModel: MyPostsViewModel, listType:
                                     }
                                 }
                             },
-                            showCheckbox = selectedListType == "wanttogo"
+                            showCheckbox = selectedListType == "wanttogo",
+                            onClicked = {navController.navigate("home"); viewModel.selectedPost = post}
                         )
                     }
                 }

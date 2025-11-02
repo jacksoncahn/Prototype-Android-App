@@ -126,23 +126,28 @@ fun MyLists(navController: NavController, viewModel: MyPostsViewModel, listType:
             }
         }
 
-        if (selectedIds.isNotEmpty() && selectedListType == "wanttogo") {
+        if (selectedListType == "wanttogo") {
+            val isEnabled = selectedIds.isNotEmpty()
             Button(
                 onClick = {
                     val ids = selectedIds.joinToString(",")
                     navController.navigate("tripplanner?ids=$ids")
                 },
+                enabled = isEnabled,
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .fillMaxWidth()
                     .padding(16.dp),
                 shape = RoundedCornerShape(8.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.White,
-                    contentColor = Color.Black
+                    containerColor = Color.White.copy(alpha = if (isEnabled) 1f else 0.5f),
+                    contentColor = Color.Black,
+                    disabledContainerColor = Color.White.copy(alpha = 0.5f),
+                    disabledContentColor = Color.Black.copy(alpha = 0.5f)
                 )
             ) {
-                Text("Create Trip from ${selectedIds.size} places")
+                val text = if (isEnabled) "Create Trip from ${selectedIds.size} places" else "Select places to create a trip"
+                Text(text)
             }
         }
     }

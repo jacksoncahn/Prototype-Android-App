@@ -1,5 +1,7 @@
 package com.jetbrains.kmpapp.screens
 
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -8,41 +10,29 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.jetbrains.kmpapp.components.ListCard
 import com.mapnook.api.MyPostsViewModel
 
 @Composable
-fun TripPlanner(ids: String?, viewModel: MyPostsViewModel, navController: NavController) { // Add NavController
-    // Parse the string of IDs into a list of strings
-    val idList = ids?.split(",")?.filter { it.isNotBlank() } ?: emptyList()
+fun Trip(id: String?, modifier: Modifier, navController: NavController) {
 
-    // Combine all lists from the viewmodel that could contain the selected posts
-    val allPosts = viewModel.posts
-    
-    // Find the full Post objects that match the received IDs
-    val selectedPosts = allPosts.filter { post -> idList.contains(post.id) }
-
-    LaunchedEffect(selectedPosts) {
-        //adds the trip to the list of trips
-        //the Trip class is defined in MyPostsViewModel so that's where we access it from
-        viewModel.trips += MyPostsViewModel.Trip(id = viewModel.trips.size + 1, name = "My Trip", posts = selectedPosts)
-    }
+    val viewModel: MyPostsViewModel = viewModel(
+        viewModelStoreOwner = LocalActivity.current as ComponentActivity
+    )
 
     Box(modifier = Modifier.fillMaxSize()) { // Wrap in a Box
         IconButton(
@@ -58,7 +48,6 @@ fun TripPlanner(ids: String?, viewModel: MyPostsViewModel, navController: NavCon
                 tint = Color.White
             )
         }
-
         Column(modifier = Modifier.fillMaxSize()) {
             Spacer(modifier = Modifier.height(50.dp))
             Text(
@@ -68,25 +57,24 @@ fun TripPlanner(ids: String?, viewModel: MyPostsViewModel, navController: NavCon
                 fontSize = 24.sp,
                 color = Color.White
             )
-            
-            if (selectedPosts.isEmpty()) {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text("Trip Planner: Start a new trip from the menu!", color = Color.White)
-                }
-            } else {
-                LazyColumn(modifier = Modifier.padding(top = 8.dp)) {
-                    items(selectedPosts, key = { it.id!! }) { post ->
+            Spacer(modifier = Modifier.height(50.dp))
+            if (id != null) {
+                val trip = viewModel.trips.find { it.id.toString() == id }
+                Column(modifier = Modifier.padding(top = 8.dp)) {
+                    trip?.posts?.forEach { post ->
                         ListCard(
                             post = post,
                             isSelected = false, // Not selectable on this screen
                             onCheckedChange = {}, // No action
                             showCheckbox = false, // Hide the checkbox,
-                            //does nothing for now; does not navigate to home and make selectedPost = post
-                            onClicked = { Unit }
+                            onClicked = {}
                         )
                     }
                 }
             }
+
+            }
         }
     }
-}
+
+

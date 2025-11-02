@@ -32,9 +32,12 @@ import com.jetbrains.kmpapp.screens.About
 import com.jetbrains.kmpapp.screens.AddPlaceOrEvent
 import com.jetbrains.kmpapp.screens.Contact
 import com.jetbrains.kmpapp.screens.FAQ
+import com.jetbrains.kmpapp.screens.Help
 import com.jetbrains.kmpapp.screens.Home
 import com.jetbrains.kmpapp.screens.MyLists
 import com.jetbrains.kmpapp.screens.Settings
+import com.jetbrains.kmpapp.screens.Trip
+import com.jetbrains.kmpapp.screens.TripList
 import com.jetbrains.kmpapp.screens.TripPlanner
 import com.mapnook.api.MyPostsViewModel
 
@@ -93,8 +96,10 @@ fun App() {
                     composable("contact") { Contact(navController) }
                     composable("wanttogo") { MyLists(navController, viewModel, currentRoute.value) }
                     composable("visited") { MyLists(navController, viewModel, currentRoute.value) }
-//                    composable("skipped") { MyLists(navController, viewModel, navRoute.value) }
-//                    composable("notforme") { MyLists(navController, viewModel, navRoute.value) }
+                    composable(route = "help") {Help(navController)}
+                    composable(route = "triplist") {TripList(navController)}
+//                  composable("skipped") { MyLists(navController, viewModel, navRoute.value) }
+//                  composable("notforme") { MyLists(navController, viewModel, navRoute.value) }
 
                     composable(
                         route = "tripplanner?ids={ids}",
@@ -106,6 +111,29 @@ fun App() {
                         val ids = backStackEntry.arguments?.getString("ids")
                         // Pass the navController to the TripPlanner screen
                         TripPlanner(ids, viewModel, navController)
+                    }
+
+                    composable(
+                        route = "triplist?ids={ids}",
+                        arguments = listOf(navArgument("ids") {
+                            type = NavType.StringType
+                            nullable = true
+                        })
+                    ) { backStackEntry ->
+                        val ids = backStackEntry.arguments?.getString("ids")
+                        // Pass the navController to the TripPlanner screen
+                        TripList(navController)
+                    }
+
+                    composable(
+                        route = "trip/{id}",
+                        arguments = listOf(navArgument("id") {
+                            type = NavType.StringType
+                            nullable = true
+                        })
+                    ) { backStackEntry ->
+                        val id = backStackEntry.arguments?.getString("id")
+                        Trip(id, Modifier, navController)
                     }
                 }
 

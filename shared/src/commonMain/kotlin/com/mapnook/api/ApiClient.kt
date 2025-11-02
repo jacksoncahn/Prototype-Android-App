@@ -26,6 +26,8 @@ object ApiClient {
         }
         return data
     }
+
+    //getImageUrl is "kotlinized" from function in Mapnook-mono
     fun getImageUrl(id: String, width: Int? = null, height: Int? = null): String {
         if (width == null && height == null) {
             println("Warning: getImageUrl - retrieving full-sized image as width and height are both undefined.")

@@ -9,6 +9,12 @@ import kotlinx.coroutines.launch
 
 class MyPostsViewModel : ViewModel() {
 
+    data class Trip(
+        val id: Int,
+        val name: String,
+        val posts: List<Post>
+    )
+
     // 1. Create a state to hold the list of posts for your UI.
     var posts by mutableStateOf<List<Post>>(emptyList())
         private set // Make it read-only from the outside
@@ -26,6 +32,13 @@ class MyPostsViewModel : ViewModel() {
         private set
 
     var selectedPost by mutableStateOf<Post?>(null)
+
+    var trips by mutableStateOf<List<Trip>>(emptyList())
+
+    init {
+        fetchPosts()
+    }
+
 
     // 2. A function to trigger the network request.
     fun fetchPosts() {

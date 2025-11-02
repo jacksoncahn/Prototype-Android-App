@@ -43,9 +43,9 @@ fun MenuContent(navigation: MutableState<String>) {
         }
 
         HorizontalDivider(thickness = 0.5.dp, color = Color.LightGray)
+        Text("My Lists", color = Color.White, style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(top = 8.dp, start = 8.dp))
 
-        Column(modifier = Modifier.clickable { navigation.value = "mylists" }.padding(8.dp)) {
-            Text("My Lists", color = Color.White, style = MaterialTheme.typography.titleMedium)
+        Column(modifier = Modifier.clickable { navigation.value = "mylists" }.padding(start = 16.dp)) {
             Spacer(modifier = Modifier.height(8.dp))
 
             Row(modifier = Modifier.clickable { navigation.value = "wanttogo" }.padding(vertical = 8.dp)) {
@@ -58,6 +58,12 @@ fun MenuContent(navigation: MutableState<String>) {
                 Spacer(modifier = Modifier.size(16.dp))
                 Text("Visited", color = Color.White, style = MaterialTheme.typography.titleMedium)
             }
+        }
+
+        Row(modifier = Modifier.clickable { navigation.value = "triplist" }.padding(all = 8.dp)) {
+            Icon(imageVector = Icons.Outlined.AddCircle, contentDescription = "Menu", tint = Color.White)
+            Spacer(modifier = Modifier.size(16.dp))
+            Text("My Trips", color = Color.White, style = MaterialTheme.typography.titleMedium)
         }
 
         HorizontalDivider(thickness = 0.5.dp, color = Color.LightGray)

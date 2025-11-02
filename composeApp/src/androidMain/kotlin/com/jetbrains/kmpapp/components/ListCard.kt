@@ -39,6 +39,7 @@ fun ListCard(
     onCheckedChange: (Boolean) -> Unit,
     showCheckbox: Boolean = true,
     onClicked: () -> Unit,
+    title: String? = null
 ) {
     Row(
         modifier = Modifier
@@ -61,7 +62,12 @@ fun ListCard(
         )
 
         Column(modifier = Modifier.padding(horizontal = 8.dp).widthIn(max = 150.dp).height(70.dp)) {
-            Text(post.name ?: "Unnamed Location", style = MaterialTheme.typography.bodyLarge)
+            if (title == null) {
+                Text(post.name ?: "Unnamed Location", style = MaterialTheme.typography.bodyLarge)
+
+            } else {
+                Text(title, style = MaterialTheme.typography.bodyLarge)
+            }
 //            post.nativeName?.let { Text(it) }
         }
 

@@ -25,95 +25,33 @@ import androidx.compose.ui.window.Popup
 import androidx.compose.foundation.clickable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.res.painterResource
-
-
-@Composable
-fun MenuContent(navigation: MutableState<String>) {
-    Column(modifier = Modifier.background(color = Color.Black, shape = RoundedCornerShape(8.dp)).width(IntrinsicSize.Max).padding(vertical = 8.dp)) {
-
-        Row(modifier = Modifier.clickable { navigation.value = "settings" }.padding(all = 8.dp)) {
-            Icon(imageVector = Icons.Filled.AccountCircle, contentDescription = null, tint = Color.White)
-            Spacer(modifier = Modifier.size(16.dp))
-
-            Column {
-                Text("Account Name", color = Color.White, style = MaterialTheme.typography.titleMedium)
-                Text("Account Settings", color = Color.LightGray)
-            }
-
-        }
-
-        HorizontalDivider(thickness = 0.5.dp, color = Color.LightGray)
-        Text("My Lists", color = Color.White, style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(top = 8.dp, start = 8.dp))
-
-        Column(modifier = Modifier.clickable { navigation.value = "mylists" }.padding(start = 16.dp)) {
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Row(modifier = Modifier.clickable { navigation.value = "wanttogo" }.padding(vertical = 8.dp)) {
-                Icon(imageVector = Icons.Outlined.AddCircle, contentDescription = "Want to go", tint = Color.White)
-                Spacer(modifier = Modifier.size(16.dp))
-                Text("Want to go", color = Color.White, style = MaterialTheme.typography.titleMedium)
-            }
-            Row(modifier = Modifier.clickable { navigation.value = "visited" }.padding(vertical = 8.dp)) {
-                Icon(imageVector = Icons.Outlined.AddCircle, contentDescription = "Visited", tint = Color.White)
-                Spacer(modifier = Modifier.size(16.dp))
-                Text("Visited", color = Color.White, style = MaterialTheme.typography.titleMedium)
-            }
-        }
-
-        Row(modifier = Modifier.clickable { navigation.value = "triplist" }.padding(all = 8.dp)) {
-            Icon(imageVector = Icons.Outlined.AddCircle, contentDescription = "Menu", tint = Color.White)
-            Spacer(modifier = Modifier.size(16.dp))
-            Text("My Trips", color = Color.White, style = MaterialTheme.typography.titleMedium)
-        }
-
-        HorizontalDivider(thickness = 0.5.dp, color = Color.LightGray)
-
-        Row(modifier = Modifier.clickable { navigation.value = "addplaceorevent" }.padding(all = 8.dp)) {
-            Icon(imageVector = Icons.Outlined.AddCircle, contentDescription = "Menu", tint = Color.White)
-            Spacer(modifier = Modifier.size(16.dp))
-            Text("Add place or event", color = Color.White, style = MaterialTheme.typography.titleMedium)
-        }
-
-        HorizontalDivider(thickness = 0.5.dp, color = Color.LightGray)
-
-        Row(modifier = Modifier.clickable { navigation.value = "faq" }.padding(all = 8.dp)) {
-            Icon(imageVector = Icons.Outlined.AddCircle, contentDescription = "Menu", tint = Color.White)
-            Spacer(modifier = Modifier.size(16.dp))
-            Text("FAQ", color = Color.White, style = MaterialTheme.typography.titleMedium)
-        }
-
-        Row(modifier = Modifier.clickable { navigation.value = "help" }.padding(all = 8.dp)) {
-            Icon(imageVector = Icons.Outlined.AddCircle, contentDescription = "Menu", tint = Color.White)
-            Spacer(modifier = Modifier.size(16.dp))
-            Text("Help", color = Color.White, style = MaterialTheme.typography.titleMedium)
-        }
-
-        Row(modifier = Modifier.clickable { navigation.value = "contact" }.padding(all = 8.dp)) {
-            Icon(imageVector = Icons.Outlined.AddCircle, contentDescription = "Menu", tint = Color.White)
-            Spacer(modifier = Modifier.size(16.dp))
-            Text("Contact", color = Color.White, style = MaterialTheme.typography.titleMedium)
-        }
-
-        Row(modifier = Modifier.clickable { navigation.value = "about" }.padding(all = 8.dp)) {
-            Icon(imageVector = Icons.Outlined.AddCircle, contentDescription = "Menu", tint = Color.White)
-            Spacer(modifier = Modifier.size(16.dp))
-            Text("About", color = Color.White, style = MaterialTheme.typography.titleMedium)
-        }
-    }
-}
+import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 
 @Composable
-fun Menu(navigation: MutableState<String>, page: MutableState<String>, modifier: Modifier = Modifier) {
+fun Menu(navController: NavController, modifier: Modifier = Modifier) {
+
+
+    //the entire following body of logic is just to switch menu button color
+    val currentRoute = remember { mutableStateOf("") }
     LaunchedEffect(Unit) {
-        println("Route changed, navigation value: ${page.value}")
+        currentRoute.value = "home"
     }
+    val currentBackStackEntry = navController.currentBackStackEntryAsState().value
+    LaunchedEffect(currentBackStackEntry) {
+        currentBackStackEntry?.destination?.route?.let {
+            currentRoute.value = it
+        }
+    }
+
+    //set
     var showMenu by remember { mutableStateOf(false) }
 
     Box(modifier = modifier.padding(horizontal = 8.dp)) {
         IconButton(
             onClick = { showMenu = !showMenu },
             modifier = Modifier.size(56.dp).background(
-                color = if (page.value == "home") Color.Black else Color(0xFF1F1F1F), shape = CircleShape
+                color = if (currentRoute.value == "home") Color.Black else Color(0xFF1F1F1F), shape = CircleShape
             )) {
             Icon(painter = painterResource(R.drawable.logo), contentDescription = "Menu", modifier = Modifier.size(32.dp), tint = Color.White)
         }
@@ -124,14 +62,80 @@ fun Menu(navigation: MutableState<String>, page: MutableState<String>, modifier:
                 offset = IntOffset(0, 160.dp.value.toInt()),
                 onDismissRequest = { showMenu = false }
             ) {
-                MenuContent(navigation)
+                Column(modifier = Modifier.background(color = Color.Black, shape = RoundedCornerShape(8.dp)).width(IntrinsicSize.Max).padding(vertical = 8.dp)) {
+
+                    Row(modifier = Modifier.clickable { navController.navigate("settings") }.padding(all = 8.dp)) {
+                        Icon(imageVector = Icons.Filled.AccountCircle, contentDescription = null, tint = Color.White)
+                        Spacer(modifier = Modifier.size(16.dp))
+
+                        Column {
+                            Text("Account Name", color = Color.White, style = MaterialTheme.typography.titleMedium)
+                            Text("Account Settings", color = Color.LightGray)
+                        }
+
+                    }
+
+                    HorizontalDivider(thickness = 0.5.dp, color = Color.LightGray)
+                    Text("My Lists", color = Color.White, style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(top = 8.dp, start = 8.dp))
+
+                    Column(modifier = Modifier.clickable { navController.navigate("mylists/wanttogo") }.padding(start = 16.dp)) {
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Row(modifier = Modifier.clickable { navController.navigate("mylists/wanttogo") }.padding(vertical = 8.dp)) {
+                            Icon(imageVector = Icons.Outlined.AddCircle, contentDescription = "Want to go", tint = Color.White)
+                            Spacer(modifier = Modifier.size(16.dp))
+                            Text("Want to go", color = Color.White, style = MaterialTheme.typography.titleMedium)
+                        }
+                        Row(modifier = Modifier.clickable { navController.navigate("mylists/visited") }.padding(vertical = 8.dp)) {
+                            Icon(imageVector = Icons.Outlined.AddCircle, contentDescription = "Visited", tint = Color.White)
+                            Spacer(modifier = Modifier.size(16.dp))
+                            Text("Visited", color = Color.White, style = MaterialTheme.typography.titleMedium)
+                        }
+                    }
+
+                    Row(modifier = Modifier.clickable { navController.navigate("triplist") }.padding(all = 8.dp)) {
+                        Icon(imageVector = Icons.Outlined.AddCircle, contentDescription = "Menu", tint = Color.White)
+                        Spacer(modifier = Modifier.size(16.dp))
+                        Text("My Trips", color = Color.White, style = MaterialTheme.typography.titleMedium)
+                    }
+
+                    HorizontalDivider(thickness = 0.5.dp, color = Color.LightGray)
+
+                    Row(modifier = Modifier.clickable { navController.navigate("addplaceorevent") }.padding(all = 8.dp)) {
+                        Icon(imageVector = Icons.Outlined.AddCircle, contentDescription = "Menu", tint = Color.White)
+                        Spacer(modifier = Modifier.size(16.dp))
+                        Text("Add place or event", color = Color.White, style = MaterialTheme.typography.titleMedium)
+                    }
+
+                    HorizontalDivider(thickness = 0.5.dp, color = Color.LightGray)
+
+                    Row(modifier = Modifier.clickable { navController.navigate("faq") }.padding(all = 8.dp)) {
+                        Icon(imageVector = Icons.Outlined.AddCircle, contentDescription = "Menu", tint = Color.White)
+                        Spacer(modifier = Modifier.size(16.dp))
+                        Text("FAQ", color = Color.White, style = MaterialTheme.typography.titleMedium)
+                    }
+
+                    Row(modifier = Modifier.clickable { navController.navigate("help") }.padding(all = 8.dp)) {
+                        Icon(imageVector = Icons.Outlined.AddCircle, contentDescription = "Menu", tint = Color.White)
+                        Spacer(modifier = Modifier.size(16.dp))
+                        Text("Help", color = Color.White, style = MaterialTheme.typography.titleMedium)
+                    }
+
+                    Row(modifier = Modifier.clickable { navController.navigate("contact") }.padding(all = 8.dp)) {
+                        Icon(imageVector = Icons.Outlined.AddCircle, contentDescription = "Menu", tint = Color.White)
+                        Spacer(modifier = Modifier.size(16.dp))
+                        Text("Contact", color = Color.White, style = MaterialTheme.typography.titleMedium)
+                    }
+
+                    Row(modifier = Modifier.clickable { navController.navigate("about") }.padding(all = 8.dp)) {
+                        Icon(imageVector = Icons.Outlined.AddCircle, contentDescription = "Menu", tint = Color.White)
+                        Spacer(modifier = Modifier.size(16.dp))
+                        Text("About", color = Color.White, style = MaterialTheme.typography.titleMedium)
+                    }
+                }
+
             }
         }
     }
 }
 
-//@Composable
-//@Preview
-//fun MenuPreview() {
-//    Menu(remember { mutableStateOf("") })
-//}

@@ -1,5 +1,7 @@
 package com.jetbrains.kmpapp.screens
 
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -23,12 +25,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.jetbrains.kmpapp.components.ListCard
 import com.mapnook.api.MyPostsViewModel
 
 @Composable
-fun TripPlanner(ids: String?, viewModel: MyPostsViewModel, navController: NavController) { // Add NavController
+fun TripPlanner(ids: String?, popBackStack: () -> Unit) {
+
+    val viewModel: MyPostsViewModel = viewModel(
+        viewModelStoreOwner = LocalActivity.current as ComponentActivity
+    )
+
     // Parse the string of IDs into a list of strings
     val idList = ids?.split(",")?.filter { it.isNotBlank() } ?: emptyList()
 
@@ -46,7 +54,7 @@ fun TripPlanner(ids: String?, viewModel: MyPostsViewModel, navController: NavCon
 
     Box(modifier = Modifier.fillMaxSize()) { // Wrap in a Box
         IconButton(
-            onClick = { navController.popBackStack() }, // Navigates back
+            onClick = popBackStack, // Navigates back
             modifier = Modifier
                 .align(Alignment.TopEnd)
                 .padding(top = 16.dp, end = 8.dp),

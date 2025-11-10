@@ -3,6 +3,8 @@ package com.mapnook.api
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonObject
+
 
 @Serializable
 data class Post(
@@ -19,7 +21,7 @@ data class Post(
     val primaryImageId: String?,
     val tags: List<String>?,
     val osm: JsonElement?,
-    val properties: String?,
+    val properties: JsonElement?,
     val nextShowTime: String?,
     val importance: Int?,
     val createdAt: String?,

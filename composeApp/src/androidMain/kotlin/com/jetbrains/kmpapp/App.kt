@@ -63,10 +63,6 @@ fun App() {
     val navController = rememberNavController()
 
     //used for UI changes per-page (currently not working), as well as proper listType for MyLists page
-    val currentRoute = remember { mutableStateOf("") }
-    LaunchedEffect(Unit) {
-        currentRoute.value = "home"
-    }
 
     LaunchedEffect(navRoute.value) {
         if (navRoute.value.isNotEmpty()) {
@@ -75,31 +71,40 @@ fun App() {
         }
     }
 
-    val currentBackStackEntry = navController.currentBackStackEntryAsState().value
-    LaunchedEffect(currentBackStackEntry) {
-        currentBackStackEntry?.destination?.route?.let {
-            currentRoute.value = it
-        }
-    }
 
     MaterialTheme(
         colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
     ) {
         Scaffold { paddingValues ->
-            Box(modifier = Modifier.fillMaxSize().background(color = Color.Black)) {
+            Box(modifier = Modifier
+                .fillMaxSize()
+                .background(color = Color.Black)) {
                 NavHost(navController, startDestination = "home") {
+
                     composable("home") { Home(modifier = Modifier.padding(paddingValues), isLoading = isLoading) }
-                    composable("settings") { Settings(navController) }
-                    composable("faq") { FAQ(navController) }
-                    composable("about") { About(navController) }
-                    composable("addplaceorevent") { AddPlaceOrEvent(navController) }
-                    composable("contact") { Contact(navController) }
-                    composable("wanttogo") { MyLists(navController, viewModel, currentRoute.value) }
-                    composable("visited") { MyLists(navController, viewModel, currentRoute.value) }
-                    composable(route = "help") {Help(navController)}
-                    composable(route = "triplist") {TripList(navController)}
-//                  composable("skipped") { MyLists(navController, viewModel, navRoute.value) }
-//                  composable("notforme") { MyLists(navController, viewModel, navRoute.value) }
+
+                    //for a lot of the pages, the "x" (icon to close the page) navigates back home.
+                    //the button has an onClick navigation functionality, which is passed in from outside
+                    composable(route = "settings") { Settings({navController.navigate("home")}) }
+                    composable(route = "faq") { FAQ({navController.navigate("home")}) }
+                    composable(route = "about") { About({navController.navigate("home")}) }
+                    composable(route = "addplaceorevent") { AddPlaceOrEvent({navController.navigate("home")}) }
+                    composable(route = "contact") { Contact({navController.navigate("home")}) }
+                    composable(route = "help") {Help({navController.navigate("home")})}
+                    composable(route = "triplist") {TripList({route -> { navController.navigate(route) }})}
+//
+                    composable(
+                        route = "mylists/{listType}",
+                        arguments = listOf(navArgument("ids") {
+                            type = NavType.StringType
+                            nullable = true
+                        })
+                        )
+                    { backStackEntry ->
+                        val listType = backStackEntry.arguments?.getString("listType")
+                        MyLists({ route -> navController.navigate(route) }, listType)
+                    }
+
 
                     composable(
                         route = "tripplanner?ids={ids}",
@@ -109,20 +114,13 @@ fun App() {
                         })
                     ) { backStackEntry ->
                         val ids = backStackEntry.arguments?.getString("ids")
-                        // Pass the navController to the TripPlanner screen
-                        TripPlanner(ids, viewModel, navController)
+                        TripPlanner(ids, { navController.popBackStack() })
                     }
 
                     composable(
-                        route = "triplist?ids={ids}",
-                        arguments = listOf(navArgument("ids") {
-                            type = NavType.StringType
-                            nullable = true
-                        })
-                    ) { backStackEntry ->
-                        val ids = backStackEntry.arguments?.getString("ids")
-                        // Pass the navController to the TripPlanner screen
-                        TripList(navController)
+                        route = "triplist",
+                    ) {
+                        TripList({ route -> navController.navigate(route) })
                     }
 
                     composable(
@@ -133,13 +131,12 @@ fun App() {
                         })
                     ) { backStackEntry ->
                         val id = backStackEntry.arguments?.getString("id")
-                        Trip(id, Modifier, navController)
+                        Trip(id, {navController.navigate("triplist")} )
                     }
                 }
 
                 Menu(
-                    navRoute,
-                    page = currentRoute,
+                    navController,
                     Modifier
                         .align(Alignment.TopStart)
                         .padding(paddingValues)

@@ -24,12 +24,12 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
 @Composable
-fun AddPlaceOrEvent(navController: NavController) { // Accept the ViewModel
+fun AddPlaceOrEvent(onClose: () -> Unit) { // Accept the ViewModel
     Box(modifier = Modifier
         .fillMaxSize()
         .background(Color.Black)) { // Use a Box to allow overlaying buttons
         IconButton(
-            onClick = { navController.navigate("home") },
+            onClick = onClose,
             modifier = Modifier
                 .align(Alignment.TopEnd)
                 .padding(top = 26.dp, end = 8.dp)
@@ -41,11 +41,10 @@ fun AddPlaceOrEvent(navController: NavController) { // Accept the ViewModel
                 tint = Color.White
             )
         }
-
         Column {
             Spacer(modifier = Modifier.height(50.dp))
             Text(
-                text = "Contact",
+                text = "Add Activity",
                 modifier = Modifier.fillMaxWidth(),
                 color = Color.White,
                 textAlign = TextAlign.Center,

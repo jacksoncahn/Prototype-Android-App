@@ -46,6 +46,7 @@ class MyPostsViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 val fetchedPosts = ApiClient.getPosts()
+
                 posts = fetchedPosts
                 visiblePosts = fetchedPosts
                 selectedPost = visiblePosts[0]

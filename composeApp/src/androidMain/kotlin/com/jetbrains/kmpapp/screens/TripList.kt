@@ -28,7 +28,7 @@ import com.jetbrains.kmpapp.components.ListCard
 import com.mapnook.api.MyPostsViewModel
 
 @Composable
-fun TripList(navController: NavController) { // Accept the ViewModel
+fun TripList(navigateTo: (String) -> Unit) { // Accept the ViewModel
 
     val viewModel: MyPostsViewModel = viewModel(
         viewModelStoreOwner = LocalActivity.current as ComponentActivity
@@ -38,7 +38,7 @@ fun TripList(navController: NavController) { // Accept the ViewModel
         .fillMaxSize()
         .background(Color.Black)) { // Use a Box to allow overlaying buttons
         IconButton(
-            onClick = { navController.navigate("home") },
+            onClick = {navigateTo("home")},
             modifier = Modifier
                 .align(Alignment.TopEnd)
                 .padding(top = 26.dp, end = 8.dp)
@@ -52,7 +52,7 @@ fun TripList(navController: NavController) { // Accept the ViewModel
         }
 
         Column {
-            Spacer(modifier = Modifier.height(50.dp))
+            Spacer(modifier = Modifier.height(40.dp))
             Text(
                 text = "My Trips",
                 modifier = Modifier.fillMaxWidth(),
@@ -67,9 +67,7 @@ fun TripList(navController: NavController) { // Accept the ViewModel
                     isSelected = false,
                     onCheckedChange = {},
                     showCheckbox = false,
-                    onClicked = {
-                        navController.navigate("trip/${trip.id}")
-                    },
+                    onClicked = {navigateTo("trip/${trip.id}")},
                     title = trip.name
                 )
             }

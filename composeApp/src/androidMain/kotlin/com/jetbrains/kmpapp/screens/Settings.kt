@@ -23,12 +23,12 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
 @Composable
-fun Settings(navController: NavController) { // Accept the ViewModel
+fun Settings(onClose: () -> Unit) { // Accept the ViewModel
     Box(modifier = Modifier
         .fillMaxSize()
         .background(Color.Black)) { // Use a Box to allow overlaying buttons
         IconButton(
-            onClick = { navController.navigate("home") },
+            onClick = onClose,
             modifier = Modifier
                 .align(Alignment.TopEnd)
                 .padding(top = 26.dp, end = 8.dp)

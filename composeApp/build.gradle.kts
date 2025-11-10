@@ -66,6 +66,32 @@ android {
         versionCode = 1
         versionName = "1.0"
         manifestPlaceholders["MAPS_API_KEY"] = localProperties.getProperty("MAPS_API_KEY", "")
+
+        //Compose Multiplatform / Kotlin Multiplatform plugin disables buildConfig by default, so we have to enable it here
+        buildFeatures {
+            buildConfig = true
+        }
+
+        // Must wrap the value in escaped quotes ("${...}") because BuildConfig generates Java/Kotlin code.
+        // Without the quotes, the compiler sees an unquoted identifier instead of a string literal,
+        // which causes "cannot find symbol" errors.
+
+        buildConfigField(
+            "String",
+            "WORKOS_CLIENT_ID",
+            "\"${localProperties.getProperty("WORKOS_CLIENT_ID")}\""
+        )
+//        buildConfigField(
+//            "String",
+//            "WORKOS_API_KEY",
+//            "\"${localProperties.getProperty("WORKOS_API_KEY")}\""
+//        )
+//        buildConfigField(
+//            "String",
+//            "WORKOS_COOKIE_PASSWORD",
+//            "\"${localProperties.getProperty("WORKOS_COOKIE_PASSWORD")}\""
+//        )
+
     }
     packaging {
         resources {

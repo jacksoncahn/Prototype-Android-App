@@ -1,5 +1,7 @@
 package com.jetbrains.kmpapp.screens
 
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -35,26 +37,30 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.jetbrains.kmpapp.components.ListCard
 import com.mapnook.api.MyPostsViewModel
 import com.mapnook.api.Post
 
 @Composable
-fun MyLists(navController: NavController, viewModel: MyPostsViewModel, listType: String) { // Accept the ViewModel
+fun MyLists(navigateTo: (String) -> Unit, listType: String?) {
+
+    val viewModel: MyPostsViewModel = viewModel(
+        viewModelStoreOwner = LocalActivity.current as ComponentActivity
+    )
+
     var selectedListType by remember { mutableStateOf("") }
 
     LaunchedEffect(Unit) {
-        println("listType, $listType")
-        selectedListType = listType
+        selectedListType = listType ?: "wanttogo"
     }
 
-    // Use a set of String for the IDs
     var selectedIds by remember { mutableStateOf(setOf<String>()) }
 
-    Box(modifier = Modifier.fillMaxSize().background(Color.Black)) { // Use a Box to allow overlaying buttons
+    Box(modifier = Modifier.fillMaxSize().background(Color.Black)) {
         IconButton(
-            onClick = { navController.navigate("home") },
+            onClick = {navigateTo("home")},
             modifier = Modifier
                 .align(Alignment.TopEnd)
                 .padding(top = 26.dp, end = 8.dp)
@@ -76,16 +82,14 @@ fun MyLists(navController: NavController, viewModel: MyPostsViewModel, listType:
                 textAlign = TextAlign.Center,
                 fontSize = 24.sp
             )
-            Spacer(modifier = Modifier.height(50.dp))
+            Spacer(modifier = Modifier.height(40.dp))
             Row(modifier = Modifier.fillMaxWidth()) {
-                // Your 4 tabs Column code remains the same
                 Column(modifier=Modifier.weight(1f).clickable{selectedListType="wanttogo"}.then(if (selectedListType == "wanttogo") Modifier.background(Color.White.copy(alpha = 0.2f)) else Modifier).padding(16.dp)){Text(text="Want to go",modifier=Modifier.fillMaxWidth(),textAlign=TextAlign.Center,style=MaterialTheme.typography.bodySmall, color = Color.White)}
                 Column(modifier=Modifier.weight(1f).clickable{selectedListType="visited"}.then(if (selectedListType == "visited") Modifier.background(Color.White.copy(alpha = 0.2f)) else Modifier).padding(16.dp)){Text(text="Visited",modifier=Modifier.fillMaxWidth(),textAlign=TextAlign.Center,style=MaterialTheme.typography.bodySmall, color = Color.White)}
                 Column(modifier=Modifier.weight(1f).clickable{selectedListType="skipped"}.then(if (selectedListType == "skipped") Modifier.background(Color.White.copy(alpha = 0.2f)) else Modifier).padding(16.dp)){Text(text="Skipped",modifier=Modifier.fillMaxWidth(),textAlign=TextAlign.Center,style=MaterialTheme.typography.bodySmall, color = Color.White)}
                 Column(modifier=Modifier.weight(1f).clickable{selectedListType="notforme"}.then(if (selectedListType == "notforme") Modifier.background(Color.White.copy(alpha = 0.2f)) else Modifier).padding(16.dp)){Text(text="Not for me",modifier=Modifier.fillMaxWidth(),textAlign=TextAlign.Center,style=MaterialTheme.typography.bodySmall, color = Color.White)}
             }
 
-            // Get the correct list based on the selected tab
             val listToShow: List<Post> = when (selectedListType) {
                 "wanttogo" -> viewModel.wanttogo
                 "visited" -> viewModel.visited
@@ -110,12 +114,14 @@ fun MyLists(navController: NavController, viewModel: MyPostsViewModel, listType:
                                 }
                             },
                             showCheckbox = selectedListType == "wanttogo",
-                            onClicked = {navController.navigate("home"); viewModel.selectedPost = post}
+                            onClicked = {
+                                navigateTo("home")
+                                viewModel.selectedPost = post
+                            }
                         )
                     }
                 }
             } else {
-                // Placeholder for other lists
                 Column(
                     modifier = Modifier.fillMaxSize(),
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -131,7 +137,7 @@ fun MyLists(navController: NavController, viewModel: MyPostsViewModel, listType:
             Button(
                 onClick = {
                     val ids = selectedIds.joinToString(",")
-                    navController.navigate("tripplanner?ids=$ids")
+                    navigateTo("tripplanner?ids=$ids")
                 },
                 enabled = isEnabled,
                 modifier = Modifier

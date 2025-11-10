@@ -49,7 +49,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
-import com.jetbrains.kmpapp.MainActivity
 import com.mapnook.api.MyPostsViewModel
 import com.mapnook.api.Post
 

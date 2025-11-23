@@ -1,5 +1,4 @@
-package com.jetbrains.kmpapp.screens
-
+package com.jetbrains.kmpapp.screens.trip
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.background

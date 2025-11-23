@@ -1,4 +1,4 @@
-package com.jetbrains.kmpapp.screens
+package com.jetbrains.kmpapp.screens.trip
 
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.LocalActivity
@@ -32,20 +32,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.google.android.gms.maps.model.LatLng
 import com.jetbrains.kmpapp.components.ListCard
 import com.mapnook.api.MyPostsViewModel
 
 @Composable
 fun TripPlanner(ids: String?, onTripSaved: () -> Unit, popBackStack: () -> Unit) {
 
-//    LaunchedEffect(Unit) {
-//        println("ActivityIDS: $ids")
-//    }
-
     val viewModel: MyPostsViewModel = viewModel(
         viewModelStoreOwner = LocalActivity.current as ComponentActivity
     )
 
+    // Parse the string of IDs into a list of strings
     val idList = ids?.split(",")?.filter { it.isNotBlank() } ?: emptyList()
     val allPosts = viewModel.posts + viewModel.wanttogo + viewModel.visited
     val selectedPosts = allPosts.filter { post ->
@@ -53,13 +51,31 @@ fun TripPlanner(ids: String?, onTripSaved: () -> Unit, popBackStack: () -> Unit)
     }.distinctBy { it.id }
 
     var tripName by remember { mutableStateOf("") }
+    // Combine all lists from the viewmodel that could contain the selected posts
+    // Find the full Post objects that match the received IDs
+    val base: LatLng
 
-    Box(modifier = Modifier.fillMaxSize()) { 
+//    LaunchedEffect(selectedPosts) {
+//        //adds the trip to the list of trips
+//        //the Trip class is defined in MyPostsViewModel so that's where we access it from
+//        viewModel.trips += MyPostsViewModel.Trip(
+//            id = viewModel.trips.size + 1,
+//            name = "My Trip",
+//            posts = selectedPosts
+//        )
+//    }
+
+    Box(modifier = Modifier.fillMaxSize()) { // Wrap in a Box
         IconButton(
             onClick = popBackStack,
             modifier = Modifier.align(Alignment.TopEnd).padding(top = 16.dp, end = 8.dp),
         ) {
-            Icon(Icons.Default.Close, contentDescription = "Close", modifier = Modifier.size(48.dp), tint = Color.White)
+            Icon(
+                Icons.Default.Close,
+                contentDescription = "Close",
+                modifier = Modifier.size(48.dp),
+                tint = Color.White
+            )
         }
 
         Column(modifier = Modifier.fillMaxSize()) {
@@ -72,7 +88,7 @@ fun TripPlanner(ids: String?, onTripSaved: () -> Unit, popBackStack: () -> Unit)
                 color = Color.White
             )
             Spacer(modifier = Modifier.height(16.dp))
-            
+
             TextField(
                 value = tripName,
                 onValueChange = { tripName = it },
@@ -82,7 +98,9 @@ fun TripPlanner(ids: String?, onTripSaved: () -> Unit, popBackStack: () -> Unit)
 
             // Display the list of selected posts for the preview
             LazyColumn(modifier = Modifier.padding(vertical = 8.dp).weight(1f)) {
-                items(selectedPosts, key = { post -> (post.id?.toString()) ?: post.hashCode().toString() }) { post ->
+                items(
+                    selectedPosts,
+                    key = { post -> (post.id?.toString()) ?: post.hashCode().toString() }) { post ->
                     ListCard(
                         post = post,
                         isSelected = false,
@@ -92,7 +110,7 @@ fun TripPlanner(ids: String?, onTripSaved: () -> Unit, popBackStack: () -> Unit)
                     )
                 }
             }
-            
+
             Button(
                 onClick = {
                     if (tripName.isNotBlank() && selectedPosts.isNotEmpty()) {
@@ -104,6 +122,25 @@ fun TripPlanner(ids: String?, onTripSaved: () -> Unit, popBackStack: () -> Unit)
                 enabled = tripName.isNotBlank() && selectedPosts.isNotEmpty()
             ) {
                 Text("Save Trip")
+
+                if (selectedPosts.isEmpty()) {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Text("Trip Planner: Start a new trip from the menu!", color = Color.White)
+                    }
+                } else {
+                    LazyColumn(modifier = Modifier.padding(top = 8.dp)) {
+                        items(selectedPosts, key = { it.id!! }) { post ->
+                            ListCard(
+                                post = post,
+                                isSelected = false, // Not selectable on this screen
+                                onCheckedChange = {}, // No action
+                                showCheckbox = false, // Hide the checkbox,
+                                //does nothing for now; does not navigate to home and make selectedPost = post
+                                onClicked = { Unit }
+                            )
+                        }
+                    }
+                }
             }
         }
     }

@@ -35,5 +35,8 @@ data class Post(
     @Transient var liked: Boolean = false,
     @Transient var visited: Boolean = false,
     @Transient var disliked: Boolean = false,
-    @Transient var skipped: Boolean = false
+    @Transient var skipped: Boolean = false,
+
+    //for rec by distance in trip planner
+    @Transient var latlng: Any? = null
 )

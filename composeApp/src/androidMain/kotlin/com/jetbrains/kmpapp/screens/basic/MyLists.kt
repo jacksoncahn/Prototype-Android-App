@@ -1,4 +1,4 @@
-package com.jetbrains.kmpapp.screens
+package com.jetbrains.kmpapp.screens.basic
 
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.LocalActivity

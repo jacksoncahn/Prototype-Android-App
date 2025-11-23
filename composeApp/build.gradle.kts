@@ -35,7 +35,9 @@ kotlin {
             implementation(libs.coil.network.ktor)
             implementation(libs.maps.compose)
             implementation(libs.play.services.maps)
+            implementation("com.google.maps.android:android-maps-utils:3.4.0")
             implementation("androidx.compose.material:material-icons-extended-android:1.7.8")
+            implementation("androidx.browser:browser:1.5.0")
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -81,11 +83,11 @@ android {
             "WORKOS_CLIENT_ID",
             "\"${localProperties.getProperty("WORKOS_CLIENT_ID")}\""
         )
-//        buildConfigField(
-//            "String",
-//            "WORKOS_API_KEY",
-//            "\"${localProperties.getProperty("WORKOS_API_KEY")}\""
-//        )
+        buildConfigField(
+            "String",
+            "WORKOS_API_KEY",
+            "\"${localProperties.getProperty("WORKOS_API_KEY")}\""
+        )
 //        buildConfigField(
 //            "String",
 //            "WORKOS_COOKIE_PASSWORD",

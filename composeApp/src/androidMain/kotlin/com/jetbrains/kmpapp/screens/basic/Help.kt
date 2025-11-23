@@ -1,6 +1,6 @@
-package com.jetbrains.kmpapp.screens
+package com.jetbrains.kmpapp.screens.basic
 
-import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -21,10 +22,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 
 @Composable
-fun About(onClose: () -> Unit) { // Accept the ViewModel
+fun Help(onClose: () -> Unit) { // Accept the ViewModel
     Box(modifier = Modifier
         .fillMaxSize()
         .background(Color.Black)) { // Use a Box to allow overlaying buttons
@@ -45,13 +45,22 @@ fun About(onClose: () -> Unit) { // Accept the ViewModel
         Column {
             Spacer(modifier = Modifier.height(50.dp))
             Text(
-                text = "Contact",
+                text = "Help",
                 modifier = Modifier.fillMaxWidth(),
                 color = Color.White,
                 textAlign = TextAlign.Center,
                 fontSize = 24.sp
             )
             Spacer(modifier = Modifier.height(50.dp))
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Text("help stuff")
+            }
         }
     }
 }

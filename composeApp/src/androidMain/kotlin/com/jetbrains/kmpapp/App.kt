@@ -25,16 +25,17 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.jetbrains.kmpapp.screens.About
-import com.jetbrains.kmpapp.screens.AddPlaceOrEvent
-import com.jetbrains.kmpapp.screens.Contact
-import com.jetbrains.kmpapp.screens.FAQ
-import com.jetbrains.kmpapp.screens.Home
-import com.jetbrains.kmpapp.screens.MyLists
-import com.jetbrains.kmpapp.screens.Settings
-import com.jetbrains.kmpapp.screens.Trip
-import com.jetbrains.kmpapp.screens.TripList
-import com.jetbrains.kmpapp.screens.TripPlanner
+import com.jetbrains.kmpapp.screens.basic.About
+import com.jetbrains.kmpapp.screens.basic.AddPlaceOrEvent
+import com.jetbrains.kmpapp.screens.basic.Contact
+import com.jetbrains.kmpapp.screens.basic.FAQ
+import com.jetbrains.kmpapp.screens.basic.Help
+import com.jetbrains.kmpapp.screens.basic.Home
+import com.jetbrains.kmpapp.screens.basic.MyLists
+import com.jetbrains.kmpapp.screens.basic.Settings
+import com.jetbrains.kmpapp.screens.trip.Trip
+import com.jetbrains.kmpapp.screens.trip.TripList
+import com.jetbrains.kmpapp.screens.trip.TripPlanner
 import com.mapnook.api.MyPostsViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -45,7 +46,6 @@ fun App() {
     )
 
     val isLoading = remember { mutableStateOf(true) }
-
     LaunchedEffect(Unit) {
         try {
             isLoading.value = true
@@ -91,8 +91,8 @@ fun App() {
                         TripPlanner(
                             ids = ids,
                             onTripSaved = {
-                                navController.navigate("triplist") { 
-                                    popUpTo("triplist") { inclusive = true } 
+                                navController.navigate("triplist") {
+                                    popUpTo("triplist") { inclusive = true }
                                 }
                             },
                             popBackStack = { navController.popBackStack() }
@@ -108,6 +108,7 @@ fun App() {
                         )
                     }
                 }
+
                 Menu(
                     navController = navController,
                     modifier = Modifier.align(Alignment.TopStart).padding(paddingValues).zIndex(1f)

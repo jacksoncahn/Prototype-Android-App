@@ -1,4 +1,4 @@
-package com.jetbrains.kmpapp.screens
+package com.jetbrains.kmpapp.screens.trip
 
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.LocalActivity
@@ -26,7 +26,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
+import com.google.android.gms.maps.model.LatLng
 import com.jetbrains.kmpapp.components.ListCard
 import com.mapnook.api.MyPostsViewModel
 
@@ -45,6 +45,7 @@ fun TripPlanner(ids: String?, popBackStack: () -> Unit) {
     
     // Find the full Post objects that match the received IDs
     val selectedPosts = allPosts.filter { post -> idList.contains(post.id) }
+    val base: LatLng
 
     LaunchedEffect(selectedPosts) {
         //adds the trip to the list of trips
@@ -76,7 +77,7 @@ fun TripPlanner(ids: String?, popBackStack: () -> Unit) {
                 fontSize = 24.sp,
                 color = Color.White
             )
-            
+
             if (selectedPosts.isEmpty()) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Text("Trip Planner: Start a new trip from the menu!", color = Color.White)

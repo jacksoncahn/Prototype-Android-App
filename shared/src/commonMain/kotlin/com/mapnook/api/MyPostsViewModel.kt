@@ -12,7 +12,10 @@ class MyPostsViewModel : ViewModel() {
     data class Trip(
         val id: Int,
         val name: String,
-        val posts: List<Post>
+        val posts: List<Post>,
+        var baseLoc: List<Double>? = null,
+        var baseName: String? = null,
+        var baseAddress: String? = null
     )
 
     // 1. Create a state to hold the list of posts for your UI.

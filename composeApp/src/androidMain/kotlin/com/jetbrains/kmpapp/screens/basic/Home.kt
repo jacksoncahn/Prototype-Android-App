@@ -1,4 +1,4 @@
-package com.jetbrains.kmpapp.screens
+package com.jetbrains.kmpapp.screens.basic
 
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.foundation.background
@@ -38,9 +38,7 @@ import com.mapnook.api.MyPostsViewModel
 import kotlinx.coroutines.launch
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.LocalActivity
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.unit.dp
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.Marker
@@ -51,6 +49,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import bitmapDescriptorFromUrl
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.MapStyleOptions
+import com.google.maps.android.compose.MapProperties
 import com.jetbrains.kmpapp.R
 
 data class Marker (
@@ -86,7 +85,7 @@ data class Marker (
             modifier = Modifier.fillMaxSize(),
             cameraPositionState = cameraPositionState,
             uiSettings = MapUiSettings(zoomControlsEnabled = false),
-            properties = com.google.maps.android.compose.MapProperties(
+            properties = MapProperties(
                 mapStyleOptions = MapStyleOptions.loadRawResourceStyle(LocalContext.current, R.raw.maps_style))
         ) {
 

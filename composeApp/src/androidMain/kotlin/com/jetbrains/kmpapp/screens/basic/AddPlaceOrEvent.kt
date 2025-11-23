@@ -1,7 +1,6 @@
-package com.jetbrains.kmpapp.screens
+package com.jetbrains.kmpapp.screens.basic
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -22,10 +21,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 
 @Composable
-fun Contact(onClose: () -> Unit) { // Accept the ViewModel
+fun AddPlaceOrEvent(onClose: () -> Unit) { // Accept the ViewModel
     Box(modifier = Modifier
         .fillMaxSize()
         .background(Color.Black)) { // Use a Box to allow overlaying buttons
@@ -42,11 +40,10 @@ fun Contact(onClose: () -> Unit) { // Accept the ViewModel
                 tint = Color.White
             )
         }
-
         Column {
             Spacer(modifier = Modifier.height(50.dp))
             Text(
-                text = "Contact",
+                text = "Add Activity",
                 modifier = Modifier.fillMaxWidth(),
                 color = Color.White,
                 textAlign = TextAlign.Center,

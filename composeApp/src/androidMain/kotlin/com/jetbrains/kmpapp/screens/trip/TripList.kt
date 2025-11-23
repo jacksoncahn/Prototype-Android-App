@@ -1,5 +1,6 @@
-package com.jetbrains.kmpapp.screens
-
+package com.jetbrains.kmpapp.screens.trip
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,15 +22,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.jetbrains.kmpapp.components.ListCard
+import com.mapnook.api.MyPostsViewModel
 
 @Composable
-fun About(onClose: () -> Unit) { // Accept the ViewModel
+fun TripList(navigateTo: (String) -> Unit) { // Accept the ViewModel
+
+    val viewModel: MyPostsViewModel = viewModel(
+        viewModelStoreOwner = LocalActivity.current as ComponentActivity
+    )
+
     Box(modifier = Modifier
         .fillMaxSize()
         .background(Color.Black)) { // Use a Box to allow overlaying buttons
         IconButton(
-            onClick = onClose,
+            onClick = {navigateTo("home")},
             modifier = Modifier
                 .align(Alignment.TopEnd)
                 .padding(top = 26.dp, end = 8.dp)
@@ -43,15 +51,25 @@ fun About(onClose: () -> Unit) { // Accept the ViewModel
         }
 
         Column {
-            Spacer(modifier = Modifier.height(50.dp))
+            Spacer(modifier = Modifier.height(40.dp))
             Text(
-                text = "Contact",
+                text = "My Trips",
                 modifier = Modifier.fillMaxWidth(),
                 color = Color.White,
                 textAlign = TextAlign.Center,
                 fontSize = 24.sp
             )
             Spacer(modifier = Modifier.height(50.dp))
+            for (trip in viewModel.trips) {
+                ListCard(
+                    post = trip.posts[0],
+                    isSelected = false,
+                    onCheckedChange = {},
+                    showCheckbox = false,
+                    onClicked = {navigateTo("trip/${trip.id}")},
+                    title = trip.name
+                )
+            }
         }
     }
 }

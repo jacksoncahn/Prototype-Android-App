@@ -1,6 +1,5 @@
-package com.jetbrains.kmpapp.screens
+package com.jetbrains.kmpapp.screens.basic
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,12 +29,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 
 @Composable
 fun FAQ(onClose: () -> Unit) { // Accept the ViewModel
@@ -136,6 +135,6 @@ fun ExpandableFAQItem(title: String) {
 fun Modifier.drawBottomBorder(strokeWidth: Dp, color: Color) = this.then(
     Modifier.drawBehind {
         val strokeWidthPx = strokeWidth.toPx()
-        drawLine(color, start = androidx.compose.ui.geometry.Offset(0f, size.height - strokeWidthPx / 2), end = androidx.compose.ui.geometry.Offset(size.width, size.height - strokeWidthPx / 2), strokeWidth = strokeWidthPx)
+        drawLine(color, start = Offset(0f, size.height - strokeWidthPx / 2), end = Offset(size.width, size.height - strokeWidthPx / 2), strokeWidth = strokeWidthPx)
     }
 )

@@ -1,4 +1,4 @@
-package com.jetbrains.kmpapp.screens
+package com.jetbrains.kmpapp.screens.basic
 
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.LocalActivity
@@ -38,7 +38,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import com.jetbrains.kmpapp.components.ListCard
 import com.mapnook.api.MyPostsViewModel
 import com.mapnook.api.Post

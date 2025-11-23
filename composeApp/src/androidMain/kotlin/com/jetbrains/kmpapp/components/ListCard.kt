@@ -16,8 +16,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -39,7 +43,9 @@ fun ListCard(
     onCheckedChange: (Boolean) -> Unit,
     showCheckbox: Boolean = true,
     onClicked: () -> Unit,
-    title: String? = null
+    title: String? = null,
+    showDeleteIcon: Boolean = false, // Controls visibility of the delete icon
+    onDeleteClicked: () -> Unit = {} // Callback for delete action
 ) {
     Row(
         modifier = Modifier
@@ -64,11 +70,9 @@ fun ListCard(
         Column(modifier = Modifier.padding(horizontal = 8.dp).widthIn(max = 150.dp).height(70.dp)) {
             if (title == null) {
                 Text(post.name ?: "Unnamed Location", style = MaterialTheme.typography.bodyLarge)
-
             } else {
                 Text(title, style = MaterialTheme.typography.bodyLarge)
             }
-//            post.nativeName?.let { Text(it) }
         }
 
         Spacer(modifier = Modifier.weight(1f))
@@ -84,34 +88,11 @@ fun ListCard(
                 )
             )
         }
+
+        if (showDeleteIcon) {
+            IconButton(onClick = onDeleteClicked, modifier = Modifier.padding(end = 8.dp)) {
+                Icon(Icons.Default.Delete, contentDescription = "Delete Trip")
+            }
+        }
     }
 }
-
-//@Composable
-//@Preview
-//fun ListCardPreview() {
-//    // A sample post for the preview
-//    val samplePost = Post(
-//        id = "1",
-//        name = "Preview Activity English",
-//        nativeName = "Preview Activity Czech",
-//        location = emptyList(),
-//        slug = "",
-//        status = "",
-//        tagline = "",
-//        summary = "",
-//        description = "",
-//        nativeLanguageCode = "",
-//        primaryImageId = "",
-//        tags = emptyList(),
-//        osm = null,
-//        properties = "",
-//        nextShowTime = "",
-//        importance = 0,
-//        createdAt = "",
-//        updatedAt = "",
-//        deletedAt = ""
-//    ) {
-//        ListCard(post = samplePost, isSelected = true, onCheckedChange = {}, onClicked = {})
-//    }
-//}

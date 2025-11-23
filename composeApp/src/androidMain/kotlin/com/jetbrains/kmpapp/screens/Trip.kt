@@ -28,7 +28,7 @@ import com.jetbrains.kmpapp.components.ListCard
 import com.mapnook.api.MyPostsViewModel
 
 @Composable
-fun Trip(id: String?, modifier: Modifier, navController: NavController) {
+fun Trip(id: String?, onClose: () -> Unit) {
 
     val viewModel: MyPostsViewModel = viewModel(
         viewModelStoreOwner = LocalActivity.current as ComponentActivity
@@ -36,7 +36,7 @@ fun Trip(id: String?, modifier: Modifier, navController: NavController) {
 
     Box(modifier = Modifier.fillMaxSize()) { // Wrap in a Box
         IconButton(
-            onClick = { navController.popBackStack() }, // Navigates back
+            onClick = onClose, // Navigates back
             modifier = Modifier
                 .align(Alignment.TopEnd)
                 .padding(top = 16.dp, end = 8.dp),
@@ -49,7 +49,7 @@ fun Trip(id: String?, modifier: Modifier, navController: NavController) {
             )
         }
         Column(modifier = Modifier.fillMaxSize()) {
-            Spacer(modifier = Modifier.height(50.dp))
+            Spacer(modifier = Modifier.height(40.dp))
             Text(
                 text = "My Trip",
                 modifier = Modifier.fillMaxWidth(),

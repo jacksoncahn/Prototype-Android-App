@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material.icons.Icons
@@ -53,11 +55,12 @@ fun Trip(id: String?, onClose: () -> Unit) {
 
     var selectedTab by remember { mutableStateOf("My Trip") }
 
-    val tabs = listOf("My Trip", "Recommendations", "Trip Details")
+    val tabs = listOf("My Trip", "Add Activities", "Trip Details")
 
     val trip = viewModel.trips.find { it.id.toString() == id }
     var recs by remember { mutableStateOf(emptyList<Post>()) }
 
+    // Add ability to set this to false while also showing mapssearchbar
     val editingHomeBase = remember {mutableStateOf(false)}
 
     val onLocationSelected: (Place) -> Unit = { place ->
@@ -93,7 +96,7 @@ fun Trip(id: String?, onClose: () -> Unit) {
             )
             Spacer(modifier = Modifier.height(50.dp))
             Surface(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().weight(1f),
                 shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp), // Rounded corners at the top
                 color = MaterialTheme.colorScheme.background
             ) {
@@ -110,8 +113,8 @@ fun Trip(id: String?, onClose: () -> Unit) {
 
                     if (selectedTab == "My Trip") {
                         if (id != null) {
-                            Column(modifier = Modifier.padding(top = 8.dp)) {
-                                trip?.posts?.forEach { post ->
+                            LazyColumn(modifier = Modifier.padding(top = 8.dp)) {
+                                items(trip?.posts ?: emptyList()) { post ->
                                     ListCard(
                                         post = post,
                                         isSelected = false, // Not selectable on this screen
@@ -160,11 +163,13 @@ fun Trip(id: String?, onClose: () -> Unit) {
                                 }
                             }
 
-                            Column(modifier = Modifier.padding(top = 8.dp)) {
-                                Spacer(modifier = Modifier.height(30.dp))
-                                Text(text = "Click an activity to add it to your trip", modifier = Modifier.padding(start = 16.dp, end = 16.dp))
-                                Spacer(modifier = Modifier.height(8.dp))
-                                recs.forEach { post ->
+                            LazyColumn(modifier = Modifier.padding(top = 8.dp)) {
+                                item {
+                                    Spacer(modifier = Modifier.height(30.dp))
+                                    Text(text = "Click an activity to add it to your trip", modifier = Modifier.padding(start = 16.dp, end = 16.dp))
+                                    Spacer(modifier = Modifier.height(8.dp))
+                                }
+                                items(recs) { post ->
                                     ListCard(
                                         post = post,
                                         isSelected = false, // Not selectable on this screen

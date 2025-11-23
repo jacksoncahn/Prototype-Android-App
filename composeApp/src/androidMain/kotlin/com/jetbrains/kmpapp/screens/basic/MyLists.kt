@@ -44,7 +44,7 @@ import com.mapnook.api.MyPostsViewModel
 import com.mapnook.api.Post
 
 @Composable
-fun MyLists(navigateTo: (String) -> Unit, listType: String?) { // Corrected parameter type
+fun MyLists(navigateTo: (String) -> Unit, listType: String?) {
 
     val viewModel: MyPostsViewModel = viewModel(
         viewModelStoreOwner = LocalActivity.current as ComponentActivity
@@ -53,7 +53,7 @@ fun MyLists(navigateTo: (String) -> Unit, listType: String?) { // Corrected para
     var selectedListType by remember { mutableStateOf("") }
 
     LaunchedEffect(listType) { // React to changes in listType
-        selectedListType = listType ?: "wanttogo" // Removed incorrect cast
+        selectedListType = listType ?: "wanttogo"
     }
 
     var selectedIds by remember { mutableStateOf(setOf<String>()) }

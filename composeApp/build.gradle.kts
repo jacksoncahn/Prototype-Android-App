@@ -35,6 +35,14 @@ kotlin {
             implementation(libs.coil.network.ktor)
             implementation(libs.maps.compose)
             implementation(libs.play.services.maps)
+
+//            implementation("com.google.maps.android:maps-compose:2.14.0")
+//            implementation("com.google.android.gms:play-services-maps:18.1.0")
+            implementation("com.google.android.libraries.places:places:3.2.0")
+            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
+
+
+
             implementation("com.google.maps.android:android-maps-utils:3.4.0")
             implementation("androidx.compose.material:material-icons-extended-android:1.7.8")
             implementation("androidx.browser:browser:1.5.0")
@@ -74,6 +82,7 @@ android {
             buildConfig = true
         }
 
+
         // Must wrap the value in escaped quotes ("${...}") because BuildConfig generates Java/Kotlin code.
         // Without the quotes, the compiler sees an unquoted identifier instead of a string literal,
         // which causes "cannot find symbol" errors.
@@ -88,11 +97,12 @@ android {
             "WORKOS_API_KEY",
             "\"${localProperties.getProperty("WORKOS_API_KEY")}\""
         )
-//        buildConfigField(
-//            "String",
-//            "WORKOS_COOKIE_PASSWORD",
-//            "\"${localProperties.getProperty("WORKOS_COOKIE_PASSWORD")}\""
-//        )
+
+        buildConfigField(
+            "String",
+            "MAPS_API_KEY",
+            "\"${localProperties.getProperty("MAPS_API_KEY")}\""
+        )
 
     }
     packaging {

@@ -2,6 +2,7 @@ package com.jetbrains.kmpapp.screens.trip
 
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.LocalActivity
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -65,7 +66,7 @@ fun TripPlanner(ids: String?, onTripSaved: () -> Unit, popBackStack: () -> Unit)
 //        )
 //    }
 
-    Box(modifier = Modifier.fillMaxSize()) { // Wrap in a Box
+    Box(modifier = Modifier.fillMaxSize().background(Color.Black)) { // Wrap in a Box
         IconButton(
             onClick = popBackStack,
             modifier = Modifier.align(Alignment.TopEnd).padding(top = 16.dp, end = 8.dp),
@@ -123,24 +124,6 @@ fun TripPlanner(ids: String?, onTripSaved: () -> Unit, popBackStack: () -> Unit)
             ) {
                 Text("Save Trip")
 
-                if (selectedPosts.isEmpty()) {
-                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        Text("Trip Planner: Start a new trip from the menu!", color = Color.White)
-                    }
-                } else {
-                    LazyColumn(modifier = Modifier.padding(top = 8.dp)) {
-                        items(selectedPosts, key = { it.id!! }) { post ->
-                            ListCard(
-                                post = post,
-                                isSelected = false, // Not selectable on this screen
-                                onCheckedChange = {}, // No action
-                                showCheckbox = false, // Hide the checkbox,
-                                //does nothing for now; does not navigate to home and make selectedPost = post
-                                onClicked = { Unit }
-                            )
-                        }
-                    }
-                }
             }
         }
     }

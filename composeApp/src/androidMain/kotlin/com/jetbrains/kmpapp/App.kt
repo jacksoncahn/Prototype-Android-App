@@ -18,6 +18,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
@@ -25,6 +26,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.google.android.libraries.places.api.Places
+import com.google.maps.android.ktx.BuildConfig
 import com.jetbrains.kmpapp.screens.basic.About
 import com.jetbrains.kmpapp.screens.basic.AddPlaceOrEvent
 import com.jetbrains.kmpapp.screens.basic.Contact
@@ -41,6 +44,15 @@ import com.mapnook.api.MyPostsViewModel
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun App() {
+
+    //initialize places api which we use to add a home base for location recommendations
+    val context = LocalContext.current
+    LaunchedEffect(Unit) {
+        if (!Places.isInitialized()) {
+            Places.initialize(context, "AIzaSyDptUiKvCPS2taP70fdpUEKcn6ib4AosI8")
+        }
+    }
+
     val viewModel: MyPostsViewModel = viewModel(
         viewModelStoreOwner = LocalActivity.current as ComponentActivity
     )

@@ -2,6 +2,7 @@ package com.jetbrains.kmpapp.screens.trip
 
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.LocalActivity
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -35,7 +36,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.libraries.places.api.model.Place
 import com.jetbrains.kmpapp.components.ListCard
+import com.jetbrains.kmpapp.components.MapsSearchBar
 import com.jetbrains.kmpapp.utils.shortlisting.RecommendByDistance
 import com.mapnook.api.MyPostsViewModel
 import com.mapnook.api.Post
@@ -51,12 +55,25 @@ fun Trip(id: String?, onClose: () -> Unit) {
 
     val tabs = listOf("My Trip", "Recommendations", "Trip Details")
 
-    Box(modifier = Modifier.fillMaxSize()) { // Wrap in a Box
+    val trip = viewModel.trips.find { it.id.toString() == id }
+    var recs by remember { mutableStateOf(emptyList<Post>()) }
+
+    val editingHomeBase = remember {mutableStateOf(false)}
+
+    val onLocationSelected: (Place) -> Unit = { place ->
+        place.latLng?.let { trip?.baseLoc = listOf(it.latitude, it.longitude) }
+        trip?.baseName = place.name
+        trip?.baseAddress = place.address
+        editingHomeBase.value = false
+    }
+
+    Box(modifier = Modifier.fillMaxSize().background(Color.Black),) { // Wrap in a Box
         IconButton(
             onClick = onClose, // Navigates back
             modifier = Modifier
                 .align(Alignment.TopEnd)
-                .padding(top = 16.dp, end = 8.dp),
+                .padding(top = 16.dp, end = 8.dp)
+
         ) {
             Icon(
                 Icons.Default.Close,
@@ -93,7 +110,6 @@ fun Trip(id: String?, onClose: () -> Unit) {
 
                     if (selectedTab == "My Trip") {
                         if (id != null) {
-                            val trip = viewModel.trips.find { it.id.toString() == id }
                             Column(modifier = Modifier.padding(top = 8.dp)) {
                                 trip?.posts?.forEach { post ->
                                     ListCard(
@@ -108,7 +124,6 @@ fun Trip(id: String?, onClose: () -> Unit) {
                         }
                     } else if (selectedTab == "Trip Details") {
                         if (id != null) {
-                            val trip = viewModel.trips.find { it.id.toString() == id }
                             Column(modifier = Modifier.padding(16.dp)) {
                                 Text(
                                     text = "Trip Details",
@@ -116,20 +131,22 @@ fun Trip(id: String?, onClose: () -> Unit) {
                                 )
                                 Spacer(modifier = Modifier.height(8.dp))
                                 var homeBase by remember { mutableStateOf("") }
-                                TextField(
-                                    value = homeBase,
-                                    onValueChange = { homeBase = it },
-                                    label = { Text("Home Base Address") },
-                                    placeholder = { Text("Set home base for location recommendations") },
-                                    modifier = Modifier.fillMaxWidth()
-                                )
-                                Spacer(modifier = Modifier.height(8.dp))
-                                Button(
-                                    onClick = { trip?.baseName = homeBase },
-                                    modifier = Modifier.fillMaxWidth()
-                                ) {
-                                    Text("add Home Base")
+
+                                if (editingHomeBase.value) {
+                                    MapsSearchBar(onLocationSelected)
+                                } else {
+                                    if (trip?.baseName == null) {
+                                        Button(onClick = { editingHomeBase.value = true }) {
+                                            Text("click to add your home base")
+                                        }
+                                    } else {
+                                        Text(trip.baseName.toString())
+                                        Button(onClick = { editingHomeBase.value = true }) {
+                                            Text("click to edit")
+                                        }
+                                    }
                                 }
+                                Spacer(modifier = Modifier.height(8.dp))
 
                             }
                         }
@@ -137,9 +154,6 @@ fun Trip(id: String?, onClose: () -> Unit) {
                     } else { // Recommendations
                         // Recommendations Tab UI
                         if (id != null) {
-                            val trip = viewModel.trips.find { it.id.toString() == id }
-                            var recs by remember { mutableStateOf(emptyList<Post>()) }
-
                             LaunchedEffect(trip) {
                                 if (trip != null) {
                                     recs = RecommendByDistance(trip.posts[0], viewModel.wanttogo, trip)
@@ -147,13 +161,16 @@ fun Trip(id: String?, onClose: () -> Unit) {
                             }
 
                             Column(modifier = Modifier.padding(top = 8.dp)) {
+                                Spacer(modifier = Modifier.height(30.dp))
+                                Text(text = "Click an activity to add it to your trip", modifier = Modifier.padding(start = 16.dp, end = 16.dp))
+                                Spacer(modifier = Modifier.height(8.dp))
                                 recs.forEach { post ->
                                     ListCard(
                                         post = post,
                                         isSelected = false, // Not selectable on this screen
                                         onCheckedChange = {}, // No action
                                         showCheckbox = false, // Hide the checkbox
-                                        onClicked = {}
+                                        onClicked = {trip?.posts += post; recs -= post}
                                     )
                                 }
                             }

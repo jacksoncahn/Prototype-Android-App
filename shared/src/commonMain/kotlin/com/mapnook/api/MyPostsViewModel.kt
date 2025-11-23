@@ -12,7 +12,7 @@ class MyPostsViewModel : ViewModel() {
     data class Trip(
         val id: Int,
         val name: String,
-        val posts: List<Post>,
+        var posts: List<Post>,
         var baseLoc: List<Double>? = null,
         var baseName: String? = null,
         var baseAddress: String? = null

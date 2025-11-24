@@ -14,7 +14,7 @@ import kotlin.collections.emptyList
 
 //right now, function reccomends 5 (or less, if we don't have 5) closest activites
 //in the future we might want to reccomend all activities inside a certain distance threshold
-fun RecommendByDistance(base: Post, activities: List<Post>, trip: MyPostsViewModel.Trip): List<Post> {
+fun RecommendByDistance(base: List<Double>, activities: List<Post>, trip: MyPostsViewModel.Trip): List<Post> {
     val newActivities = mutableListOf<Post>()
     for (post in activities) {
         if (!trip.posts.contains(post)) {
@@ -29,7 +29,7 @@ fun RecommendByDistance(base: Post, activities: List<Post>, trip: MyPostsViewMod
 
     for (post in newActivities) {
         val dist = SphericalUtil.computeDistanceBetween(
-            LatLng(base.location[0], base.location[1]),
+            LatLng(base[0], base[1]),
             LatLng(post.location[0], post.location[1])
         )
 

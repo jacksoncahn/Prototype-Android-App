@@ -70,7 +70,9 @@ fun Trip(id: String?, onClose: () -> Unit) {
         editingHomeBase.value = false
     }
 
-    Box(modifier = Modifier.fillMaxSize().background(Color.Black),) { // Wrap in a Box
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .background(Color.Black),) { // Wrap in a Box
         IconButton(
             onClick = onClose, // Navigates back
             modifier = Modifier
@@ -96,7 +98,9 @@ fun Trip(id: String?, onClose: () -> Unit) {
             )
             Spacer(modifier = Modifier.height(50.dp))
             Surface(
-                modifier = Modifier.fillMaxWidth().weight(1f),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
                 shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp), // Rounded corners at the top
                 color = MaterialTheme.colorScheme.background
             ) {
@@ -159,14 +163,22 @@ fun Trip(id: String?, onClose: () -> Unit) {
                         if (id != null) {
                             LaunchedEffect(trip) {
                                 if (trip != null) {
-                                    recs = RecommendByDistance(trip.posts[0], viewModel.wanttogo, trip)
+                                    if (trip.baseLoc != null) {
+                                        recs = RecommendByDistance(trip.baseLoc!!, viewModel.wanttogo, trip)
+                                    } else {
+                                        recs = RecommendByDistance(trip.posts[0].location, viewModel.wanttogo, trip)
+                                    }
                                 }
                             }
 
+                            if (trip == null || trip.baseLoc == null) {
+                                Spacer(modifier = Modifier.height(20.dp))
+                                Text("Please add a home base to your trip to get smarter recommendations", modifier = Modifier.padding(start = 20.dp, end = 20.dp))}
+                            }
                             LazyColumn(modifier = Modifier.padding(top = 8.dp)) {
                                 item {
-                                    Spacer(modifier = Modifier.height(30.dp))
-                                    Text(text = "Click an activity to add it to your trip", modifier = Modifier.padding(start = 16.dp, end = 16.dp))
+                                    Spacer(modifier = Modifier.height(20.dp))
+                                    Text(text = "Click an activity to add it to your trip", modifier = Modifier.padding(start = 20.dp, end = 20.dp))
                                     Spacer(modifier = Modifier.height(8.dp))
                                 }
                                 items(recs) { post ->
@@ -184,5 +196,4 @@ fun Trip(id: String?, onClose: () -> Unit) {
                 }
             }
         }
-    }
 }

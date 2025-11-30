@@ -15,7 +15,7 @@ class MyPostsViewModel : ViewModel() {
         var posts: List<Post>,
         var baseLoc: List<Double>? = null,
         var baseName: String? = null,
-        var baseAddress: String? = null
+        var baseAddress:  String? = null
     )
 
     var posts by mutableStateOf<List<Post>>(emptyList())

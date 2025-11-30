@@ -1,5 +1,7 @@
 package com.jetbrains.kmpapp
 
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -25,12 +27,19 @@ import androidx.compose.ui.window.Popup
 import androidx.compose.foundation.clickable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.res.painterResource
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.mapnook.api.auth.myUserViewModel
 
 @Composable
 fun Menu(navController: NavController, modifier: Modifier = Modifier) {
 
+    val userViewModel: myUserViewModel = viewModel(
+        viewModelStoreOwner = LocalActivity.current as ComponentActivity
+    )
+
+    val user = userViewModel.user
 
     //the entire following body of logic is just to switch menu button color
     val currentRoute = remember { mutableStateOf("") }
@@ -69,8 +78,12 @@ fun Menu(navController: NavController, modifier: Modifier = Modifier) {
                         Spacer(modifier = Modifier.size(16.dp))
 
                         Column {
-                            Text("Account Name", color = Color.White, style = MaterialTheme.typography.titleMedium)
-                            Text("Account Settings", color = Color.LightGray)
+                            if (user?.displayName != null) {
+                                Text(user.displayName!!, color = Color.White, style = MaterialTheme.typography.titleMedium)
+                        } else {
+//                                Text("Account Name", color = Color.White, style = MaterialTheme.typography.titleMedium)
+                                Text("Account Settings", color = Color.LightGray)
+                            }
                         }
 
                     }

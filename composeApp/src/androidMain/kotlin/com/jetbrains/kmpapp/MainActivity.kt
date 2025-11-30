@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.browser.customtabs.CustomTabsIntent
@@ -13,9 +14,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jetbrains.kmpapp.screens.auth.SignInScreen
 import kotlinx.coroutines.launch
 import com.jetbrains.kmpapp.auth.AuthViewModel
+import com.mapnook.api.auth.myUserViewModel
 import org.json.JSONObject
 import java.net.URL
 import java.net.URLEncoder
@@ -24,21 +27,29 @@ import javax.net.ssl.HttpsURLConnection
 
 class MainActivity : ComponentActivity() {
 
-    private var showSignIn = mutableStateOf(true)
+    var showSignIn = mutableStateOf(true)
     var signInError = mutableStateOf("")
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            LaunchedEffect(showSignIn) {
+                println("showSignIn, $showSignIn")
+            }
 //            // Remove when https://issuetracker.google.com/issues/364713509 is fixed
-//                if (showSignIn.value) {
-//                    SignInScreen(onSignInClick = { startWorkOSLoginFlow(context = this)}, signInError = signInError.value)
-//                } else {
-                    LaunchedEffect(isSystemInDarkTheme()) {
-                        enableEdgeToEdge()
-                    }
-                    App()
+            if (showSignIn.value) {
+                SignInScreen(
+                    onSignInClick = {showSignIn.value = false},
+                    signInError = signInError.value
+                )
+            } else if (!showSignIn.value) {
+                LaunchedEffect(isSystemInDarkTheme()) {
+                    enableEdgeToEdge()
+                }
+                App()
+            }
         }
     }
 //    private fun startLoginFlow() {
@@ -60,53 +71,53 @@ class MainActivity : ComponentActivity() {
 //        customTabsIntent.launchUrl(this, loginUrl.toUri())
 //    }
 
-    fun startWorkOSLoginFlow(context: Context) {
-        println("WORKOSAPI call started")
-        val redirectUri = "kmpapp://callback"
-        val orgID = "org_01JVCMYS22WK8ENJW98YGH2T29"
-
-        Thread {
-            try {
-                val clientID = BuildConfig.WORKOS_CLIENT_ID
-
-                val urlString = buildString {
-                    append("https://api.workos.com/user_management/authorization_sessions")
-                    append("?client_id=").append(clientID)
-                    append("&redirect_uri=").append(URLEncoder.encode(redirectUri, "UTF-8"))
-                    append("&organization=").append(orgID)
-                }
-
-                val url = URL(urlString)
-                println("URL, $url")
-
-                val conn = (url.openConnection() as HttpsURLConnection).apply {
-                    requestMethod = "GET"
-                    // DO NOT add authorization header (AuthKit does not use it)
-                }
-
-//                val response = conn.inputStream.bufferedReader().readText()
-//                conn.disconnect()
-
-                val responseText = try {
-                    conn.inputStream.bufferedReader().readText()
-                } catch (e: Exception) {
-                    conn.errorStream?.bufferedReader()?.readText() ?: "No error body"
-                }
-
-                println("AUTHKIT RESPONSE: $responseText")
-
-                val loginUrl = JSONObject(responseText).getString("url")
-
-                (context as Activity).runOnUiThread {
-                    val customTabsIntent = CustomTabsIntent.Builder().build()
-                    customTabsIntent.launchUrl(context, loginUrl.toUri())
-                }
-
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }.start()
-    }
+//    fun startWorkOSLoginFlow(context: Context) {
+//        println("WORKOSAPI call started")
+//        val redirectUri = "kmpapp://callback"
+//        val orgID = "org_01JVCMYS22WK8ENJW98YGH2T29"
+//
+//        Thread {
+//            try {
+//                val clientID = BuildConfig.WORKOS_CLIENT_ID
+//
+//                val urlString = buildString {
+//                    append("https://api.workos.com/user_management/authorization_sessions")
+//                    append("?client_id=").append(clientID)
+//                    append("&redirect_uri=").append(URLEncoder.encode(redirectUri, "UTF-8"))
+//                    append("&organization=").append(orgID)
+//                }
+//
+//                val url = URL(urlString)
+//                println("URL, $url")
+//
+//                val conn = (url.openConnection() as HttpsURLConnection).apply {
+//                    requestMethod = "GET"
+//                    // DO NOT add authorization header (AuthKit does not use it)
+//                }
+//
+////                val response = conn.inputStream.bufferedReader().readText()
+////                conn.disconnect()
+//
+//                val responseText = try {
+//                    conn.inputStream.bufferedReader().readText()
+//                } catch (e: Exception) {
+//                    conn.errorStream?.bufferedReader()?.readText() ?: "No error body"
+//                }
+//
+//                println("AUTHKIT RESPONSE: $responseText")
+//
+//                val loginUrl = JSONObject(responseText).getString("url")
+//
+//                (context as Activity).runOnUiThread {
+//                    val customTabsIntent = CustomTabsIntent.Builder().build()
+//                    customTabsIntent.launchUrl(context, loginUrl.toUri())
+//                }
+//
+//            } catch (e: Exception) {
+//                e.printStackTrace()
+//            }
+//        }.start()
+//    }
 
 
     override fun onNewIntent(intent: Intent) {

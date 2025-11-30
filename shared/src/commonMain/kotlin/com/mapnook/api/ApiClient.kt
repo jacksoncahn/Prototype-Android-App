@@ -6,6 +6,7 @@ import io.ktor.client.request.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.Json
 import io.ktor.client.call.body
+import io.ktor.client.statement.bodyAsText
 import io.ktor.http.URLBuilder
 import io.ktor.http.encodedPath
 
@@ -17,7 +18,18 @@ object ApiClient {
     }
 
     suspend fun getPosts(): List<Post> {
-        val data: List<Post> = client.get("https://mapnook.com/api/activities").body()
+        //production url
+        val response = client.get("https://dbcopy-backend.vercel.app/activities")
+        println("Response From Api: ${response.bodyAsText()}")
+        val data: List<Post> = response.body()
+
+
+
+
+
+
+
+
         for (post in data) {
             println("post: ${post.name}, ${post.id}, ${post.tags}")
             if (post.primaryImageId != null) {

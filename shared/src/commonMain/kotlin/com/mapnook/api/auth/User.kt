@@ -10,6 +10,7 @@ import kotlinx.serialization.json.JsonObject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mapnook.api.ApiClient
+import com.mapnook.api.MyPostsViewModel
 import kotlinx.coroutines.launch
 
 
@@ -28,6 +29,8 @@ data class User (
 class myUserViewModel: ViewModel() {
     var user by mutableStateOf<User?>(null)
 
+    var internalPostViewModel = MyPostsViewModel()
+    
     var tempUserStorage by mutableStateOf<User?>(null)
 
     fun fetchUser(email: String) {

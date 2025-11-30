@@ -52,6 +52,7 @@ class MyPostsViewModel : ViewModel() {
         }
     }
 
+    //in the future, access db by calling a function in API Client
     fun createTrip(name: String, posts: List<Post>) {
         // Generate a new unique ID for the trip
         val newId = (trips.maxOfOrNull { it.id } ?: 0) + 1
@@ -59,10 +60,12 @@ class MyPostsViewModel : ViewModel() {
         trips = trips + newTrip
     }
 
+    //in the future, access db by calling a function in API Client
     fun deleteTrip(tripId: Int) {
         trips = trips.filterNot { it.id == tripId }
     }
 
+    //in the future, access db by calling a function in API Client
     fun activityInteraction(action: String, post: Post) {
         println("post name ${post.name}")
         when (action) {

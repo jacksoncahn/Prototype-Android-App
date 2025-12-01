@@ -1,13 +1,10 @@
 package com.jetbrains.kmpapp.utils.shortlisting
 
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import com.google.maps.android.SphericalUtil
 import com.google.android.gms.maps.model.LatLng
-import com.mapnook.api.MyPostsViewModel
-import com.mapnook.api.Post
+import com.mapnook.api.posts.MyPostsViewModel
+import com.mapnook.api.posts.Post
 import java.util.PriorityQueue
-import kotlin.collections.emptyList
 
 //val p1 = LatLng(1.0, 1.0)
 //val p2 = LatLng(2.0, 2.0)

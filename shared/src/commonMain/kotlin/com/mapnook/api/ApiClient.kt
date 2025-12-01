@@ -1,6 +1,7 @@
 package com.mapnook.api
 
-import com.mapnook.api.auth.User
+import com.mapnook.api.posts.Post
+import com.mapnook.auth.User
 import io.ktor.client.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
@@ -10,7 +11,6 @@ import io.ktor.client.call.body
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.URLBuilder
 import io.ktor.http.encodedPath
-import kotlin.reflect.typeOf
 
 object ApiClient {
     val client = HttpClient {
@@ -45,9 +45,6 @@ object ApiClient {
         println("USERS LIST, ${users.firstOrNull()}")
         return users.firstOrNull()
     }
-
-
-
 
     //getImageUrl is "kotlinized" from function in Mapnook-mono
     fun getImageUrl(id: String, width: Int? = null, height: Int? = null): String {

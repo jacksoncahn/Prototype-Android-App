@@ -40,8 +40,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import android.net.Uri
 import com.jetbrains.kmpapp.components.ListCard
-import com.mapnook.api.MyPostsViewModel
-import com.mapnook.api.Post
+import com.mapnook.api.posts.MyPostsViewModel
+import com.mapnook.api.posts.Post
 
 @Composable
 fun MyLists(navigateTo: (String) -> Unit, listType: String?) {

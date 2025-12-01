@@ -33,8 +33,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jetbrains.kmpapp.components.ListCard
-import com.mapnook.api.MyPostsViewModel
-import com.mapnook.api.MyPostsViewModel.Trip
+import com.mapnook.api.posts.MyPostsViewModel
+import com.mapnook.api.posts.MyPostsViewModel.Trip
 
 
 @Composable

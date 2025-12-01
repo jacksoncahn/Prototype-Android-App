@@ -1,10 +1,11 @@
-package com.mapnook.api
+package com.mapnook.api.posts
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mapnook.api.ApiClient
 import kotlinx.coroutines.launch
 
 class MyPostsViewModel : ViewModel() {

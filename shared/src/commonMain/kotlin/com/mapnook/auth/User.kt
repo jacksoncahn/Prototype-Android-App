@@ -1,16 +1,13 @@
-package com.mapnook.api.auth
+package com.mapnook.auth
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
-import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.JsonObject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mapnook.api.ApiClient
-import com.mapnook.api.MyPostsViewModel
+import com.mapnook.api.posts.MyPostsViewModel
 import kotlinx.coroutines.launch
 
 

@@ -32,8 +32,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.mapnook.api.MyPostsViewModel
-import com.mapnook.api.auth.myUserViewModel
+import com.mapnook.auth.myUserViewModel
 
 @Composable
 fun Settings(onClose: () -> Unit) { // Accept the ViewModel

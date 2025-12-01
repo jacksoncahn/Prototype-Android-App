@@ -1,28 +1,14 @@
 package com.jetbrains.kmpapp
 
-import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
-import androidx.core.net.toUri
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jetbrains.kmpapp.screens.auth.SignInScreen
-import kotlinx.coroutines.launch
-import com.jetbrains.kmpapp.auth.AuthViewModel
-import com.mapnook.api.auth.myUserViewModel
-import org.json.JSONObject
-import java.net.URL
-import java.net.URLEncoder
-import javax.net.ssl.HttpsURLConnection
 
 
 class MainActivity : ComponentActivity() {

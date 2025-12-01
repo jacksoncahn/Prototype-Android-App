@@ -22,7 +22,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,20 +33,30 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.google.android.gms.maps.model.LatLng
+import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.jetbrains.kmpapp.components.ListCard
 import com.jetbrains.kmpapp.components.MapsSearchBar
 import com.jetbrains.kmpapp.utils.shortlisting.RecommendByDistance
-import com.mapnook.api.MyPostsViewModel
-import com.mapnook.api.Post
+import com.mapnook.api.posts.MyPostsViewModel
+import com.mapnook.api.posts.Post
 
 @Composable
 fun Trip(id: String?, onClose: () -> Unit) {
+
+    //initialize places api which we use to add a home base for location recommendations
+    val context = LocalContext.current
+    LaunchedEffect(Unit) {
+        if (!Places.isInitialized()) {
+            //currently insecure, was having trouble getting this key from local properties
+            Places.initialize(context, "AIzaSyDptUiKvCPS2taP70fdpUEKcn6ib4AosI8")
+        }
+    }
 
     val viewModel: MyPostsViewModel = viewModel(
         viewModelStoreOwner = LocalActivity.current as ComponentActivity

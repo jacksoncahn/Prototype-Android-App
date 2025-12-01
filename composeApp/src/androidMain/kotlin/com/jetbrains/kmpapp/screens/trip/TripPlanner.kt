@@ -21,7 +21,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,7 +34,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.android.gms.maps.model.LatLng
 import com.jetbrains.kmpapp.components.ListCard
-import com.mapnook.api.MyPostsViewModel
+import com.mapnook.api.posts.MyPostsViewModel
 
 @Composable
 fun TripPlanner(ids: String?, onTripSaved: () -> Unit, popBackStack: () -> Unit) {

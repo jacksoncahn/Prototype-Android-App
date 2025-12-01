@@ -1,9 +1,8 @@
-package com.mapnook.api
+package com.mapnook.api.posts
 
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.JsonObject
 
 
 @Serializable

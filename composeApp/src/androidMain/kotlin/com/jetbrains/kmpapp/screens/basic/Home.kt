@@ -34,7 +34,7 @@ import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.jetbrains.kmpapp.components.Searchbar
 import com.jetbrains.kmpapp.components.ActivityCard
-import com.mapnook.api.MyPostsViewModel
+import com.mapnook.api.posts.MyPostsViewModel
 import kotlinx.coroutines.launch
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.LocalActivity
@@ -47,20 +47,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import bitmapDescriptorFromUrl
-import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.maps.android.compose.MapProperties
 import com.jetbrains.kmpapp.R
-
-data class Marker (
-    val lat: Double?,
-    val lng: Double?,
-    val icon: BitmapDescriptor?
-)
-
-//fun generateMarkers(viewModel: MyPostsViewModel, name: String) {
-//    forEach() post ->
-//}
 
 @Composable fun Home(modifier: Modifier, isLoading: MutableState<Boolean>) {
 

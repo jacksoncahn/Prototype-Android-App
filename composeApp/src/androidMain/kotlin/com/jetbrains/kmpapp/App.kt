@@ -18,7 +18,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
@@ -26,37 +25,29 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.google.android.libraries.places.api.Places
-import com.google.maps.android.ktx.BuildConfig
+import com.jetbrains.kmpapp.components.Menu
 import com.jetbrains.kmpapp.screens.basic.About
 import com.jetbrains.kmpapp.screens.basic.AddPlaceOrEvent
 import com.jetbrains.kmpapp.screens.basic.Contact
 import com.jetbrains.kmpapp.screens.basic.FAQ
-import com.jetbrains.kmpapp.screens.basic.Help
 import com.jetbrains.kmpapp.screens.basic.Home
 import com.jetbrains.kmpapp.screens.basic.MyLists
 import com.jetbrains.kmpapp.screens.basic.Settings
 import com.jetbrains.kmpapp.screens.trip.Trip
 import com.jetbrains.kmpapp.screens.trip.TripList
 import com.jetbrains.kmpapp.screens.trip.TripPlanner
-import com.mapnook.api.MyPostsViewModel
+import com.mapnook.api.posts.MyPostsViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun App() {
 
-    //initialize places api which we use to add a home base for location recommendations
-    val context = LocalContext.current
-    LaunchedEffect(Unit) {
-        if (!Places.isInitialized()) {
-            Places.initialize(context, "AIzaSyDptUiKvCPS2taP70fdpUEKcn6ib4AosI8")
-        }
-    }
-
+    //initialize MyPostsViewModel
     val viewModel: MyPostsViewModel = viewModel(
         viewModelStoreOwner = LocalActivity.current as ComponentActivity
     )
 
+    //set isLoading to true while fetching posts (used inside Home.kt to decided when posts are okay to display)
     val isLoading = remember { mutableStateOf(true) }
     LaunchedEffect(Unit) {
         try {
@@ -68,15 +59,20 @@ fun App() {
         }
     }
 
+    //initialize navController for routing between pages
     val navController = rememberNavController()
 
+    //App.kt content
     MaterialTheme(
         colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
     ) {
         Scaffold { paddingValues ->
             Box(modifier = Modifier.fillMaxSize()) {
                 NavHost(navController, startDestination = "home") {
+
+                    //pass in isLoading
                     composable("home") { Home(modifier = Modifier.padding(paddingValues), isLoading = isLoading) }
+
                     composable("settings") { Settings(onClose = { navController.popBackStack() }) }
                     composable("faq") { FAQ(onClose = { navController.popBackStack() }) }
                     composable("about") { About(onClose = { navController.popBackStack() }) }
@@ -121,6 +117,7 @@ fun App() {
                     }
                 }
 
+                //imported Menu component from Menu.kt
                 Menu(
                     navController = navController,
                     modifier = Modifier.align(Alignment.TopStart).padding(paddingValues).zIndex(1f)

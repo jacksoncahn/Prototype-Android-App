@@ -47,23 +47,23 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
 import com.mapnook.api.posts.MyPostsViewModel
-import com.mapnook.api.posts.Post
+import com.mapnook.api.posts.Activity
 
 @Composable
-fun ActivityCard(modifier: Modifier, detailView: MutableState<Boolean>, post: Post) {
+fun ActivityCard(modifier: Modifier, detailView: MutableState<Boolean>, activity: Activity) {
     LaunchedEffect(detailView.value) {
         println("DetailView: ${detailView.value}")
     }
 
     if (detailView.value) {
-        ActivityCardLarge(modifier = modifier.padding(bottom = 32.dp), detailView, post)
+        ActivityCardLarge(modifier = modifier.padding(bottom = 32.dp), detailView, activity)
     } else {
-        ActivityCardSmall(modifier = modifier.padding(bottom = 32.dp), detailView, post)
+        ActivityCardSmall(modifier = modifier.padding(bottom = 32.dp), detailView, activity)
     }
 }
 
 @Composable
-fun ActivityCardLarge(modifier: Modifier, detailView: MutableState<Boolean>, post: Post) {
+fun ActivityCardLarge(modifier: Modifier, detailView: MutableState<Boolean>, activity: Activity) {
 
     //should access shared viewModel for posts
     val viewModel: MyPostsViewModel = viewModel(
@@ -88,8 +88,8 @@ fun ActivityCardLarge(modifier: Modifier, detailView: MutableState<Boolean>, pos
             Box(modifier = Modifier.fillMaxWidth()) {
 
                 AsyncImage(
-                    model = post.imageUrl,
-                    contentDescription = post.name,
+                    model = activity.imageUrl,
+                    contentDescription = activity.name,
                     modifier = Modifier.fillMaxWidth(),
                     contentScale = ContentScale.Crop
                 )
@@ -104,7 +104,7 @@ fun ActivityCardLarge(modifier: Modifier, detailView: MutableState<Boolean>, pos
 
                 Column(horizontalAlignment = Start, modifier = Modifier.padding(all = 16.dp).width(250.dp)) {
                     Text(
-                        text = post.name?: "no name available",
+                        text = activity.name?: "no name available",
                         style = MaterialTheme.typography.headlineSmall.copy(
                             color = Color.White,
                             shadow = androidx.compose.ui.graphics.Shadow(color = Color.Black, blurRadius = 8f)
@@ -113,21 +113,21 @@ fun ActivityCardLarge(modifier: Modifier, detailView: MutableState<Boolean>, pos
                 }
 
                 Row(modifier = Modifier.align(BottomEnd).padding(16.dp)) {
-                    IconButton(onClick = {viewModel.activityInteraction("like", post) }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp))) {
+                    IconButton(onClick = {viewModel.activityInteraction("like", activity) }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp))) {
                         Icon(Icons.Default.ThumbUp, contentDescription = "want to go")
                     }
                     Spacer(modifier = Modifier.padding(horizontal = 8.dp))
-                    IconButton(onClick = {viewModel.activityInteraction("dislike", post) }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp))) {
+                    IconButton(onClick = {viewModel.activityInteraction("dislike", activity) }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp))) {
                         Icon(Icons.Default.ThumbDown, contentDescription = "not for me")
                     }
                 }
 
                 Row(modifier = Modifier.align(BottomStart).padding(16.dp)) {
-                    IconButton(onClick = {viewModel.activityInteraction("skip", post) }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp))) {
+                    IconButton(onClick = {viewModel.activityInteraction("skip", activity) }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp))) {
                         Icon(Icons.AutoMirrored.Filled.Redo, contentDescription = "skip activity")
                     }
                     Spacer(modifier = Modifier.padding(horizontal = 8.dp))
-                    IconButton(onClick = { viewModel.activityInteraction("visited", post) }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp))) {
+                    IconButton(onClick = { viewModel.activityInteraction("visited", activity) }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp))) {
                         Icon(Icons.Default.RemoveRedEye, contentDescription = "mark already visited")
                     }
                 }
@@ -136,13 +136,13 @@ fun ActivityCardLarge(modifier: Modifier, detailView: MutableState<Boolean>, pos
             if (descriptionLarge.value) {
                 Text(
                     color = Color.White,
-                    text = (post.description?: "no description available"),
+                    text = (activity.description?: "no description available"),
                     modifier = Modifier.padding(16.dp).clickable { descriptionLarge.value = false }
                 )
             } else {
                 Text(
                     color = Color.White,
-                    text = post.summary?: "no summary available",
+                    text = activity.summary?: "no summary available",
                     maxLines = 3,
                     modifier = Modifier.padding(16.dp).clickable { descriptionLarge.value = true }
                 )
@@ -156,7 +156,7 @@ fun ActivityCardLarge(modifier: Modifier, detailView: MutableState<Boolean>, pos
                     color = Color.White
                 )
                 FlowRow {
-                    post.tags?.forEach { tag ->
+                    activity.tags?.forEach { tag ->
                         Box(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
                             Text(
                                 color = Color.White,
@@ -177,7 +177,7 @@ fun ActivityCardLarge(modifier: Modifier, detailView: MutableState<Boolean>, pos
 }
 
 @Composable
-fun ActivityCardSmall(modifier: Modifier, detailView: MutableState<Boolean>, post: Post) {
+fun ActivityCardSmall(modifier: Modifier, detailView: MutableState<Boolean>, activity: Activity) {
 
     //should access shared viewModel for posts
     val viewModel: MyPostsViewModel = viewModel(
@@ -197,8 +197,8 @@ fun ActivityCardSmall(modifier: Modifier, detailView: MutableState<Boolean>, pos
         Box(modifier = Modifier.fillMaxSize()) {
 
             AsyncImage(
-                model = post.imageUrl,
-                contentDescription = post.name,
+                model = activity.imageUrl,
+                contentDescription = activity.name,
                 modifier = Modifier.fillMaxWidth(),
                 contentScale = ContentScale.Crop
             )
@@ -211,7 +211,7 @@ fun ActivityCardSmall(modifier: Modifier, detailView: MutableState<Boolean>, pos
 
             Column(horizontalAlignment = Start, modifier = Modifier.padding(all = 16.dp).width(250.dp)) {
                 Text(
-                    text = post.name?: "no name available",
+                    text = activity.name?: "no name available",
                     style = MaterialTheme.typography.headlineSmall.copy(
                         color = Color.White,
                         shadow = androidx.compose.ui.graphics.Shadow(color = Color.Black, blurRadius = 8f)
@@ -220,21 +220,21 @@ fun ActivityCardSmall(modifier: Modifier, detailView: MutableState<Boolean>, pos
              }
 
             Row(modifier = Modifier.align(BottomEnd).padding(16.dp)) {
-                IconButton(onClick = { viewModel.activityInteraction("like", post) }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp))) {
+                IconButton(onClick = { viewModel.activityInteraction("like", activity) }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp))) {
                         Icon(Icons.Default.ThumbUp, contentDescription = "want to go")
                 }
                 Spacer(modifier = Modifier.padding(horizontal = 8.dp))
-                IconButton(onClick = { viewModel.activityInteraction("dislike", post) }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp))) {
+                IconButton(onClick = { viewModel.activityInteraction("dislike", activity) }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp))) {
                         Icon(Icons.Default.ThumbDown, contentDescription = "not for me")
                 }
             }
 
             Row(modifier = Modifier.align(BottomStart).padding(16.dp)) {
-                IconButton(onClick = { viewModel.activityInteraction("skip", post) }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp))) {
+                IconButton(onClick = { viewModel.activityInteraction("skip", activity) }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp))) {
                         Icon(Icons.AutoMirrored.Filled.Redo, contentDescription = "skip")
                 }
                 Spacer(modifier = Modifier.padding(horizontal = 8.dp))
-                IconButton(onClick = { viewModel.activityInteraction("visited", post) }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp))) {
+                IconButton(onClick = { viewModel.activityInteraction("visited", activity) }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp))) {
                         Icon(Icons.Default.RemoveRedEye, contentDescription = "already visited")
                 }
             }

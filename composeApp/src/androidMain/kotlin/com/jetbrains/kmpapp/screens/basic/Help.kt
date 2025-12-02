@@ -24,10 +24,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun Help(onClose: () -> Unit) { // Accept the ViewModel
+fun Help(onClose: () -> Unit) {
     Box(modifier = Modifier
         .fillMaxSize()
-        .background(Color.Black)) { // Use a Box to allow overlaying buttons
+        .background(Color.Black)) {
         IconButton(
             onClick = onClose,
             modifier = Modifier
@@ -59,7 +59,7 @@ fun Help(onClose: () -> Unit) { // Accept the ViewModel
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Text("help stuff")
+                Text("help stuff", color = Color.White)
             }
         }
     }

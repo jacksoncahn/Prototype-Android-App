@@ -79,7 +79,7 @@ import com.jetbrains.kmpapp.R
         ) {
 
             if (!isLoading.value) {
-                val activities = viewModel.visiblePosts
+                val activities = viewModel.visibleActivities
                 activities.forEach { post ->
                     val lng = post.location.getOrNull(0)
                     val lat = post.location.getOrNull(1)
@@ -91,7 +91,7 @@ import com.jetbrains.kmpapp.R
                             icon = iconState,
                             title = post.name,
                             onClick = {
-                                viewModel.selectedPost = post
+                                viewModel.selectedActivity = post
                                 true // onClick for Marker expects a Boolean return value
                             }
                         )
@@ -185,8 +185,8 @@ import com.jetbrains.kmpapp.R
                     .padding(bottom = 16.dp)
             ) {
                 // Show ActivityCard only for the selected post
-                viewModel.selectedPost?.let { selectedPost ->
-                    ActivityCard(detailView = detailView, post = selectedPost, modifier = Modifier)
+                viewModel.selectedActivity?.let { selectedPost ->
+                    ActivityCard(detailView = detailView, activity = selectedPost, modifier = Modifier)
                 }
             }
         }

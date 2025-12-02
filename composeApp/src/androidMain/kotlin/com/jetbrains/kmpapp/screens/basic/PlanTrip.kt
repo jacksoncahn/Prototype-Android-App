@@ -17,7 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mapnook.api.posts.MyPostsViewModel
-import com.mapnook.api.posts.Post
 import com.jetbrains.kmpapp.components.ListCard
 import androidx.compose.ui.unit.dp
 
@@ -59,7 +58,7 @@ fun PlanTrip(
             LazyColumn(modifier = Modifier.padding(top = 16.dp)) {
                 items(wantToGo, key = { it.id!! }) { post ->
                     ListCard(
-                        post = post,
+                        activity = post,
                         isSelected = selectedIds.contains(post.id),
                         showCheckbox = true,
                         onCheckedChange = {

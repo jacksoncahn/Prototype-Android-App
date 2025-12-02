@@ -27,11 +27,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import com.mapnook.api.posts.Post
+import com.mapnook.api.posts.Activity
 
 @Composable
 fun ListCard(
-    post: Post,
+    activity: Activity,
     isSelected: Boolean,
     onCheckedChange: (Boolean) -> Unit,
     showCheckbox: Boolean = false,
@@ -57,7 +57,7 @@ fun ListCard(
         verticalAlignment = Alignment.CenterVertically
     ) {
         AsyncImage(
-            model = post.imageUrl,
+            model = activity.imageUrl,
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier
@@ -67,7 +67,7 @@ fun ListCard(
 
         Column(modifier = Modifier.padding(horizontal = 8.dp).widthIn(max = 150.dp).height(70.dp)) {
             if (title == null) {
-                Text(post.name ?: "Unnamed Location", color = Color.White, style = MaterialTheme.typography.bodyLarge)
+                Text(activity.name ?: "Unnamed Location", color = Color.White, style = MaterialTheme.typography.bodyLarge)
             } else {
                 Text(title, color = Color.White, style = MaterialTheme.typography.bodyLarge)
             }

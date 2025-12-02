@@ -44,7 +44,7 @@ import com.jetbrains.kmpapp.components.ListCard
 import com.jetbrains.kmpapp.components.MapsSearchBar
 import com.jetbrains.kmpapp.utils.shortlisting.RecommendByDistance
 import com.mapnook.api.posts.MyPostsViewModel
-import com.mapnook.api.posts.Post
+import com.mapnook.api.posts.Activity
 
 @Composable
 fun Trip(id: String?, onClose: () -> Unit) {
@@ -67,7 +67,7 @@ fun Trip(id: String?, onClose: () -> Unit) {
     val tabs = listOf("My Trip", "Add Activities", "Trip Details")
 
     val trip = viewModel.trips.find { it.id.toString() == id }
-    var recs by remember { mutableStateOf(emptyList<Post>()) }
+    var recs by remember { mutableStateOf(emptyList<Activity>()) }
 
     // Add ability to set this to false while also showing mapssearchbar
     val editingHomeBase = remember {mutableStateOf(false)}
@@ -127,9 +127,9 @@ fun Trip(id: String?, onClose: () -> Unit) {
                     if (selectedTab == "My Trip") {
                         if (id != null) {
                             LazyColumn(modifier = Modifier.padding(top = 8.dp)) {
-                                items(trip?.posts ?: emptyList()) { post ->
+                                items(trip?.activities ?: emptyList()) { post ->
                                     ListCard(
-                                        post = post,
+                                        activity = post,
                                         isSelected = false, // Not selectable on this screen
                                         onCheckedChange = {}, // No action
                                         showCheckbox = false, // Hide the checkbox,
@@ -175,7 +175,7 @@ fun Trip(id: String?, onClose: () -> Unit) {
                                     if (trip.baseLoc != null) {
                                         recs = RecommendByDistance(trip.baseLoc!!, viewModel.wanttogo, trip)
                                     } else {
-                                        recs = RecommendByDistance(trip.posts[0].location, viewModel.wanttogo, trip)
+                                        recs = RecommendByDistance(trip.activities[0].location, viewModel.wanttogo, trip)
                                     }
                                 }
                             }
@@ -192,11 +192,11 @@ fun Trip(id: String?, onClose: () -> Unit) {
                                 }
                                 items(recs) { post ->
                                     ListCard(
-                                        post = post,
+                                        activity = post,
                                         isSelected = false, // Not selectable on this screen
                                         onCheckedChange = {}, // No action
                                         showCheckbox = false, // Hide the checkbox
-                                        onClicked = {trip?.posts += post; recs -= post}
+                                        onClicked = {trip?.activities += post; recs -= post}
                                     )
                                 }
                             }

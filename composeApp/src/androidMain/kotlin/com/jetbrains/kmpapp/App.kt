@@ -30,6 +30,7 @@ import com.jetbrains.kmpapp.screens.basic.About
 import com.jetbrains.kmpapp.screens.basic.AddPlaceOrEvent
 import com.jetbrains.kmpapp.screens.basic.Contact
 import com.jetbrains.kmpapp.screens.basic.FAQ
+import com.jetbrains.kmpapp.screens.basic.Help
 import com.jetbrains.kmpapp.screens.basic.Home
 import com.jetbrains.kmpapp.screens.basic.MyLists
 import com.jetbrains.kmpapp.screens.basic.PlanTrip
@@ -79,6 +80,8 @@ fun App() {
                     composable("about") { About(onClose = { navController.popBackStack() }) }
                     composable("addplaceorevent") { AddPlaceOrEvent(onClose = { navController.popBackStack() }) }
                     composable("contact") { Contact(onClose = { navController.popBackStack() }) }
+                    composable("help") { Help(onClose = { navController.popBackStack() }) }
+
                     composable(
                         route = "mylists/{listType}",
                         arguments = listOf(navArgument("listType") { type = NavType.StringType })

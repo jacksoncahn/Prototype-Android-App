@@ -1,6 +1,6 @@
 package com.mapnook.api
 
-import com.mapnook.api.posts.Post
+import com.mapnook.api.posts.Activity
 import com.mapnook.auth.User
 import io.ktor.client.*
 import io.ktor.client.plugins.contentnegotiation.*
@@ -19,11 +19,11 @@ object ApiClient {
         }
     }
 
-    suspend fun getPosts(): List<Post> {
+    suspend fun getPosts(): List<Activity> {
         //production url
         val response = client.get("https://dbcopy-backend.vercel.app/activities")
         println("Response From Api: ${response.bodyAsText()}")
-        val data: List<Post> = response.body()
+        val data: List<Activity> = response.body()
 
         for (post in data) {
             println("post: ${post.name}, ${post.id}, ${post.tags}")

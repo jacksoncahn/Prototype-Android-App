@@ -13,24 +13,24 @@ class MyPostsViewModel : ViewModel() {
     data class Trip(
         val id: Int,
         val name: String,
-        var posts: List<Post>,
+        var activities: List<Activity>,
         var baseLoc: List<Double>? = null,
         var baseName: String? = null,
         var baseAddress:  String? = null
     )
 
-    var posts by mutableStateOf<List<Post>>(emptyList())
+    var activities by mutableStateOf<List<Activity>>(emptyList())
         private set
-    var visiblePosts by mutableStateOf<List<Post>>(emptyList())
-    var visited by mutableStateOf<List<Post>>(emptyList())
+    var visibleActivities by mutableStateOf<List<Activity>>(emptyList())
+    var visited by mutableStateOf<List<Activity>>(emptyList())
         private set
-    var wanttogo by mutableStateOf<List<Post>>(emptyList())
+    var wanttogo by mutableStateOf<List<Activity>>(emptyList())
         private set
-    var skipped by mutableStateOf<List<Post>>(emptyList())
+    var skipped by mutableStateOf<List<Activity>>(emptyList())
         private set
-    var notforme by mutableStateOf<List<Post>>(emptyList())
+    var notforme by mutableStateOf<List<Activity>>(emptyList())
         private set
-    var selectedPost by mutableStateOf<Post?>(null)
+    var selectedActivity by mutableStateOf<Activity?>(null)
     var trips by mutableStateOf<List<Trip>>(emptyList())
 
     init {
@@ -41,12 +41,12 @@ class MyPostsViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 val fetchedPosts = ApiClient.getPosts()
-                posts = fetchedPosts
-                visiblePosts = fetchedPosts
+                activities = fetchedPosts
+                visibleActivities = fetchedPosts
                 if (fetchedPosts.isNotEmpty()) {
-                    selectedPost = visiblePosts[0]
+                    selectedActivity = visibleActivities[0]
                 }
-                println("post: $selectedPost")
+                println("post: $selectedActivity")
             } catch (e: Exception) {
                 println("Error fetching posts: ${e.message}")
             }
@@ -54,10 +54,10 @@ class MyPostsViewModel : ViewModel() {
     }
 
     //in the future, access db by calling a function in API Client
-    fun createTrip(name: String, posts: List<Post>) {
+    fun createTrip(name: String, activities: List<Activity>) {
         // Generate a new unique ID for the trip
         val newId = (trips.maxOfOrNull { it.id } ?: 0) + 1
-        val newTrip = Trip(id = newId, name = name, posts = posts)
+        val newTrip = Trip(id = newId, name = name, activities = activities)
         trips = trips + newTrip
     }
 
@@ -67,42 +67,42 @@ class MyPostsViewModel : ViewModel() {
     }
 
     //in the future, access db by calling a function in API Client
-    fun activityInteraction(action: String, post: Post) {
-        println("post name ${post.name}")
+    fun activityInteraction(action: String, activity: Activity) {
+        println("post name ${activity.name}")
         when (action) {
             "visited" -> {
-                if (!post.visited) {
-                    post.visited = true
-                    visited += post
+                if (!activity.visited) {
+                    activity.visited = true
+                    visited += activity
                 }
-                visiblePosts -= post
+                visibleActivities -= activity
             }
             "like" -> {
-                if (!post.liked) {
-                    post.liked = true
-                    wanttogo += post
+                if (!activity.liked) {
+                    activity.liked = true
+                    wanttogo += activity
                 }
-                visiblePosts -= post
+                visibleActivities -= activity
             }
             "skip" -> {
-                if (!post.skipped) {
-                    post.skipped = true
-                    skipped += post
+                if (!activity.skipped) {
+                    activity.skipped = true
+                    skipped += activity
                 }
-                visiblePosts -= post
+                visibleActivities -= activity
             }
             "dislike" -> {
-                if (!post.disliked) {
-                    post.disliked = true
-                    notforme += post
+                if (!activity.disliked) {
+                    activity.disliked = true
+                    notforme += activity
                 }
-                visiblePosts -= post
+                visibleActivities -= activity
             }
         }
-        if (visiblePosts.isNotEmpty()) {
-            selectedPost = visiblePosts[0]
+        if (visibleActivities.isNotEmpty()) {
+            selectedActivity = visibleActivities[0]
         } else {
-            selectedPost = null
+            selectedActivity = null
         }
     }
 

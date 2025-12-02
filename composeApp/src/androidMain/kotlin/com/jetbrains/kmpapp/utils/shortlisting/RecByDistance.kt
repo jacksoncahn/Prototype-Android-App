@@ -3,7 +3,7 @@ package com.jetbrains.kmpapp.utils.shortlisting
 import com.google.maps.android.SphericalUtil
 import com.google.android.gms.maps.model.LatLng
 import com.mapnook.api.posts.MyPostsViewModel
-import com.mapnook.api.posts.Post
+import com.mapnook.api.posts.Activity
 import java.util.PriorityQueue
 
 //val p1 = LatLng(1.0, 1.0)
@@ -11,10 +11,10 @@ import java.util.PriorityQueue
 
 //right now, function reccomends 5 (or less, if we don't have 5) closest activites
 //in the future we might want to reccomend all activities inside a certain distance threshold
-fun RecommendByDistance(base: List<Double>, activities: List<Post>, trip: MyPostsViewModel.Trip): List<Post> {
-    val newActivities = mutableListOf<Post>()
+fun RecommendByDistance(base: List<Double>, activities: List<Activity>, trip: MyPostsViewModel.Trip): List<Activity> {
+    val newActivities = mutableListOf<Activity>()
     for (post in activities) {
-        if (!trip.posts.contains(post)) {
+        if (!trip.activities.contains(post)) {
             newActivities.add(post)
         }
     }
@@ -22,7 +22,7 @@ fun RecommendByDistance(base: List<Double>, activities: List<Post>, trip: MyPost
         return newActivities
     }
     // Max-heap sorted by *farthest* distance first
-    val heap = PriorityQueue<Pair<Post, Double>>(compareByDescending { it.second })
+    val heap = PriorityQueue<Pair<Activity, Double>>(compareByDescending { it.second })
 
     for (post in newActivities) {
         val dist = SphericalUtil.computeDistanceBetween(

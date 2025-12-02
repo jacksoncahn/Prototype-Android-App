@@ -6,7 +6,7 @@ import kotlinx.serialization.json.JsonElement
 
 
 @Serializable
-data class Post(
+data class Activity(
     val id: String?,
     val slug: String?,
     val location: List<Double>,

@@ -87,9 +87,9 @@ fun TripList(navigateTo: (String) -> Unit) {
 
             LazyColumn(modifier = Modifier.weight(1f)) {
                 items(viewModel.trips, key = { it.id }) { trip ->
-                    val representativePost = trip.posts.firstOrNull() ?: return@items
+                    val representativePost = trip.activities.firstOrNull() ?: return@items
                     ListCard(
-                        post = representativePost,
+                        activity = representativePost,
                         isSelected = false,
                         onCheckedChange = {},
                         showCheckbox = false,

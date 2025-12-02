@@ -20,20 +20,23 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            LaunchedEffect(showSignIn) {
-                println("showSignIn, $showSignIn")
+
+//COMMENTED SIGNIN SCREEN LOGIC OUT FOR QUICKER TESTING
+
+//            LaunchedEffect(showSignIn) {
+//                println("showSignIn, $showSignIn")
+//            }
+////            // Remove when https://issuetracker.google.com/issues/364713509 is fixed
+//            if (showSignIn.value) {
+//                SignInScreen(
+//                    onSignInClick = {showSignIn.value = false},
+//                )
+//            } else if (!showSignIn.value) {
+            LaunchedEffect(isSystemInDarkTheme()) {
+                enableEdgeToEdge()
             }
-//            // Remove when https://issuetracker.google.com/issues/364713509 is fixed
-            if (showSignIn.value) {
-                SignInScreen(
-                    onSignInClick = {showSignIn.value = false},
-                )
-            } else if (!showSignIn.value) {
-                LaunchedEffect(isSystemInDarkTheme()) {
-                    enableEdgeToEdge()
-                }
-                App()
-            }
+            App()
+//        }
         }
     }
 //    private fun startLoginFlow() {

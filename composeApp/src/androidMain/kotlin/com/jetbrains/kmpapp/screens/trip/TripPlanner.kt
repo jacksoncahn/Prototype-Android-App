@@ -34,12 +34,12 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.android.gms.maps.model.LatLng
 import com.jetbrains.kmpapp.components.ListCard
-import com.mapnook.api.posts.MyPostsViewModel
+import com.mapnook.api.posts.ActivitiesViewModel
 
 @Composable
 fun TripPlanner(ids: String?, onTripSaved: () -> Unit, popBackStack: () -> Unit) {
 
-    val viewModel: MyPostsViewModel = viewModel(
+    val viewModel: ActivitiesViewModel = viewModel(
         viewModelStoreOwner = LocalActivity.current as ComponentActivity
     )
 

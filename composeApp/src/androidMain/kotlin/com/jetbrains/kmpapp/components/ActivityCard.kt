@@ -46,7 +46,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
-import com.mapnook.api.posts.MyPostsViewModel
+import com.mapnook.api.posts.ActivitiesViewModel
 import com.mapnook.api.posts.Activity
 
 @Composable
@@ -66,7 +66,7 @@ fun ActivityCard(modifier: Modifier, detailView: MutableState<Boolean>, activity
 fun ActivityCardLarge(modifier: Modifier, detailView: MutableState<Boolean>, activity: Activity) {
 
     //should access shared viewModel for posts
-    val viewModel: MyPostsViewModel = viewModel(
+    val viewModel: ActivitiesViewModel = viewModel(
         viewModelStoreOwner = LocalActivity.current as ComponentActivity
     )
 
@@ -180,7 +180,7 @@ fun ActivityCardLarge(modifier: Modifier, detailView: MutableState<Boolean>, act
 fun ActivityCardSmall(modifier: Modifier, detailView: MutableState<Boolean>, activity: Activity) {
 
     //should access shared viewModel for posts
-    val viewModel: MyPostsViewModel = viewModel(
+    val viewModel: ActivitiesViewModel = viewModel(
         viewModelStoreOwner = LocalActivity.current as ComponentActivity
     )
 

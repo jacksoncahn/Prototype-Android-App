@@ -16,7 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.mapnook.api.posts.MyPostsViewModel
+import com.mapnook.api.posts.ActivitiesViewModel
 import com.jetbrains.kmpapp.components.ListCard
 import androidx.compose.ui.unit.dp
 
@@ -25,7 +25,7 @@ fun PlanTrip(
     onClose: () -> Unit,
     navigateTo: (String) -> Unit
 ) {
-    val viewModel: MyPostsViewModel = viewModel(
+    val viewModel: ActivitiesViewModel = viewModel(
         viewModelStoreOwner = LocalActivity.current as ComponentActivity
     )
 

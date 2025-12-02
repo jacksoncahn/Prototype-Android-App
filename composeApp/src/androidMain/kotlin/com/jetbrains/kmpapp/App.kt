@@ -38,14 +38,14 @@ import com.jetbrains.kmpapp.screens.basic.Settings
 import com.jetbrains.kmpapp.screens.trip.Trip
 import com.jetbrains.kmpapp.screens.trip.TripList
 import com.jetbrains.kmpapp.screens.trip.TripPlanner
-import com.mapnook.api.posts.MyPostsViewModel
+import com.mapnook.api.posts.ActivitiesViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun App() {
 
     //initialize MyPostsViewModel
-    val viewModel: MyPostsViewModel = viewModel(
+    val viewModel: ActivitiesViewModel = viewModel(
         viewModelStoreOwner = LocalActivity.current as ComponentActivity
     )
 

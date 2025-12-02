@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mapnook.api.ApiClient
-import com.mapnook.api.posts.MyPostsViewModel
+import com.mapnook.api.posts.ActivitiesViewModel
 import kotlinx.coroutines.launch
 
 
@@ -23,11 +23,11 @@ data class User (
     val lastName: String?,
 )
 
-class myUserViewModel: ViewModel() {
+class UserViewModel: ViewModel() {
     var user by mutableStateOf<User?>(null)
 
-    var internalPostViewModel = MyPostsViewModel()
-    
+    var internalActivityViewModel = ActivitiesViewModel()
+
     var tempUserStorage by mutableStateOf<User?>(null)
 
     fun fetchUser(email: String) {

@@ -28,12 +28,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.jetbrains.kmpapp.R
-import com.mapnook.auth.myUserViewModel
+import com.mapnook.auth.UserViewModel
 
 @Composable
 fun Menu(navController: NavController, modifier: Modifier = Modifier) {
 
-    val userViewModel: myUserViewModel = viewModel(
+    val userViewModel: UserViewModel = viewModel(
         viewModelStoreOwner = LocalActivity.current as ComponentActivity
     )
 

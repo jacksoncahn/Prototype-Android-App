@@ -8,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.mapnook.api.ApiClient
 import kotlinx.coroutines.launch
 
-class MyPostsViewModel : ViewModel() {
+class ActivitiesViewModel : ViewModel() {
 
     data class Trip(
         val id: Int,

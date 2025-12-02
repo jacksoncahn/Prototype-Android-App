@@ -33,14 +33,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jetbrains.kmpapp.components.ListCard
-import com.mapnook.api.posts.MyPostsViewModel
-import com.mapnook.api.posts.MyPostsViewModel.Trip
+import com.mapnook.api.posts.ActivitiesViewModel
+import com.mapnook.api.posts.ActivitiesViewModel.Trip
 
 
 @Composable
 fun TripList(navigateTo: (String) -> Unit) {
 
-    val viewModel: MyPostsViewModel = viewModel(
+    val viewModel: ActivitiesViewModel = viewModel(
         viewModelStoreOwner = LocalActivity.current as ComponentActivity
     )
 

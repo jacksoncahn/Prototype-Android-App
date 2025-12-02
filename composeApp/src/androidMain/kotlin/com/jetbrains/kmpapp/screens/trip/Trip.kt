@@ -43,7 +43,7 @@ import com.google.android.libraries.places.api.model.Place
 import com.jetbrains.kmpapp.components.ListCard
 import com.jetbrains.kmpapp.components.MapsSearchBar
 import com.jetbrains.kmpapp.utils.shortlisting.RecommendByDistance
-import com.mapnook.api.posts.MyPostsViewModel
+import com.mapnook.api.posts.ActivitiesViewModel
 import com.mapnook.api.posts.Activity
 
 @Composable
@@ -58,7 +58,7 @@ fun Trip(id: String?, onClose: () -> Unit) {
         }
     }
 
-    val viewModel: MyPostsViewModel = viewModel(
+    val viewModel: ActivitiesViewModel = viewModel(
         viewModelStoreOwner = LocalActivity.current as ComponentActivity
     )
 

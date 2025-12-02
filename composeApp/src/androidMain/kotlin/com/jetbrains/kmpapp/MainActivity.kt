@@ -14,7 +14,6 @@ import com.jetbrains.kmpapp.screens.auth.SignInScreen
 class MainActivity : ComponentActivity() {
 
     var showSignIn = mutableStateOf(true)
-    var signInError = mutableStateOf("")
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -28,7 +27,6 @@ class MainActivity : ComponentActivity() {
             if (showSignIn.value) {
                 SignInScreen(
                     onSignInClick = {showSignIn.value = false},
-                    signInError = signInError.value
                 )
             } else if (!showSignIn.value) {
                 LaunchedEffect(isSystemInDarkTheme()) {

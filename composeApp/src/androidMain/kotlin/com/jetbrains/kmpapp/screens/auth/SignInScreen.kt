@@ -19,7 +19,7 @@ import com.mapnook.auth.myUserViewModel
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun SignInScreen(onSignInClick: () -> Unit, signInError: String) {
+fun SignInScreen(onSignInClick: () -> Unit) {
     var typedInString by rememberSaveable { mutableStateOf("") }
 
     var showSignInButton by remember {mutableStateOf(false)}
@@ -30,11 +30,14 @@ fun SignInScreen(onSignInClick: () -> Unit, signInError: String) {
 
     var emailSearchAttempted by remember { mutableStateOf(false) }
 
+    //if emailSearchAttempted, we fetch the user and reset the flag
     LaunchedEffect(emailSearchAttempted) {
         userViewModel.fetchUser(email = typedInString)
         emailSearchAttempted = false
     }
 
+    //currently, userdata is fetched and stored temporarily userViewModel.tempUserStorage
+    //if tempUserStorage != null, we have successfully fetched the user and can sign in
     LaunchedEffect(userViewModel.tempUserStorage) {
         showSignInButton = userViewModel.tempUserStorage != null
     }
@@ -45,7 +48,9 @@ fun SignInScreen(onSignInClick: () -> Unit, signInError: String) {
         verticalArrangement = Arrangement.Center,
     ) {
         Box(modifier = Modifier.fillMaxWidth()) {
+
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
+
                 OutlinedTextField(
                     value = typedInString,
                     onValueChange = { typedInString = it },
@@ -57,35 +62,39 @@ fun SignInScreen(onSignInClick: () -> Unit, signInError: String) {
                     colors = TextFieldDefaults.colors(
                         unfocusedContainerColor = Color.White
                     )
+
                 )
+
                 Spacer(modifier = Modifier.height(16.dp))
-                // This Box acts as a placeholder to reserve space for the button, preventing the layout from shifting.
+
                 Box(modifier = Modifier.height(50.dp)) {
+
                     if (showSignInButton) {
+
                         Button(onClick = {
+                            //three different things need to happen here
                             onSignInClick()
                             userViewModel.user = userViewModel.tempUserStorage
                             userViewModel.tempUserStorage = null
                         }, colors = ButtonDefaults.buttonColors(containerColor = Color.White)) {
                             Text("Sign In", color = Color.Black)
                         }
+
                     } else if (userViewModel.tempUserStorage == null && typedInString != "") {
+
                         Button(onClick = { emailSearchAttempted = true }, colors = ButtonDefaults.buttonColors(containerColor = Color.White)) {
                             Text("Search for user by email", color = Color.Black)
                         }
+
                     }
                 }
             }
         }
-
-//        if (signInError != "") {
-//            Text(signInError, color = Color.Red)
-//        }
     }
 }
 
 @Preview
 @Composable
 private fun SignInScreenPreview() {
-    SignInScreen(onSignInClick = {}, "Error Message")
+    SignInScreen(onSignInClick = {})
 }

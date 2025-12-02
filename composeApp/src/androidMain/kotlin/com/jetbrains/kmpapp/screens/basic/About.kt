@@ -44,7 +44,7 @@ fun About(onClose: () -> Unit) { // Accept the ViewModel
         Column {
             Spacer(modifier = Modifier.height(50.dp))
             Text(
-                text = "Contact",
+                text = "About",
                 modifier = Modifier.fillMaxWidth(),
                 color = Color.White,
                 textAlign = TextAlign.Center,

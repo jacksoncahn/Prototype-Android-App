@@ -25,9 +25,16 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun Searchbar(modifier: Modifier) {
+
     var text by remember { mutableStateOf("") }
+
     var isUnfocused by remember { mutableStateOf(true) }
+
     val placeholder = if (isUnfocused) "Find your adventure" else "Search for anything"
+
+    //basic textfield component that has a search icon and a placeholder
+    //search icon is clickable and calls the search function (currently does nothing)
+
     TextField(
         value = text,
         onValueChange = { text = it },

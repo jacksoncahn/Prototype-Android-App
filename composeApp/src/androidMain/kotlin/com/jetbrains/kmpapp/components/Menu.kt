@@ -39,11 +39,13 @@ fun Menu(navController: NavController, modifier: Modifier = Modifier) {
 
     val user = userViewModel.user
 
-    //the entire following body of logic is just to switch menu button color
+    //the following two launchedEffects exist to switch menu button color
     val currentRoute = remember { mutableStateOf("") }
+
     LaunchedEffect(Unit) {
         currentRoute.value = "home"
     }
+
     val currentBackStackEntry = navController.currentBackStackEntryAsState().value
     LaunchedEffect(currentBackStackEntry) {
         currentBackStackEntry?.destination?.route?.let {
@@ -51,7 +53,6 @@ fun Menu(navController: NavController, modifier: Modifier = Modifier) {
         }
     }
 
-    //set
     var showMenu by remember { mutableStateOf(false) }
 
     Box(modifier = modifier.padding(horizontal = 8.dp)) {
@@ -79,7 +80,6 @@ fun Menu(navController: NavController, modifier: Modifier = Modifier) {
                             if (user?.displayName != null) {
                                 Text(user.displayName!!, color = Color.White, style = MaterialTheme.typography.titleMedium)
                         } else {
-//                                Text("Account Name", color = Color.White, style = MaterialTheme.typography.titleMedium)
                                 Text("Account Settings", color = Color.LightGray)
                             }
                         }

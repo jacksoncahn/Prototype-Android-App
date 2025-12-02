@@ -32,13 +32,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.mapnook.auth.myUserViewModel
+import com.mapnook.auth.UserViewModel
 
 @Composable
 fun Settings(onClose: () -> Unit) { // Accept the ViewModel
 
     var selectedTab by remember { mutableStateOf("Profile") }
-    val userViewModel: myUserViewModel = viewModel(
+    val userViewModel: UserViewModel = viewModel(
         viewModelStoreOwner = LocalActivity.current as ComponentActivity
     )
 

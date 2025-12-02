@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.mapnook.auth.myUserViewModel
+import com.mapnook.auth.UserViewModel
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
@@ -24,7 +24,7 @@ fun SignInScreen(onSignInClick: () -> Unit) {
 
     var showSignInButton by remember {mutableStateOf(false)}
 
-    val userViewModel: myUserViewModel = viewModel(
+    val userViewModel: UserViewModel = viewModel(
         viewModelStoreOwner = LocalActivity.current as ComponentActivity
     )
 

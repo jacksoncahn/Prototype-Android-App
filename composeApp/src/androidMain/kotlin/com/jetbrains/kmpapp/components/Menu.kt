@@ -110,6 +110,13 @@ fun Menu(navController: NavController, modifier: Modifier = Modifier) {
                         Text("My Trips", color = Color.White, style = MaterialTheme.typography.titleMedium)
                     }
 
+                    // New feature Brett is working on. Might make more organizational sense.
+                    Row(modifier = Modifier.clickable { navController.navigate("plantrip") }.padding(all = 8.dp)) {
+                        Icon(imageVector = Icons.Outlined.AddCircle, contentDescription = "Menu", tint = Color.White)
+                        Spacer(modifier = Modifier.size(16.dp))
+                        Text("Plan Trip", color = Color.White, style = MaterialTheme.typography.titleMedium)
+                    }
+
                     HorizontalDivider(thickness = 0.5.dp, color = Color.LightGray)
 
                     Row(modifier = Modifier.clickable { navController.navigate("addplaceorevent") }.padding(all = 8.dp)) {

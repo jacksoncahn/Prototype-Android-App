@@ -32,6 +32,7 @@ import com.jetbrains.kmpapp.screens.basic.Contact
 import com.jetbrains.kmpapp.screens.basic.FAQ
 import com.jetbrains.kmpapp.screens.basic.Home
 import com.jetbrains.kmpapp.screens.basic.MyLists
+import com.jetbrains.kmpapp.screens.basic.PlanTrip
 import com.jetbrains.kmpapp.screens.basic.Settings
 import com.jetbrains.kmpapp.screens.trip.Trip
 import com.jetbrains.kmpapp.screens.trip.TripList
@@ -88,6 +89,12 @@ fun App() {
                         )
                     }
                     composable("triplist") { TripList { route -> navController.navigate(route) } }
+                    composable("plantrip") {
+                        PlanTrip(
+                            onClose = { navController.popBackStack() },
+                            navigateTo = { route -> navController.navigate(route) }
+                        )
+                    }
                     composable(
                         route = "tripplanner?ids={ids}",
                         arguments = listOf(navArgument("ids") {

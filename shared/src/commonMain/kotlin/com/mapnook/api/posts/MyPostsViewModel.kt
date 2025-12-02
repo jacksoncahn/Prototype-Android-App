@@ -105,4 +105,20 @@ class MyPostsViewModel : ViewModel() {
             selectedPost = null
         }
     }
+
+    fun removeFromWantToGo(id: String) {
+        wanttogo = wanttogo.filterNot { it.id == id }
+    }
+
+    fun removeFromVisited(id: String) {
+        visited = visited.filterNot { it.id == id }
+    }
+
+    fun removeFromSkipped(id: String) {
+        skipped = skipped.filterNot { it.id == id }
+    }
+
+    fun removeFromNotForMe(id: String) {
+        notforme = notforme.filterNot { it.id == id }
+    }
 }

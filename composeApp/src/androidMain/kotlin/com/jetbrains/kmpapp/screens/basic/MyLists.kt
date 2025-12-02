@@ -104,7 +104,7 @@ fun MyLists(navigateTo: (String) -> Unit, listType: String?) {
                         ListCard(
                             post = post,
                             isSelected = selectedIds.contains(post.id),
-                            onCheckedChange = {
+                            onCheckedChange = {checked ->
                                 post.id?.let { id ->
                                     selectedIds = if (selectedIds.contains(id)) {
                                         selectedIds - id
@@ -113,11 +113,36 @@ fun MyLists(navigateTo: (String) -> Unit, listType: String?) {
                                     }
                                 }
                             },
-                            showCheckbox = selectedListType == "wanttogo",
                             onClicked = {
                                 navigateTo("home")
-                                viewModel.selectedPost = post
-                            }
+                                //viewModel.selectedPost = post
+                            },
+                            showDeleteIcon = true,
+                            showCheckbox = false,
+
+                            onDeleteClicked = {
+                                post.id?.let { id ->
+                                    when (selectedListType) {
+                                        "wanttogo" -> viewModel.removeFromWantToGo(id)
+                                        "visited" -> viewModel.removeFromVisited(id)
+                                        "skipped" -> viewModel.removeFromSkipped(id)
+                                        "notforme" -> viewModel.removeFromNotForMe(id)
+
+                                    }
+                                }
+                            },
+//                            isSelected = selectedIds.contains(post.id),
+//                            onCheckedChange = {
+//                                post.id?.let { id ->
+//                                    selectedIds = if (selectedIds.contains(id)) {
+//                                        selectedIds - id
+//                                    } else {
+//                                        selectedIds + id
+//                                    }
+//                                }
+//                            },
+                            //showCheckbox = selectedListType == "wanttogo",
+
                         )
                     }
                 }
@@ -132,29 +157,29 @@ fun MyLists(navigateTo: (String) -> Unit, listType: String?) {
             }
         }
 
-        if (selectedListType == "wanttogo") {
-            val isEnabled = selectedIds.isNotEmpty()
-            Button(
-                onClick = {
-                    val ids = selectedIds.joinToString(",")
-                    navigateTo("tripplanner?ids=${Uri.encode(ids)}")
-                },
-                enabled = isEnabled,
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                shape = RoundedCornerShape(8.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.White.copy(alpha = if (isEnabled) 1f else 0.5f),
-                    contentColor = Color.Black,
-                    disabledContainerColor = Color.White.copy(alpha = 0.5f),
-                    disabledContentColor = Color.Black.copy(alpha = 0.5f)
-                )
-            ) {
-                val text = if (isEnabled) "Create Trip from ${selectedIds.size} places" else "Select places to create a trip"
-                Text(text)
-            }
-        }
+//        if (selectedListType == "wanttogo") {
+//            val isEnabled = selectedIds.isNotEmpty()
+//            Button(
+//                onClick = {
+//                    val ids = selectedIds.joinToString(",")
+//                    navigateTo("tripplanner?ids=${Uri.encode(ids)}")
+//                },
+//                enabled = isEnabled,
+//                modifier = Modifier
+//                    .align(Alignment.BottomCenter)
+//                    .fillMaxWidth()
+//                    .padding(16.dp),
+//                shape = RoundedCornerShape(8.dp),
+//                colors = ButtonDefaults.buttonColors(
+//                    containerColor = Color.White.copy(alpha = if (isEnabled) 1f else 0.5f),
+//                    contentColor = Color.Black,
+//                    disabledContainerColor = Color.White.copy(alpha = 0.5f),
+//                    disabledContentColor = Color.Black.copy(alpha = 0.5f)
+//                )
+//            ) {
+//                //val text = if (isEnabled) "Create Trip from ${selectedIds.size} places" else "Select places to create a trip"
+//                //Text(text)
+//            }
+//        }
     }
 }

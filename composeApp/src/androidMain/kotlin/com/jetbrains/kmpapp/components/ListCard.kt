@@ -1,6 +1,7 @@
 package com.jetbrains.kmpapp.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -33,7 +34,7 @@ fun ListCard(
     post: Post,
     isSelected: Boolean,
     onCheckedChange: (Boolean) -> Unit,
-    showCheckbox: Boolean = true,
+    showCheckbox: Boolean = false,
     onClicked: () -> Unit,
     title: String? = null,
     showDeleteIcon: Boolean = false, // Controls visibility of the delete icon
@@ -43,7 +44,12 @@ fun ListCard(
         modifier = Modifier
             .padding(horizontal = 24.dp, vertical = 8.dp)
             .background(
-                color = Color.LightGray.copy(alpha = .5f), shape = RoundedCornerShape(8.dp)
+                color = Color.Black.copy(alpha = .5f), shape = RoundedCornerShape(8.dp)
+            )
+            .border(
+                width = 1.dp,
+                color = Color.White,
+                shape = RoundedCornerShape(12.dp)
             )
             .clickable { onClicked() }
             .height(120.dp)
@@ -61,9 +67,9 @@ fun ListCard(
 
         Column(modifier = Modifier.padding(horizontal = 8.dp).widthIn(max = 150.dp).height(70.dp)) {
             if (title == null) {
-                Text(post.name ?: "Unnamed Location", style = MaterialTheme.typography.bodyLarge)
+                Text(post.name ?: "Unnamed Location", color = Color.White, style = MaterialTheme.typography.bodyLarge)
             } else {
-                Text(title, style = MaterialTheme.typography.bodyLarge)
+                Text(title, color = Color.White, style = MaterialTheme.typography.bodyLarge)
             }
         }
 
@@ -75,15 +81,15 @@ fun ListCard(
                 onCheckedChange = onCheckedChange,
                 modifier = Modifier.padding(end = 16.dp),
                 colors = CheckboxDefaults.colors(
-                    checkedColor = Color.Black,
-                    uncheckedColor = Color.Black
+                    checkedColor = Color.White,
+                    uncheckedColor = Color.White
                 )
             )
         }
 
         if (showDeleteIcon) {
             IconButton(onClick = onDeleteClicked, modifier = Modifier.padding(end = 8.dp)) {
-                Icon(Icons.Default.Delete, contentDescription = "Delete Trip")
+                Icon(Icons.Default.Delete, contentDescription = "Delete Trip", tint = Color.White)
             }
         }
     }

@@ -1,4 +1,4 @@
-package com.jetbrains.kmpapp.screens.basic
+package com.jetbrains.kmpapp.screens.trip
 
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.LocalActivity
@@ -11,10 +11,12 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.Button
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mapnook.api.posts.ActivitiesViewModel
 import com.jetbrains.kmpapp.components.ListCard
@@ -52,7 +54,7 @@ fun PlanTrip(
                 text = "Plan a Trip",
                 color = Color.White,
                 modifier = Modifier.fillMaxWidth(),
-                textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                textAlign = TextAlign.Center
             )
 
             LazyColumn(modifier = Modifier.padding(top = 16.dp)) {
@@ -77,7 +79,7 @@ fun PlanTrip(
         }
 
         if (selectedIds.isNotEmpty()) {
-            androidx.compose.material3.Button(
+            Button(
                 onClick = {
                     val ids = selectedIds.joinToString(",")
                     navigateTo("tripplanner?ids=$ids")

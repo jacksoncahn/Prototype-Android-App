@@ -81,7 +81,7 @@ fun Trip(id: String?, onClose: () -> Unit) {
 
     Box(modifier = Modifier
         .fillMaxSize()
-        .background(Color.Black),) { // Wrap in a Box
+        .background(Color.Black),) {
         IconButton(
             onClick = onClose, // Navigates back
             modifier = Modifier
@@ -96,8 +96,10 @@ fun Trip(id: String?, onClose: () -> Unit) {
                 tint = Color.White
             )
         }
+
         Column(modifier = Modifier.fillMaxSize()) {
             Spacer(modifier = Modifier.height(40.dp))
+
             Text(
                 text = "My Trip",
                 modifier = Modifier.fillMaxWidth(),
@@ -105,7 +107,9 @@ fun Trip(id: String?, onClose: () -> Unit) {
                 fontSize = 24.sp,
                 color = Color.White
             )
+
             Spacer(modifier = Modifier.height(50.dp))
+
             Surface(
                 modifier = Modifier
                     .fillMaxWidth()

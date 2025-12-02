@@ -33,7 +33,7 @@ import com.jetbrains.kmpapp.screens.basic.FAQ
 import com.jetbrains.kmpapp.screens.basic.Help
 import com.jetbrains.kmpapp.screens.basic.Home
 import com.jetbrains.kmpapp.screens.basic.MyLists
-import com.jetbrains.kmpapp.screens.basic.PlanTrip
+import com.jetbrains.kmpapp.screens.trip.PlanTrip
 import com.jetbrains.kmpapp.screens.basic.Settings
 import com.jetbrains.kmpapp.screens.trip.Trip
 import com.jetbrains.kmpapp.screens.trip.TripList

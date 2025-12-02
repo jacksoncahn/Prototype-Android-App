@@ -8,20 +8,23 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material.icons.Icons
+import androidx.compose.ui.Modifier
+
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
+
 import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import kotlinx.coroutines.tasks.await
+
 import androidx.compose.ui.unit.dp
-import com.google.android.gms.maps.model.LatLng
+
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.AutocompletePrediction
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.FetchPlaceRequest
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
-import kotlinx.coroutines.tasks.await
 
 @Composable
 fun MapsSearchBar(
@@ -65,7 +68,6 @@ fun MapsSearchBar(
     }
 
     Column(modifier = modifier) {
-
         // Search input
         TextField(
             value = query,

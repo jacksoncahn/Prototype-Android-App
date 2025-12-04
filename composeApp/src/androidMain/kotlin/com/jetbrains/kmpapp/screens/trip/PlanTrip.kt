@@ -12,6 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -84,6 +85,10 @@ fun PlanTrip(
                     val ids = selectedIds.joinToString(",")
                     navigateTo("tripplanner?ids=$ids")
                 },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.White,
+                    contentColor = Color.Black
+                ),
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .fillMaxWidth()

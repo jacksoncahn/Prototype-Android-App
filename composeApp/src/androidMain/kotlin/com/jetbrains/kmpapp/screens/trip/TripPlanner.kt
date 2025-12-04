@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -118,6 +119,10 @@ fun TripPlanner(ids: String?, onTripSaved: () -> Unit, popBackStack: () -> Unit)
                         onTripSaved() // Navigate back to the trip list
                     }
                 },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.White,
+                    contentColor = Color.Black
+                ),
                 modifier = Modifier.fillMaxWidth().padding(16.dp),
                 enabled = tripName.isNotBlank() && selectedPosts.isNotEmpty()
             ) {

@@ -20,6 +20,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -103,13 +104,18 @@ fun TripList(navigateTo: (String) -> Unit) {
 
             // This button now navigates to the correct list screen
             Button(
-                onClick = { navigateTo("mylists/wanttogo") },
+                onClick = { navigateTo("plantrip") },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp)
-            ) {
-                Text("Create New Trip")
-            }
+                    .padding(16.dp),
+
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.White,
+                    contentColor = Color.Black
+                )
+            ){
+                    Text("Create New Trip")
+                }
         }
 
         IconButton(

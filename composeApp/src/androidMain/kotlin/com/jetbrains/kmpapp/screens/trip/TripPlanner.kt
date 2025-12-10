@@ -25,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,11 +37,18 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.android.gms.maps.model.LatLng
 import com.jetbrains.kmpapp.components.ListCard
 import com.mapnook.api.posts.ActivitiesViewModel
+import com.mapnook.api.posts.TripActivity
+import com.mapnook.auth.UserViewModel
+import com.rickclephas.kmp.observableviewmodel.ViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun TripPlanner(ids: String?, onTripSaved: () -> Unit, popBackStack: () -> Unit) {
 
     val viewModel: ActivitiesViewModel = viewModel(
+        viewModelStoreOwner = LocalActivity.current as ComponentActivity
+    )
+    val userViewModel: UserViewModel = viewModel(
         viewModelStoreOwner = LocalActivity.current as ComponentActivity
     )
 
@@ -52,6 +60,7 @@ fun TripPlanner(ids: String?, onTripSaved: () -> Unit, popBackStack: () -> Unit)
     }.distinctBy { it.id }
 
     var tripName by remember { mutableStateOf("") }
+    val coroutineScope = rememberCoroutineScope()
     // Combine all lists from the viewmodel that could contain the selected posts
     // Find the full Post objects that match the received IDs
     val base: LatLng
@@ -115,8 +124,10 @@ fun TripPlanner(ids: String?, onTripSaved: () -> Unit, popBackStack: () -> Unit)
             Button(
                 onClick = {
                     if (tripName.isNotBlank() && selectedPosts.isNotEmpty()) {
-                        viewModel.createTrip(tripName, selectedPosts)
-                        onTripSaved() // Navigate back to the trip list
+                        coroutineScope.launch {
+                            handleOnClick(idList, userViewModel, tripName)
+                            onTripSaved() // Navigate back to the trip list
+                        }
                     }
                 },
                 colors = ButtonDefaults.buttonColors(
@@ -131,4 +142,13 @@ fun TripPlanner(ids: String?, onTripSaved: () -> Unit, popBackStack: () -> Unit)
             }
         }
     }
+}
+
+suspend fun handleOnClick(ids: List<String>, userViewModel: UserViewModel, name: String) {
+    val tripActivities = mutableListOf<TripActivity>()
+    for (id in ids) {
+        tripActivities += TripActivity(activityId = id, day = null)
+    }
+    println("handleOnClick: $tripActivities")
+    userViewModel.createOrUpdateTrip(primaryUser = userViewModel.user!!.id, name = name, tripActivities = tripActivities)
 }

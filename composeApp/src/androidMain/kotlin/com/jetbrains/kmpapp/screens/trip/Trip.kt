@@ -31,6 +31,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -44,7 +45,51 @@ import com.jetbrains.kmpapp.components.ListCard
 import com.jetbrains.kmpapp.components.MapsSearchBar
 import com.jetbrains.kmpapp.utils.shortlisting.RecommendByDistance
 import com.mapnook.api.posts.ActivitiesViewModel
+import com.mapnook.auth.UserViewModel
 import com.mapnook.api.posts.Activity
+import com.mapnook.api.posts.Housing
+import com.mapnook.api.posts.Trip
+import com.mapnook.api.posts.TripActivity
+import com.mapnook.api.posts.fetchActivity
+import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
+
+//helper functions
+private fun handleLocationSelected(place: Place, trip: Trip, userViewModel: UserViewModel, coroutineScope: kotlinx.coroutines.CoroutineScope) {
+        var latlng: List<Double> = emptyList()
+        var address = ""
+
+        place.latLng?.let { latlng = listOf(it.latitude, it.longitude) }
+        address = place.address.orEmpty()
+
+        if (latlng.isNotEmpty() && address.isNotEmpty()) {
+            val housing = Housing(address, latlng)
+            coroutineScope.launch {
+                userViewModel.createOrUpdateTrip(trip.id, trip.primaryUser, housing = housing)
+            }
+        }
+}
+
+private suspend fun fetchActivitiesDetails(trip: Trip) : MutableList<Activity?> {
+    val activities = mutableListOf<Activity?>()
+    for (activity in trip.tripActivitiesReadable) {
+        if (activity.activityId == null) continue
+        activities += fetchActivity(activity.activityId!!)
+    }
+
+    return activities
+
+}
+
+private fun onRecAdded(activity: Activity, userViewModel: UserViewModel, coroutineScope: kotlinx.coroutines.CoroutineScope, trip: Trip) {
+    val activityId = activity.id
+    // Create a new list containing all existing activities plus the new one
+    val newTripActivity = TripActivity(activityId = activityId, day = null)
+    val updatedTripActivities = trip.tripActivitiesReadable.toMutableList() + newTripActivity
+    coroutineScope.launch {
+        userViewModel.createOrUpdateTrip(trip.id, trip.primaryUser, tripActivities = updatedTripActivities)
+    }
+}
 
 @Composable
 fun Trip(id: String?, onClose: () -> Unit) {
@@ -58,26 +103,46 @@ fun Trip(id: String?, onClose: () -> Unit) {
         }
     }
 
-    val viewModel: ActivitiesViewModel = viewModel(
+    val userViewModel: UserViewModel = viewModel(
         viewModelStoreOwner = LocalActivity.current as ComponentActivity
     )
+
+    val activityViewModel: ActivitiesViewModel = viewModel(
+        viewModelStoreOwner = LocalActivity.current as ComponentActivity
+    )
+
 
     var selectedTab by remember { mutableStateOf("My Trip") }
 
     val tabs = listOf("My Trip", "Add Activities", "Trip Details")
 
-    val trip = viewModel.trips.find { it.id.toString() == id }
+    val trip = userViewModel.trips.find { it.id.toString() == id }
+
     var recs by remember { mutableStateOf(emptyList<Activity>()) }
 
     // Add ability to set this to false while also showing mapssearchbar
     val editingHomeBase = remember {mutableStateOf(false)}
 
+    val coroutineScope = rememberCoroutineScope()
+
     val onLocationSelected: (Place) -> Unit = { place ->
-        place.latLng?.let { trip?.baseLoc = listOf(it.latitude, it.longitude) }
-        trip?.baseName = place.name
-        trip?.baseAddress = place.address
+        if (trip != null) {
+            handleLocationSelected(place, trip, userViewModel, coroutineScope)
+        }
         editingHomeBase.value = false
     }
+
+
+    var detailedActivitiesList = mutableListOf<Activity?>()
+
+
+    LaunchedEffect(trip != null) {
+        if (trip != null) {
+            detailedActivitiesList = fetchActivitiesDetails(trip)
+        }
+    }
+
+
 
     Box(modifier = Modifier
         .fillMaxSize()
@@ -129,16 +194,18 @@ fun Trip(id: String?, onClose: () -> Unit) {
                     }
 
                     if (selectedTab == "My Trip") {
-                        if (id != null) {
+                        if (detailedActivitiesList != emptyList<Activity?>()) {
                             LazyColumn(modifier = Modifier.padding(top = 8.dp)) {
-                                items(trip?.activities ?: emptyList()) { post ->
-                                    ListCard(
-                                        activity = post,
-                                        isSelected = false, // Not selectable on this screen
-                                        onCheckedChange = {}, // No action
-                                        showCheckbox = false, // Hide the checkbox,
-                                        onClicked = {}
-                                    )
+                                items(detailedActivitiesList) { activity ->
+                                    if (activity != null) {
+                                        ListCard(
+                                            activity = activity,
+                                            isSelected = false, // Not selectable on this screen
+                                            onCheckedChange = {}, // No action
+                                            showCheckbox = false, // Hide the checkbox,
+                                            onClicked = {}
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -155,12 +222,12 @@ fun Trip(id: String?, onClose: () -> Unit) {
                                 if (editingHomeBase.value) {
                                     MapsSearchBar(onLocationSelected)
                                 } else {
-                                    if (trip?.baseName == null) {
+                                    if (trip?.housingReadable?.address == null) {
                                         Button(onClick = { editingHomeBase.value = true }) {
                                             Text("click to add your home base")
                                         }
                                     } else {
-                                        Text(trip.baseName.toString())
+                                        Text(trip.housingReadable?.address.toString())
                                         Button(onClick = { editingHomeBase.value = true }) {
                                             Text("click to edit")
                                         }
@@ -175,32 +242,37 @@ fun Trip(id: String?, onClose: () -> Unit) {
                         // Recommendations Tab UI
                         if (id != null) {
                             LaunchedEffect(trip) {
-                                if (trip != null) {
-                                    if (trip.baseLoc != null) {
-                                        recs = RecommendByDistance(trip.baseLoc!!, viewModel.wanttogo, trip)
-                                    } else {
-                                        recs = RecommendByDistance(trip.activities[0].location, viewModel.wanttogo, trip)
+                                val location = trip?.housingReadable?.location
+                                if (location != null) {
+                                        recs = RecommendByDistance(location, activityViewModel.wanttogo, trip)
+                                    } else if (detailedActivitiesList.isNotEmpty() && trip != null) {
+                                        recs = RecommendByDistance(detailedActivitiesList[0]!!.location, activityViewModel.wanttogo, trip)
                                     }
                                 }
                             }
 
-                            if (trip == null || trip.baseLoc == null) {
+                            if (trip != null && trip.housingReadable?.location == null) {
                                 Spacer(modifier = Modifier.height(20.dp))
                                 Text("Please add a home base to your trip to get smarter recommendations", modifier = Modifier.padding(start = 20.dp, end = 20.dp))}
                             }
+
                             LazyColumn(modifier = Modifier.padding(top = 8.dp)) {
                                 item {
                                     Spacer(modifier = Modifier.height(20.dp))
                                     Text(text = "Click an activity to add it to your trip", modifier = Modifier.padding(start = 20.dp, end = 20.dp))
                                     Spacer(modifier = Modifier.height(8.dp))
                                 }
-                                items(recs) { post ->
+                                items(recs) { activity ->
                                     ListCard(
-                                        activity = post,
+                                        activity = activity,
                                         isSelected = false, // Not selectable on this screen
                                         onCheckedChange = {}, // No action
                                         showCheckbox = false, // Hide the checkbox
-                                        onClicked = {trip?.activities += post; recs -= post}
+                                        onClicked = {
+                                            if (trip != null) {
+                                                coroutineScope.launch { onRecAdded(activity, userViewModel, coroutineScope, trip) }
+                                            }
+                                        }
                                     )
                                 }
                             }
@@ -209,4 +281,4 @@ fun Trip(id: String?, onClose: () -> Unit) {
                 }
             }
         }
-}
+

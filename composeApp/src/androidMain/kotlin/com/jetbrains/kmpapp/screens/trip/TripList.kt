@@ -22,9 +22,11 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,15 +37,44 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jetbrains.kmpapp.components.ListCard
 import com.mapnook.api.posts.ActivitiesViewModel
-import com.mapnook.api.posts.ActivitiesViewModel.Trip
+import com.mapnook.api.posts.Trip
+import com.mapnook.api.posts.Activity
+import com.mapnook.api.posts.fetchActivity
+import com.mapnook.auth.UserViewModel
+import kotlinx.coroutines.launch
+import kotlin.collections.forEach
 
 
 @Composable
 fun TripList(navigateTo: (String) -> Unit) {
 
-    val viewModel: ActivitiesViewModel = viewModel(
+    val userViewModel: UserViewModel = viewModel(
         viewModelStoreOwner = LocalActivity.current as ComponentActivity
     )
+
+    val representativeActivities = remember { mutableStateOf<Map<String, Activity>>(emptyMap()) }
+
+    LaunchedEffect(userViewModel.trips) {
+        val reprActivities = mutableMapOf<String, Activity>()
+        userViewModel.trips.forEach { trip ->
+            if (trip.tripActivitiesReadable.isNotEmpty()) {
+                val id = trip.tripActivitiesReadable[0].activityId
+                if (id != null) {
+                    println("triplist representativeActivity ID: $id")
+                    val activity = fetchActivity(id)
+                    println("triplist representativeActivity: $activity")
+
+                    if (activity != null) {
+                        reprActivities[trip.id.toString()] = activity
+                    }
+                }
+            }
+        }
+        representativeActivities.value = reprActivities
+        println("representativeActivities, $representativeActivities")
+    }
+
+    val coroutineScope = rememberCoroutineScope()
 
     // Track which trip is being deleted
     var tripToDelete by remember { mutableStateOf<Trip?>(null) }
@@ -53,11 +84,17 @@ fun TripList(navigateTo: (String) -> Unit) {
         AlertDialog(
             onDismissRequest = { tripToDelete = null },
             title = {Text("Delete Trip")},
-            text = {Text("Are you sure you want to delete the trip \"${tripToDelete!!.name}\"?")},
+            text = {Text("Are you sure you want to delete the trip \"${tripToDelete!!.name ?: tripToDelete!!.id}\"?")},
             confirmButton = {
                 TextButton(onClick = {
-                    viewModel.deleteTrip(tripToDelete!!.id)
-                    tripToDelete = null
+                    coroutineScope.launch {
+                        val trip = tripToDelete!!
+                        if (trip.tripActivitiesReadable.isNotEmpty()) {
+                            representativeActivities.value = representativeActivities.value - trip.id.toString()
+                        }
+                        userViewModel.deleteTrip(trip.id!!)
+                        tripToDelete = null
+                    }
                 }) {
                     Text("Confirm")
                 }
@@ -87,18 +124,28 @@ fun TripList(navigateTo: (String) -> Unit) {
             Spacer(modifier = Modifier.height(50.dp))
 
             LazyColumn(modifier = Modifier.weight(1f)) {
-                items(viewModel.trips, key = { it.id }) { trip ->
-                    val representativePost = trip.activities.firstOrNull() ?: return@items
-                    ListCard(
-                        activity = representativePost,
-                        isSelected = false,
-                        onCheckedChange = {},
-                        showCheckbox = false,
-                        onClicked = { navigateTo("trip/${trip.id}") },
-                        title = trip.name,
-                        showDeleteIcon = true,
-                        onDeleteClicked = { tripToDelete = trip }
-                    )
+                items(userViewModel.trips, key = { it.id!! }) { trip ->
+                    val representativeActivity = representativeActivities.value[trip.id.toString()]
+                    println("representative Activity: $representativeActivity")
+                    if (representativeActivity != null) {
+                        ListCard(
+                            activity = representativeActivity,
+                            isSelected = false,
+                            onCheckedChange = {},
+                            showCheckbox = false,
+                            onClicked = { navigateTo("trip/${trip.id}") },
+                            title = trip.name,
+                            showDeleteIcon = true,
+                            onDeleteClicked = { tripToDelete = trip }
+                        )
+                    } else {
+                        Text(
+                            text = trip.name ?: trip.id.toString(),
+                            color = Color.White,
+                            modifier = Modifier.fillMaxWidth().padding(16.dp),
+                            textAlign = TextAlign.Center
+                        )
+                    }
                 }
             }
 

@@ -39,6 +39,7 @@ import com.jetbrains.kmpapp.screens.trip.Trip
 import com.jetbrains.kmpapp.screens.trip.TripList
 import com.jetbrains.kmpapp.screens.trip.TripPlanner
 import com.mapnook.api.posts.ActivitiesViewModel
+import com.mapnook.auth.UserViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -49,12 +50,20 @@ fun App() {
         viewModelStoreOwner = LocalActivity.current as ComponentActivity
     )
 
+    val userViewModel: UserViewModel = viewModel(
+        viewModelStoreOwner = LocalActivity.current as ComponentActivity
+    )
+
+    LaunchedEffect(Unit) {
+        userViewModel.fetchUserTrips()
+    }
+
     //set isLoading to true while fetching posts (used inside Home.kt to decided when posts are okay to display)
     val isLoading = remember { mutableStateOf(true) }
     LaunchedEffect(Unit) {
         try {
             isLoading.value = true
-            viewModel.fetchPosts()
+            viewModel.fetchNewActivities()
             isLoading.value = false
         } catch(e: Exception) {
             Log.e("App", "Error fetching posts")

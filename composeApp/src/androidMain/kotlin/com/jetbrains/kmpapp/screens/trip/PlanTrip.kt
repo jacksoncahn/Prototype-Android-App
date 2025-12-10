@@ -22,6 +22,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mapnook.api.posts.ActivitiesViewModel
 import com.jetbrains.kmpapp.components.ListCard
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModel
+import com.mapnook.api.posts.TripActivity
+import com.mapnook.auth.UserViewModel
 
 @Composable
 fun PlanTrip(
@@ -31,6 +34,11 @@ fun PlanTrip(
     val viewModel: ActivitiesViewModel = viewModel(
         viewModelStoreOwner = LocalActivity.current as ComponentActivity
     )
+
+//    val userViewModel: UserViewModel = viewModel(
+//    viewModelStoreOwner = LocalActivity.current as ComponentActivity
+//    )
+
 
     val wantToGo = viewModel.wanttogo
     var selectedIds by remember { mutableStateOf(setOf<String>()) }
@@ -99,3 +107,4 @@ fun PlanTrip(
         }
     }
 }
+

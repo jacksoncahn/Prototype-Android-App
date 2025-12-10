@@ -1,6 +1,7 @@
 package com.mapnook.api
 
 import com.mapnook.api.posts.Activity
+import com.mapnook.api.posts.Trip
 import com.mapnook.auth.User
 import io.ktor.client.*
 import io.ktor.client.plugins.contentnegotiation.*
@@ -9,7 +10,9 @@ import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.Json
 import io.ktor.client.call.body
 import io.ktor.client.statement.bodyAsText
+import io.ktor.http.ContentType
 import io.ktor.http.URLBuilder
+import io.ktor.http.contentType
 import io.ktor.http.encodedPath
 
 object ApiClient {
@@ -19,7 +22,8 @@ object ApiClient {
         }
     }
 
-    suspend fun getPosts(): List<Activity> {
+    //new activities fetched for home page
+    suspend fun getNewActivities(): List<Activity> {
         //production url
         val response = client.get("https://dbcopy-backend.vercel.app/activities")
         println("Response From Api: ${response.bodyAsText()}")
@@ -34,6 +38,44 @@ object ApiClient {
         return data
     }
 
+    //fetch a specific activity by id
+    suspend fun fetchActivity(activityId: String): Activity {
+
+        val response = client.get("https://dbcopy-backend.vercel.app/activities/$activityId")
+        val responseBodyText = response.bodyAsText()
+        println("fetch Single Activity response body: $responseBodyText")
+        val data: Activity = response.body()
+        if (data.primaryImageId != null) {
+            data.imageUrl = getImageUrl(data.primaryImageId, 300, 300)
+        }
+        return data
+    }
+
+    //get users's trips
+    suspend fun getUserTrips(userId: String): List<Trip> {
+        val response = client.get("https://dbcopy-backend.vercel.app/trips/$userId")
+        println("Response From Api Trips: ${response.bodyAsText()}")
+        val data: List<Trip> = response.body()
+        return data
+    }
+
+    //edit or create a trip
+    suspend fun tripUpdateOrCreate(trip: Trip) {
+        val response = client.post("https://dbcopy-backend.vercel.app/trips") {
+            contentType(ContentType.Application.Json)
+            setBody(Json.encodeToString(trip))
+        }
+
+        println("Response: ${response.status}")
+
+    }
+
+    suspend fun deleteTrip(tripId: String) {
+        val response = client.get("https://dbcopy-backend.vercel.app/deletetrip/$tripId")
+        println("Delete Response: ${response.status}, ${response.bodyAsText()}")
+    }
+
+    //get user by email address
     suspend fun getUserByEmailAddress(email: String): User? {
         val response = client.get("https://dbcopy-backend.vercel.app/users/$email")
 

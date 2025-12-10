@@ -4,6 +4,7 @@ import com.google.maps.android.SphericalUtil
 import com.google.android.gms.maps.model.LatLng
 import com.mapnook.api.posts.ActivitiesViewModel
 import com.mapnook.api.posts.Activity
+import com.mapnook.api.posts.Trip
 import java.util.PriorityQueue
 
 //val p1 = LatLng(1.0, 1.0)
@@ -11,11 +12,11 @@ import java.util.PriorityQueue
 
 //right now, function reccomends 5 (or less, if we don't have 5) closest activites
 //in the future we might want to reccomend all activities inside a certain distance threshold
-fun RecommendByDistance(base: List<Double>, activities: List<Activity>, trip: ActivitiesViewModel.Trip): List<Activity> {
+fun RecommendByDistance(base: List<Double>, activities: List<Activity>, trip: Trip): List<Activity> {
     val newActivities = mutableListOf<Activity>()
-    for (post in activities) {
-        if (!trip.activities.contains(post)) {
-            newActivities.add(post)
+    for (activity in activities) {
+        if (!trip.tripActivitiesReadable.any { it.activityId == activity.id }) {
+            newActivities.add(activity)
         }
     }
     if (newActivities.size <= 5) {
@@ -24,19 +25,19 @@ fun RecommendByDistance(base: List<Double>, activities: List<Activity>, trip: Ac
     // Max-heap sorted by *farthest* distance first
     val heap = PriorityQueue<Pair<Activity, Double>>(compareByDescending { it.second })
 
-    for (post in newActivities) {
+    for (activity in newActivities) {
         val dist = SphericalUtil.computeDistanceBetween(
             LatLng(base[0], base[1]),
-            LatLng(post.location[0], post.location[1])
+            LatLng(activity.location[0], activity.location[1])
         )
 
         if (heap.size < 5) {
             // Still filling the heap
-            heap.add(post to dist)
+            heap.add(activity to dist)
         } else if (dist < heap.peek().second) {
             // Replace the farthest item with this closer one
             heap.poll()
-            heap.add(post to dist)
+            heap.add(activity to dist)
         }
     }
 

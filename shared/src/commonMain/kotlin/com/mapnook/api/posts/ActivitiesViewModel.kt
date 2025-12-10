@@ -7,18 +7,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mapnook.api.ApiClient
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.add
+import kotlinx.serialization.json.buildJsonArray
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
 
 class ActivitiesViewModel : ViewModel() {
-
-    data class Trip(
-        val id: Int,
-        val name: String,
-        var activities: List<Activity>,
-        var baseLoc: List<Double>? = null,
-        var baseName: String? = null,
-        var baseAddress:  String? = null
-    )
-
     var activities by mutableStateOf<List<Activity>>(emptyList())
         private set
     var visibleActivities by mutableStateOf<List<Activity>>(emptyList())
@@ -31,16 +28,12 @@ class ActivitiesViewModel : ViewModel() {
     var notforme by mutableStateOf<List<Activity>>(emptyList())
         private set
     var selectedActivity by mutableStateOf<Activity?>(null)
-    var trips by mutableStateOf<List<Trip>>(emptyList())
 
-    init {
-        fetchPosts()
-    }
 
-    fun fetchPosts() {
+    fun fetchNewActivities() {
         viewModelScope.launch {
             try {
-                val fetchedPosts = ApiClient.getPosts()
+                val fetchedPosts = ApiClient.getNewActivities()
                 activities = fetchedPosts
                 visibleActivities = fetchedPosts
                 if (fetchedPosts.isNotEmpty()) {
@@ -48,22 +41,9 @@ class ActivitiesViewModel : ViewModel() {
                 }
                 println("post: $selectedActivity")
             } catch (e: Exception) {
-                println("Error fetching posts: ${e.message}")
+                println("Error fetching activities: ${e.message}")
             }
         }
-    }
-
-    //in the future, access db by calling a function in API Client
-    fun createTrip(name: String, activities: List<Activity>) {
-        // Generate a new unique ID for the trip
-        val newId = (trips.maxOfOrNull { it.id } ?: 0) + 1
-        val newTrip = Trip(id = newId, name = name, activities = activities)
-        trips = trips + newTrip
-    }
-
-    //in the future, access db by calling a function in API Client
-    fun deleteTrip(tripId: Int) {
-        trips = trips.filterNot { it.id == tripId }
     }
 
     //in the future, access db by calling a function in API Client

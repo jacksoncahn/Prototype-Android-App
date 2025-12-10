@@ -138,13 +138,6 @@ fun TripList(navigateTo: (String) -> Unit) {
                             showDeleteIcon = true,
                             onDeleteClicked = { tripToDelete = trip }
                         )
-                    } else {
-                        Text(
-                            text = trip.name ?: trip.id.toString(),
-                            color = Color.White,
-                            modifier = Modifier.fillMaxWidth().padding(16.dp),
-                            textAlign = TextAlign.Center
-                        )
                     }
                 }
             }

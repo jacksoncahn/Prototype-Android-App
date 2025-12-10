@@ -98,6 +98,8 @@ fun Trip(id: String?, onClose: () -> Unit) {
     val context = LocalContext.current
     LaunchedEffect(Unit) {
         if (!Places.isInitialized()) {
+
+            // TODO: Implement this SECURELY
             //currently insecure, was having trouble getting this key from local properties
             Places.initialize(context, "AIzaSyDptUiKvCPS2taP70fdpUEKcn6ib4AosI8")
         }
@@ -111,6 +113,12 @@ fun Trip(id: String?, onClose: () -> Unit) {
         viewModelStoreOwner = LocalActivity.current as ComponentActivity
     )
 
+    //any vars or vals that are created using "by remember" will TRIGGER RECOMPOSITIONS when they change
+    //so when we change housing, e.g. change editingHomeBase (or some other such variable with the type detailed above), we recompose everything,  create a new trip val, etc.
+    //this is probably inefficient, but it works atm
+
+    //also, we are fetching full (detailed versions of ->) activities using activityId stored in trip dataclass, WHEN THIS COMPOSABLE COMPOSES
+    //because to do so when we initially fetch trips would cause the trip list population to take a noticeably long time, especially if the user navigates straight to that page
 
     var selectedTab by remember { mutableStateOf("My Trip") }
 
@@ -222,7 +230,6 @@ fun Trip(id: String?, onClose: () -> Unit) {
                                     style = MaterialTheme.typography.headlineMedium
                                 )
                                 Spacer(modifier = Modifier.height(8.dp))
-                                var homeBase by remember { mutableStateOf("") }
 
                                 if (editingHomeBase.value) {
                                     MapsSearchBar(onLocationSelected)

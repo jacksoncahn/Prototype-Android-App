@@ -13,6 +13,8 @@ import java.util.PriorityQueue
 //right now, function reccomends 5 (or less, if we don't have 5) closest activites
 //in the future we might want to reccomend all activities inside a certain distance threshold
 fun RecommendByDistance(base: List<Double>, activities: List<Activity>, trip: Trip): List<Activity> {
+    println("RECOMMEND FUNC called")
+    println("RECOMMEND FUNC activities: $activities")
     val newActivities = mutableListOf<Activity>()
     for (activity in activities) {
         if (!trip.tripActivitiesReadable.any { it.activityId == activity.id }) {
@@ -20,6 +22,7 @@ fun RecommendByDistance(base: List<Double>, activities: List<Activity>, trip: Tr
         }
     }
     if (newActivities.size <= 5) {
+        println("RECOMMEND FUNC recommended activities (not heap): $newActivities")
         return newActivities
     }
     // Max-heap sorted by *farthest* distance first
@@ -42,6 +45,7 @@ fun RecommendByDistance(base: List<Double>, activities: List<Activity>, trip: Tr
     }
 
     // Return the 5 closest, sorted from nearest → farthest in list form
+    println("RECOMMEND FUNC recommended activities heap: $heap")
     return (heap.sortedBy { it.second }.map { it.first }).toList()
 }
 

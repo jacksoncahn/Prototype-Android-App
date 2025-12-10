@@ -121,7 +121,7 @@ fun Trip(id: String?, onClose: () -> Unit) {
     var recs by remember { mutableStateOf(emptyList<Activity>()) }
 
     // Add ability to set this to false while also showing mapssearchbar
-    val editingHomeBase = remember {mutableStateOf(false)}
+    val editingHomeBase = remember { mutableStateOf(false) }
 
     val coroutineScope = rememberCoroutineScope()
 
@@ -133,10 +133,10 @@ fun Trip(id: String?, onClose: () -> Unit) {
     }
 
 
-    var detailedActivitiesList = mutableListOf<Activity?>()
+    var detailedActivitiesList by remember { mutableStateOf<List<Activity?>>(emptyList()) }
 
 
-    LaunchedEffect(trip != null) {
+    LaunchedEffect(trip) {
         if (trip != null) {
             detailedActivitiesList = fetchActivitiesDetails(trip)
         }
@@ -144,9 +144,11 @@ fun Trip(id: String?, onClose: () -> Unit) {
 
 
 
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .background(Color.Black),) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black),
+    ) {
         IconButton(
             onClick = onClose, // Navigates back
             modifier = Modifier
@@ -179,7 +181,10 @@ fun Trip(id: String?, onClose: () -> Unit) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f),
-                shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp), // Rounded corners at the top
+                shape = RoundedCornerShape(
+                    topStart = 16.dp,
+                    topEnd = 16.dp
+                ), // Rounded corners at the top
                 color = MaterialTheme.colorScheme.background
             ) {
                 Column {
@@ -227,7 +232,7 @@ fun Trip(id: String?, onClose: () -> Unit) {
                                             Text("click to add your home base")
                                         }
                                     } else {
-                                        Text(trip.housingReadable?.address.toString())
+                                        Text(trip.housingReadable.address.toString())
                                         Button(onClick = { editingHomeBase.value = true }) {
                                             Text("click to edit")
                                         }
@@ -244,22 +249,35 @@ fun Trip(id: String?, onClose: () -> Unit) {
                             LaunchedEffect(trip) {
                                 val location = trip?.housingReadable?.location
                                 if (location != null) {
-                                        recs = RecommendByDistance(location, activityViewModel.wanttogo, trip)
-                                    } else if (detailedActivitiesList.isNotEmpty() && trip != null) {
-                                        recs = RecommendByDistance(detailedActivitiesList[0]!!.location, activityViewModel.wanttogo, trip)
-                                    }
+                                    recs = RecommendByDistance(
+                                        location,
+                                        activityViewModel.wanttogo,
+                                        trip
+                                    )
+                                } else if (detailedActivitiesList.isNotEmpty() && trip != null) {
+                                    recs = RecommendByDistance(
+                                        detailedActivitiesList[0]!!.location,
+                                        activityViewModel.wanttogo,
+                                        trip
+                                    )
                                 }
                             }
+                        }
 
-                            if (trip != null && trip.housingReadable?.location == null) {
-                                Spacer(modifier = Modifier.height(20.dp))
-                                Text("Please add a home base to your trip to get smarter recommendations", modifier = Modifier.padding(start = 20.dp, end = 20.dp))}
-                            }
-
+                        if (trip != null && trip.housingReadable.location == null) {
+                            Spacer(modifier = Modifier.height(20.dp))
+                            Text(
+                                "Please add a home base to your trip to get smarter recommendations",
+                                modifier = Modifier.padding(start = 20.dp, end = 20.dp)
+                            )
+                        } else {
                             LazyColumn(modifier = Modifier.padding(top = 8.dp)) {
                                 item {
                                     Spacer(modifier = Modifier.height(20.dp))
-                                    Text(text = "Click an activity to add it to your trip", modifier = Modifier.padding(start = 20.dp, end = 20.dp))
+                                    Text(
+                                        text = "Click an activity to add it to your trip",
+                                        modifier = Modifier.padding(start = 20.dp, end = 20.dp)
+                                    )
                                     Spacer(modifier = Modifier.height(8.dp))
                                 }
                                 items(recs) { activity ->
@@ -270,15 +288,26 @@ fun Trip(id: String?, onClose: () -> Unit) {
                                         showCheckbox = false, // Hide the checkbox
                                         onClicked = {
                                             if (trip != null) {
-                                                coroutineScope.launch { onRecAdded(activity, userViewModel, coroutineScope, trip) }
+                                                coroutineScope.launch {
+                                                    onRecAdded(
+                                                        activity,
+                                                        userViewModel,
+                                                        coroutineScope,
+                                                        trip
+                                                    )
+                                                }
                                             }
                                         }
                                     )
                                 }
                             }
+
                         }
+
                     }
                 }
             }
         }
+    }
 
+}

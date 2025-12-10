@@ -28,6 +28,6 @@ data class Trip(
     val numDays: Int? = null,
     val tripActivities: JsonElement? = null,
     val name: String? = null,
-    @Transient var housingReadable: Housing? = null,
+    @Transient var housingReadable: Housing = Housing(null, null),
     @Transient var tripActivitiesReadable: MutableList<TripActivity> = emptyList<TripActivity>().toMutableList()
 )

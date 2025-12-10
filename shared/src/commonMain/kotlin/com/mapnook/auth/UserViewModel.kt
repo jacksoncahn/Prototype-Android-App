@@ -22,6 +22,7 @@ import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.put
 
+//private val json = Json { ignoreUnknownKeys = true }
 
 @Serializable
 data class User (
@@ -92,7 +93,11 @@ class UserViewModel: ViewModel() {
         val housingJson: JsonObject? = housing?.let { housing ->
             buildJsonObject {
                 put("address", housing.address)
-                put("location", housing.location as JsonElement)
+                housing.location?.let {
+                    put("location", buildJsonArray {
+                        it.forEach { value -> add(value) }
+                    })
+                }
             }
         }
         println("createOrUpdateTrip housing: $housingJson")
@@ -137,44 +142,55 @@ class UserViewModel: ViewModel() {
                 for (trip in fetchedTrips) {
                     println("populating readablehousing & readableactivities")
                     try {
-
                         println("TRIP HOUSING ${trip.housing}")
                         println("TRIP ACTIVITIES ${trip.tripActivities}")
 
-                        val housingJsonElement = Json.parseToJsonElement(trip.housing.toString())
-
-                        val location = housingJsonElement.jsonObject["location"]?.toString()?.trim('"') ?: ""
-                        println("TRIP LOCATION JSON $location")
-
-                        val address = housingJsonElement.jsonObject["address"]?.toString()?.trim('"') ?: ""
-                        println("TRIP ADDRESS JSON $address")
-
-                        if (location != "") {
-                            trip.housingReadable!!.location = location.split(",").map { it.toDouble() }
+                        if (trip.housing != null && trip.housing !is JsonObject) {
+                            println("Error: trip.housing is not a JsonObject")
+                            continue // Skip to the next trip
                         }
 
-                        if(address != "") {
-                            trip.housingReadable!!.address = address
+                        trip.housing?.jsonObject?.let { housingObj ->
+                            val locationArray = housingObj["location"]?.jsonArray
+                            println("TRIP FETCH locationArray: $locationArray")
+                            val address = housingObj["address"]?.toString()?.trim('"')
+                            println("TRIP FETCH address: $address")
+
+                            try {
+                                if (address != null) {
+                                    trip.housingReadable!!.address = address
+                                }
+                                if (locationArray != null) {
+                                    trip.housingReadable!!.location = locationArray.map { it.toString().toDouble() }
+                                }
+                            } catch (e: Exception) {
+                                println("Error setting housingReadable properties: ${e.message}")
+                            }
                         }
 
-                        val activitiesJsonElement = Json.parseToJsonElement(trip.tripActivities.toString()).jsonArray
-                        println("TRIP ACTIVITIES JSON $address")
+                        if (trip.tripActivities != null && trip.tripActivities !is JsonArray) {
+                            println("Error: trip.tripActivities is not a JsonArray")
+                            continue // Skip to the next trip
+                        }
 
-
-                        println("activitiesJsonElement: $activitiesJsonElement")
+                        val activitiesJsonArray = trip.tripActivities?.jsonArray
                         val activitiesList = mutableListOf<TripActivity>()
 
-                            for (activity in activitiesJsonElement) {
+                        activitiesJsonArray?.let {
+                            for (activity in it) {
                                 println("activity iteration for trip: ${trip.name}")
-                                activitiesList += TripActivity(
-                                    activityId = activity.jsonObject["activityId"]?.toString()?.trim('"'), // check if activity.jsonObject["day"] is not null and is a number
-                                    day = if (activity.jsonObject["day"] != null && activity.jsonObject["day"].toString()
-                                            .trim('"').toIntOrNull() != null
-                                    ) activity.jsonObject["day"]?.toString()?.trim('"')?.toInt() else null
-                                )
-
+                                try {
+                                    activitiesList += TripActivity(
+                                        activityId = activity.jsonObject["activityId"]?.toString()?.trim('"'), // check if activity.jsonObject["day"] is not null and is a number
+                                        day = if (activity.jsonObject["day"] != null && activity.jsonObject["day"].toString()
+                                                .trim('"').toIntOrNull() != null
+                                        ) activity.jsonObject["day"]?.toString()?.trim('"')?.toInt() else null
+                                    )
+                                } catch (e: Exception) {
+                                    println("Error creating TripActivity object: ${e.message}")
+                                }
+                            }
                         }
-
                         trip.tripActivitiesReadable = activitiesList
                         println("trip.tripActivitiesReadable: ${trip.tripActivitiesReadable}")
 

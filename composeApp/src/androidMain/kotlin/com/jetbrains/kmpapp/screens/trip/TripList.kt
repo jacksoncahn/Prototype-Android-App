@@ -142,7 +142,7 @@ fun TripList(navigateTo: (String) -> Unit) {
                 }
             }
 
-            // This button now navigates to the correct list screen
+            // This button  now navigates to the correct list screen
             Button(
                 onClick = { navigateTo("plantrip") },
                 modifier = Modifier

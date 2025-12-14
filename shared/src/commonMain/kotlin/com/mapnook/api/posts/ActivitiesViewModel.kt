@@ -30,10 +30,10 @@ class ActivitiesViewModel : ViewModel() {
     var selectedActivity by mutableStateOf<Activity?>(null)
 
 
-    fun fetchNewActivities() {
+    fun fetchNewActivities(userId: String) {
         viewModelScope.launch {
             try {
-                val fetchedPosts = ApiClient.getNewActivities()
+                val fetchedPosts = ApiClient.getNewActivities(userId)
                 activities = fetchedPosts
                 visibleActivities = fetchedPosts
                 if (fetchedPosts.isNotEmpty()) {

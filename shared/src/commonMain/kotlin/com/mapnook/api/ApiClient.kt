@@ -23,9 +23,9 @@ object ApiClient {
     }
 
     //new activities fetched for home page
-    suspend fun getNewActivities(): List<Activity> {
+    suspend fun getNewActivities(userId: String): List<Activity> {
         //production url
-        val response = client.get("https://dbcopy-backend.vercel.app/activities")
+        val response = client.get("https://dbcopy-backend.vercel.app/newactivities/${userId}")
         println("Response From Api: ${response.bodyAsText()}")
         val data: List<Activity> = response.body()
 

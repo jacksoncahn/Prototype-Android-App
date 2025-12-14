@@ -63,7 +63,7 @@ fun App() {
     LaunchedEffect(Unit) {
         try {
             isLoading.value = true
-            viewModel.fetchNewActivities()
+            viewModel.fetchNewActivities(userViewModel.user!!.id!!)
             isLoading.value = false
         } catch(e: Exception) {
             Log.e("App", "Error fetching posts")

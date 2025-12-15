@@ -63,33 +63,33 @@ fun MyLists(navigateTo: (String) -> Unit, listType: String?) {
 //    var skipped by remember { mutableStateOf(emptyList<Activity>()) }
 //    var visited by remember { mutableStateOf(emptyList<Activity>()) }
 
-    LaunchedEffect(userViewModel) {
-        for (activityId in userViewModel.wanttogo) {
-            val activity = fetchActivity(activityId)
-//            if (activity != null) {
-//                wanttogo += activity
-//            }
-        }
-        for (activityId in userViewModel.notforme) {
-            val activity = fetchActivity(activityId)
-//            if (activity != null) {
-//                notforme += activity
-//            }
-        }
-        for (activityId in userViewModel.skipped) {
-            val activity = fetchActivity(activityId)
-//            if (activity != null) {
-//                skipped += activity
-//            }
-        }
-        for (activityId in userViewModel.visited) {
-            val activity = fetchActivity(activityId)
-//            if (activity != null) {
-//                visited += activity
-//            }
-        }
-
-    }
+//    LaunchedEffect(userViewModel) {
+//        for (activityId in userViewModel.wanttogo) {
+//            val activity = fetchActivity(activityId)
+////            if (activity != null) {
+////                wanttogo += activity
+////            }
+//        }
+//        for (activityId in userViewModel.notforme) {
+//            val activity = fetchActivity(activityId)
+////            if (activity != null) {
+////                notforme += activity
+////            }
+//        }
+//        for (activityId in userViewModel.skipped) {
+//            val activity = fetchActivity(activityId)
+////            if (activity != null) {
+////                skipped += activity
+////            }
+//        }
+//        for (activityId in userViewModel.visited) {
+//            val activity = fetchActivity(activityId)
+////            if (activity != null) {
+////                visited += activity
+////            }
+//        }
+//
+//    }
 
 
     var selectedListType by remember { mutableStateOf("") }

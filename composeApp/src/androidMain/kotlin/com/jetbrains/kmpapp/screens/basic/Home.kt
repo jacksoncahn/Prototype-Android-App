@@ -38,6 +38,7 @@ import com.mapnook.api.posts.ActivitiesViewModel
 import kotlinx.coroutines.launch
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.LocalActivity
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.unit.dp
 import com.google.maps.android.compose.MarkerState
@@ -65,7 +66,7 @@ import com.jetbrains.kmpapp.R
         // Set the initial camera position to Prague.
         val prague = LatLng(50.0755, 14.4378)
         val cameraPositionState = rememberCameraPositionState {
-            position = CameraPosition.fromLatLngZoom(prague, 12f)
+            position = CameraPosition.fromLatLngZoom(prague, 8f)
         }
 
         val scope = rememberCoroutineScope()
@@ -94,6 +95,41 @@ import com.jetbrains.kmpapp.R
                                 viewModel.selectedActivity = post
                                 true // onClick for Marker expects a Boolean return value
                             }
+                        )
+                    }
+                }
+
+                if (viewModel.selectedActivity != null && viewModel.selectedActivity !in viewModel.visibleActivities) {
+                    val selected = viewModel.selectedActivity!!
+                    val lng = selected.location.getOrNull(0)
+                    val lat = selected.location.getOrNull(1)
+                    println("loKati&n $lat, $lng")
+                    if (lat != null && lng != null && selected.imageUrl != null) {
+                        val iconState by bitmapDescriptorFromUrl(
+                            LocalContext.current,
+                            selected.imageUrl
+                        )
+                        Marker(
+                            state = MarkerState(LatLng(lat, lng)),
+                            icon = iconState,
+                            title = selected.name,
+                            onClick = {
+                                viewModel.selectedActivity = selected
+                                true // onClick for Marker expects a Boolean return value
+                            }
+                        )
+                    }
+                }
+            }
+
+            LaunchedEffect(viewModel.selectedActivity) {
+                val selected = viewModel.selectedActivity
+                if (selected != null) {
+                    val lng = selected.location.getOrNull(0)
+                    val lat = selected.location.getOrNull(1)
+                    if (lat != null && lng != null) {
+                        cameraPositionState.animate(
+                            CameraUpdateFactory.newLatLngZoom(LatLng(lat, lng), 8f)
                         )
                     }
                 }

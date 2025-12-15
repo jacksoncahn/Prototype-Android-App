@@ -302,12 +302,36 @@ class UserViewModel: ViewModel() {
             }
         }
 
+        when (type) {
+            "yes" -> println("fetchUserActions response: $type: $wanttogo")
+            "no" ->  println("fetchUserActions response: $type: $notforme")
+            "skipped" -> println("fetchUserActions response: $type: $skipped")
+            "visited" -> println("fetchUserActions response: $type: $visited")
+        }
+
+
     }
 
     suspend fun deleteUserAction(activityId: String, type: String) {
         ApiClient.deleteUserAction(user!!.id!!, activityId, type)
-        wanttogo -= activityId
-        wanttogoActivities -= wanttogoActivities.first { it.id == activityId }
+        when (type) {
+            "yes" -> {
+                wanttogo -= activityId
+                wanttogoActivities -= wanttogoActivities.first { it.id == activityId }
+            }
+            "no" -> {
+                notforme -= activityId
+                notformeActivities -= notformeActivities.first { it.id == activityId }
+            }
+            "skipped" -> {
+                skipped -= activityId
+                skippedActivities -= skippedActivities.first { it.id == activityId }
+            }
+            "visited" -> {
+                visited -= activityId
+                visitedActivities -= visitedActivities.first { it.id == activityId }
+            }
+        }
         fetchUserActions(type)
     }
 

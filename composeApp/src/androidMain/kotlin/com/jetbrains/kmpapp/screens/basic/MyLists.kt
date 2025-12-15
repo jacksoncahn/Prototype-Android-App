@@ -27,6 +27,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,13 +39,58 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jetbrains.kmpapp.components.ListCard
 import com.mapnook.api.posts.ActivitiesViewModel
 import com.mapnook.api.posts.Activity
+import com.mapnook.api.posts.fetchActivity
+import com.mapnook.auth.UserViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun MyLists(navigateTo: (String) -> Unit, listType: String?) {
 
-    val viewModel: ActivitiesViewModel = viewModel(
+    val userViewModel: UserViewModel = viewModel(
         viewModelStoreOwner = LocalActivity.current as ComponentActivity
     )
+
+    val activityViewModel: ActivitiesViewModel = viewModel(
+        viewModelStoreOwner = LocalActivity.current as ComponentActivity
+    )
+
+
+    val scope = rememberCoroutineScope()
+
+
+//    var wanttogo by remember { mutableStateOf(emptyList<Activity>()) }
+//    var notforme by remember { mutableStateOf(emptyList<Activity>()) }
+//    var skipped by remember { mutableStateOf(emptyList<Activity>()) }
+//    var visited by remember { mutableStateOf(emptyList<Activity>()) }
+
+    LaunchedEffect(userViewModel) {
+        for (activityId in userViewModel.wanttogo) {
+            val activity = fetchActivity(activityId)
+//            if (activity != null) {
+//                wanttogo += activity
+//            }
+        }
+        for (activityId in userViewModel.notforme) {
+            val activity = fetchActivity(activityId)
+//            if (activity != null) {
+//                notforme += activity
+//            }
+        }
+        for (activityId in userViewModel.skipped) {
+            val activity = fetchActivity(activityId)
+//            if (activity != null) {
+//                skipped += activity
+//            }
+        }
+        for (activityId in userViewModel.visited) {
+            val activity = fetchActivity(activityId)
+//            if (activity != null) {
+//                visited += activity
+//            }
+        }
+
+    }
+
 
     var selectedListType by remember { mutableStateOf("") }
 
@@ -89,21 +135,21 @@ fun MyLists(navigateTo: (String) -> Unit, listType: String?) {
             }
 
             val listToShow: List<Activity> = when (selectedListType) {
-                "wanttogo" -> viewModel.wanttogo
-                "visited" -> viewModel.visited
-                "notforme" -> viewModel.notforme
-                "skipped" -> viewModel.skipped
+                "wanttogo" -> userViewModel.wanttogoActivities
+                "visited" -> userViewModel.visitedActivities
+                "notforme" -> userViewModel.notformeActivities
+                "skipped" -> userViewModel.skippedActivities
                 else -> emptyList()
             }
 
             if (listToShow.isNotEmpty()) {
                 LazyColumn(modifier = Modifier.padding(top = 8.dp)) {
-                    items(listToShow, key = { it.id!! }) { post ->
+                    items(listToShow, key = { it.id!! }) { activity ->
                         ListCard(
-                            activity = post,
-                            isSelected = selectedIds.contains(post.id),
+                            activity = activity,
+                            isSelected = selectedIds.contains(activity.id),
                             onCheckedChange = {checked ->
-                                post.id?.let { id ->
+                                activity.id?.let { id ->
                                     selectedIds = if (selectedIds.contains(id)) {
                                         selectedIds - id
                                     } else {
@@ -113,20 +159,21 @@ fun MyLists(navigateTo: (String) -> Unit, listType: String?) {
                             },
                             onClicked = {
                                 navigateTo("home")
-                                //viewModel.selectedPost = post
+                                activityViewModel.selectedActivity = activity
                             },
                             showDeleteIcon = true,
                             showCheckbox = false,
 
-                            onDeleteClicked = {
-                                post.id?.let { id ->
+                            onDeleteClicked = { scope.launch {
+                                activity.id?.let { id ->
                                     when (selectedListType) {
-                                        "wanttogo" -> viewModel.removeFromWantToGo(id)
-                                        "visited" -> viewModel.removeFromVisited(id)
-                                        "skipped" -> viewModel.removeFromSkipped(id)
-                                        "notforme" -> viewModel.removeFromNotForMe(id)
+                                        "wanttogo" -> {userViewModel.deleteUserAction(activityId = activity.id!!, type = "yes")}
+                                        "visited" -> userViewModel.deleteUserAction(activityId = activity.id!!, type = "visited")
+                                        "skipped" -> userViewModel.deleteUserAction(activityId = activity.id!!, type = "skipped")
+                                        "notforme" -> userViewModel.deleteUserAction(activityId = activity.id!!, type = "no")
                                     }
                                 }
+                            }
                             },
 
                         )

@@ -3,8 +3,10 @@ package com.jetbrains.kmpapp.screens.trip
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -131,6 +133,8 @@ fun Trip(id: String?, onClose: () -> Unit) {
     // Add ability to set this to false while also showing mapssearchbar
     val editingHomeBase = remember { mutableStateOf(false) }
 
+    val homeBase = remember {mutableStateOf(Housing())}
+
     val coroutineScope = rememberCoroutineScope()
 
     val onLocationSelected: (Place) -> Unit = { place ->
@@ -147,6 +151,7 @@ fun Trip(id: String?, onClose: () -> Unit) {
     LaunchedEffect(trip) {
         if (trip != null) {
             detailedActivitiesList = fetchActivitiesDetails(trip)
+            homeBase.value = trip.housingReadable
         }
     }
 
@@ -232,16 +237,32 @@ fun Trip(id: String?, onClose: () -> Unit) {
                                 Spacer(modifier = Modifier.height(8.dp))
 
                                 if (editingHomeBase.value) {
+                                    Button(onClick = { editingHomeBase.value = false }, modifier = Modifier.align(Alignment.End)) {
+                                        Text("cancel search")
+                                    }
                                     MapsSearchBar(onLocationSelected)
                                 } else {
-                                    if (trip?.housingReadable?.address == null) {
+                                    if (homeBase.value.address == null || homeBase.value.address == "null") {
                                         Button(onClick = { editingHomeBase.value = true }) {
                                             Text("click to add your home base")
                                         }
-                                    } else {
-                                        Text(trip.housingReadable.address.toString())
+                                    } else if (homeBase.value.address != null) {
+                                        Row(horizontalArrangement = Arrangement.SpaceBetween) {
+                                            Text(homeBase.value.address!!, modifier = Modifier.fillMaxWidth(
+                                                0.6f
+                                            ))
+                                            Button(onClick = {
+                                                coroutineScope.launch {
+                                                    println("CLICKED REMOVE HOME BASE")
+                                                    userViewModel.createOrUpdateTrip(id = id, primaryUser = userViewModel.user!!.id, housing = Housing(null, null))
+                                                }
+                                            }) {
+                                                Text("Remove housing")
+                                            }
+                                        }
+                                        Spacer(modifier = Modifier.height(16.dp))
                                         Button(onClick = { editingHomeBase.value = true }) {
-                                            Text("click to edit")
+                                            Text("New home base")
                                         }
                                     }
                                 }
@@ -258,13 +279,13 @@ fun Trip(id: String?, onClose: () -> Unit) {
                                 if (location != null) {
                                     recs = RecommendByDistance(
                                         location,
-                                        activityViewModel.wanttogo,
+                                        userViewModel.wanttogoActivities,
                                         trip
                                     )
                                 } else if (detailedActivitiesList.isNotEmpty() && trip != null) {
                                     recs = RecommendByDistance(
                                         detailedActivitiesList[0]!!.location,
-                                        activityViewModel.wanttogo,
+                                        userViewModel.wanttogoActivities,
                                         trip
                                     )
                                 }
@@ -274,7 +295,7 @@ fun Trip(id: String?, onClose: () -> Unit) {
                         if (trip != null && trip.housingReadable.location == null) {
                             Spacer(modifier = Modifier.height(20.dp))
                             Text(
-                                "Please add a home base to your trip to get smarter recommendations",
+                                "Please add a home base to your trip to get activity recommendations",
                                 modifier = Modifier.padding(start = 20.dp, end = 20.dp)
                             )
                         } else {

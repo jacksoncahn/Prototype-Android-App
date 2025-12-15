@@ -40,6 +40,8 @@ import com.jetbrains.kmpapp.screens.trip.TripList
 import com.jetbrains.kmpapp.screens.trip.TripPlanner
 import com.mapnook.api.posts.ActivitiesViewModel
 import com.mapnook.auth.UserViewModel
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -55,8 +57,15 @@ fun App() {
     )
 
     LaunchedEffect(Unit) {
-        userViewModel.fetchUserTrips()
+        coroutineScope {
+            launch { userViewModel.fetchUserTrips() }
+            launch { userViewModel.fetchUserActions("yes") }
+            launch { userViewModel.fetchUserActions("no") }
+            launch { userViewModel.fetchUserActions("skipped") }
+            launch { userViewModel.fetchUserActions("visited") }
+        }
     }
+
 
     //set isLoading to true while fetching posts (used inside Home.kt to decided when posts are okay to display)
     val isLoading = remember { mutableStateOf(true) }

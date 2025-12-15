@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Button
 
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
@@ -90,6 +91,7 @@ fun MapsSearchBar(
             },
             placeholder = { Text("Search for a location") }
         )
+
 
         // Prediction list
         predictions.forEach { prediction ->

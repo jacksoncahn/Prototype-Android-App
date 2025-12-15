@@ -23,7 +23,9 @@ import com.mapnook.api.posts.ActivitiesViewModel
 import com.jetbrains.kmpapp.components.ListCard
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
+import com.mapnook.api.posts.Activity
 import com.mapnook.api.posts.TripActivity
+import com.mapnook.api.posts.fetchActivity
 import com.mapnook.auth.UserViewModel
 
 @Composable
@@ -35,12 +37,22 @@ fun PlanTrip(
         viewModelStoreOwner = LocalActivity.current as ComponentActivity
     )
 
-//    val userViewModel: UserViewModel = viewModel(
-//    viewModelStoreOwner = LocalActivity.current as ComponentActivity
-//    )
+    val userViewModel: UserViewModel = viewModel(
+    viewModelStoreOwner = LocalActivity.current as ComponentActivity
+    )
 
 
-    val wantToGo = viewModel.wanttogo
+//    val wantToGo = remember {mutableListOf<Activity>()}
+
+//    LaunchedEffect(userViewModel.wanttogoActivities) {
+//        for (activityId in userViewModel.wanttogo) {
+//          val activity = fetchActivity(activityId)
+//            if (activity != null) {
+//                wantToGo += activity
+//            }
+//        }
+//    }
+
     var selectedIds by remember { mutableStateOf(setOf<String>()) }
 
     Box(modifier = Modifier.fillMaxSize().background(Color.Black)) {
@@ -67,7 +79,7 @@ fun PlanTrip(
             )
 
             LazyColumn(modifier = Modifier.padding(top = 16.dp)) {
-                items(wantToGo, key = { it.id!! }) { post ->
+                items(userViewModel.wanttogoActivities, key = { it.id!! }) { post ->
                     ListCard(
                         activity = post,
                         isSelected = selectedIds.contains(post.id),

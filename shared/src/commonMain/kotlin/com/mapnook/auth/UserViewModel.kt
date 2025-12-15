@@ -7,9 +7,11 @@ import kotlinx.serialization.Serializable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mapnook.api.ApiClient
+import com.mapnook.api.posts.Activity
 import com.mapnook.api.posts.Housing
 import com.mapnook.api.posts.Trip
 import com.mapnook.api.posts.TripActivity
+import com.mapnook.api.posts.fetchActivity
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 import kotlinx.coroutines.launch
@@ -21,6 +23,7 @@ import kotlinx.serialization.json.buildJsonArray
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.put
+import kotlin.collections.plus
 
 //private val json = Json { ignoreUnknownKeys = true }
 
@@ -42,9 +45,22 @@ class UserViewModel: ViewModel() {
 //    var internalActivityViewModel = ActivitiesViewModel()
 
     var trips by mutableStateOf<List<Trip>>(emptyList())
-
+    var tripsActivities by mutableStateOf<Map<String, List<Activity>>>(emptyMap())
 
     var tempUserStorage by mutableStateOf<User?>(null)
+    
+    var wanttogo by mutableStateOf<List<String>>(emptyList())
+    var visited by mutableStateOf<List<String>>(emptyList())
+    var notforme by mutableStateOf<List<String>>(emptyList())
+    var skipped by mutableStateOf<List<String>>(emptyList())
+
+
+    var wanttogoActivities by mutableStateOf<List<Activity>>(emptyList())
+    var visitedActivities by mutableStateOf<List<Activity>>(emptyList())
+    var notformeActivities by mutableStateOf<List<Activity>>(emptyList())
+    var skippedActivities by mutableStateOf<List<Activity>>(emptyList())
+
+
 
     fun fetchUser(email: String) {
         viewModelScope.launch {
@@ -158,10 +174,10 @@ class UserViewModel: ViewModel() {
 
                             try {
                                 if (address != null) {
-                                    trip.housingReadable!!.address = address
+                                    trip.housingReadable.address = address
                                 }
                                 if (locationArray != null) {
-                                    trip.housingReadable!!.location = locationArray.map { it.toString().toDouble() }
+                                    trip.housingReadable.location = locationArray.map { it.toString().toDouble() }
                                 }
                             } catch (e: Exception) {
                                 println("Error setting housingReadable properties: ${e.message}")
@@ -194,6 +210,12 @@ class UserViewModel: ViewModel() {
                         trip.tripActivitiesReadable = activitiesList
                         println("trip.tripActivitiesReadable: ${trip.tripActivitiesReadable}")
 
+//                        val activityIds = trip.tripActivitiesReadable.map { it.activityId!! }
+
+//                        fetchTripActivitiesDetails(activityIds, trip.id!!)
+
+
+
                     } catch (e: Exception) {
                         println("Error parsing housing JSON: ${e.message}")
                     }
@@ -206,11 +228,88 @@ class UserViewModel: ViewModel() {
         }
     }
 
+//    suspend fun fetchTripActivitiesDetails(activityIds: List<String>, tripId: String) {
+//        for (activityId in activityIds) {
+//            val activity = fetchActivity(activityId)
+//            val activities = mutableListOf<Activity>()
+//            if (activity != null) {
+//                val activityDetails = fetchActivity(activityId)
+//                if (activityDetails != null) {
+//                    activities += activityDetails
+//                }
+//            }
+//            tripsActivities += tripId to activities
+//        }
+//
+//    }
+
     suspend fun deleteTrip(tripId: String) {
         trips -= trips.first { it.id == tripId }
         ApiClient.deleteTrip(tripId)
     }
 
+    suspend fun saveUserAction(activityId: String, type: String) {
+        ApiClient.saveUserAction(user!!.id!!, activityId, type)
+        fetchUserActions(type)
+    }
+    
+    suspend fun fetchUserActions(type: String) {
+        val response = ApiClient.fetchUserAction(user!!.id!!,type)
+        when (type) {
+            "yes" -> {
+                for (userAction in response) {
+                    if (userAction.activityId !in wanttogo) {
+                        val activity = fetchActivity(userAction.activityId!!)
+                        wanttogo += userAction.activityId
+                        if (activity != null) {
+                            wanttogoActivities += activity
+                        }
+                    }
+                }
+            }
+            "no" -> {
+                for (userAction in response) {
+                    if (userAction.activityId !in notforme) {
+                        val activity = fetchActivity(userAction.activityId!!)
+                        notforme += userAction.activityId
+                        if (activity != null) {
+                            notformeActivities += activity
+                        }
+                    }
+                }
+            }
+            "skipped" -> {
+                for (userAction in response) {
+                    if (userAction.activityId !in skipped) {
+                        val activity = fetchActivity(userAction.activityId!!)
+                        skipped += userAction.activityId
+                        if (activity != null) {
+                            skippedActivities += activity
+                        }
+                    }
+                }
+            }
+            "visited" -> {
+                for (userAction in response) {
+                    if (userAction.activityId !in visited) {
+                        val activity = fetchActivity(userAction.activityId!!)
+                        visited += userAction.activityId
+                        if (activity != null) {
+                            visitedActivities += activity
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
+    suspend fun deleteUserAction(activityId: String, type: String) {
+        ApiClient.deleteUserAction(user!!.id!!, activityId, type)
+        wanttogo -= activityId
+        wanttogoActivities -= wanttogoActivities.first { it.id == activityId }
+        fetchUserActions(type)
+    }
 
 }
 

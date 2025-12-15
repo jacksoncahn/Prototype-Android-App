@@ -14,6 +14,8 @@ import io.ktor.http.ContentType
 import io.ktor.http.URLBuilder
 import io.ktor.http.contentType
 import io.ktor.http.encodedPath
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
 
 object ApiClient {
     val client = HttpClient {
@@ -51,6 +53,32 @@ object ApiClient {
         return data
     }
 
+    suspend fun saveUserAction(userId: String, activityId: String, type: String) {
+        val jsonBody = buildJsonObject {
+            put("userId", userId)
+            put("activityId", activityId)
+            put("type", type)
+        }
+
+        val response = client.post("https://dbcopy-backend.vercel.app/saveuseraction/$userId") {
+            contentType(ContentType.Application.Json)
+            setBody(Json.encodeToString(jsonBody))
+        }
+        println("saveUserAction Response: ${response.status}, ${response.bodyAsText()}")
+    }
+
+    suspend fun deleteUserAction(userId: String, activityId: String, type: String) {
+        val response =
+            client.get("https://dbcopy-backend.vercel.app/removeuseraction/$userId/$activityId/$type")
+        println("deleteUserAction Response: ${response.status}, ${response.bodyAsText()}")
+    }
+
+    suspend fun fetchUserAction(userId: String, type: String): List<UserAction> {
+        val response = client.get("https://dbcopy-backend.vercel.app/$type/$userId")
+        val data: List<UserAction> = response.body()
+        print("fetchUserAction Response: ${response.status}, ${response.bodyAsText()}")
+        return data
+    }
     //get users's trips
     suspend fun getUserTrips(userId: String): List<Trip> {
         val response = client.get("https://dbcopy-backend.vercel.app/trips/$userId")

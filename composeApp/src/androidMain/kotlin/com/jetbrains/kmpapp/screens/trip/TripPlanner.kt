@@ -54,9 +54,16 @@ fun TripPlanner(ids: String?, onTripSaved: () -> Unit, popBackStack: () -> Unit)
 
     // Parse the string of IDs into a list of strings
     val idList = ids?.split(",")?.filter { it.isNotBlank() } ?: emptyList()
-    val allPosts = viewModel.activities + viewModel.wanttogo + viewModel.visited
-    val selectedPosts = allPosts.filter { post ->
-        post.id != null && idList.contains(post.id)
+
+
+    var allPosts by remember {
+        mutableStateOf(
+            (viewModel.activities + userViewModel.wanttogoActivities + userViewModel.visitedActivities).toMutableList()
+        )
+    }
+
+    val selectedPosts = allPosts.filter { activity ->
+        activity.id != null && idList.contains(activity.id)
     }.distinctBy { it.id }
 
     var tripName by remember { mutableStateOf("") }

@@ -44,6 +44,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.Alignment.Companion.Start
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.Alignment.Companion.TopEnd
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -113,6 +114,7 @@ fun ActivityCardLarge(modifier: Modifier, detailView: MutableState<Boolean>, act
         Column(
             modifier = Modifier.verticalScroll(rememberScrollState())
                 .background(color = Color.Black)
+                .fillMaxSize()
         ) {
             Box(modifier = Modifier.fillMaxWidth()) {
 
@@ -175,6 +177,7 @@ fun ActivityCardLarge(modifier: Modifier, detailView: MutableState<Boolean>, act
                     maxLines = 3,
                     modifier = Modifier.padding(16.dp).clickable { descriptionLarge.value = true }
                 )
+                Spacer(modifier = Modifier.height(40.dp))
             }
 
             Column {

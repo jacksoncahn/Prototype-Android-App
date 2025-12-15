@@ -72,26 +72,29 @@ private fun handleLocationSelected(place: Place, trip: Trip, userViewModel: User
         }
 }
 
-private suspend fun fetchActivitiesDetails(trip: Trip) : MutableList<Activity?> {
-    val activities = mutableListOf<Activity?>()
+private suspend fun fetchActivitiesDetails(trip: Trip) : MutableList<Activity> {
+    val activities = mutableListOf<Activity>()
     for (activity in trip.tripActivitiesReadable) {
         if (activity.activityId == null) continue
-        activities += fetchActivity(activity.activityId!!)
+        val newActivity = fetchActivity(activity.activityId!!)
+        if (newActivity != null) {
+            activities += newActivity
+        }
     }
 
     return activities
 
 }
 
-private fun onRecAdded(activity: Activity, userViewModel: UserViewModel, coroutineScope: kotlinx.coroutines.CoroutineScope, trip: Trip) {
-    val activityId = activity.id
-    // Create a new list containing all existing activities plus the new one
-    val newTripActivity = TripActivity(activityId = activityId, day = null)
-    val updatedTripActivities = trip.tripActivitiesReadable.toMutableList() + newTripActivity
-    coroutineScope.launch {
-        userViewModel.createOrUpdateTrip(trip.id, trip.primaryUser, tripActivities = updatedTripActivities)
-    }
-}
+//private fun onRecAdded(activity: Activity, userViewModel: UserViewModel, coroutineScope: kotlinx.coroutines.CoroutineScope, trip: Trip) {
+//    val activityId = activity.id
+//    // Create a new list containing all existing activities plus the new one
+//    val newTripActivity = TripActivity(activityId = activityId, day = null)
+//    val updatedTripActivities = trip.tripActivitiesReadable.toMutableList() + newTripActivity
+//    coroutineScope.launch {
+//        userViewModel.createOrUpdateTrip(trip.id, trip.primaryUser, tripActivities = updatedTripActivities)
+//    }
+//}
 
 @Composable
 fun Trip(id: String?, onClose: () -> Unit) {
@@ -106,6 +109,8 @@ fun Trip(id: String?, onClose: () -> Unit) {
             Places.initialize(context, "AIzaSyDptUiKvCPS2taP70fdpUEKcn6ib4AosI8")
         }
     }
+
+    val scope = rememberCoroutineScope()
 
     val userViewModel: UserViewModel = viewModel(
         viewModelStoreOwner = LocalActivity.current as ComponentActivity
@@ -133,7 +138,7 @@ fun Trip(id: String?, onClose: () -> Unit) {
     // Add ability to set this to false while also showing mapssearchbar
     val editingHomeBase = remember { mutableStateOf(false) }
 
-    val homeBase = remember {mutableStateOf(Housing())}
+    var homeBase = remember {mutableStateOf(Housing())}
 
     val coroutineScope = rememberCoroutineScope()
 
@@ -145,16 +150,22 @@ fun Trip(id: String?, onClose: () -> Unit) {
     }
 
 
-    var detailedActivitiesList by remember { mutableStateOf<List<Activity?>>(emptyList()) }
-
-
-    LaunchedEffect(trip) {
+    LaunchedEffect(Unit) {
         if (trip != null) {
-            detailedActivitiesList = fetchActivitiesDetails(trip)
-            homeBase.value = trip.housingReadable
+            val activities = fetchActivitiesDetails(trip)
+            if (activities != emptyList<Activity>()) {
+               userViewModel.tempTripActivities = activities
+            }
         }
     }
 
+    LaunchedEffect(trip) {
+        if (trip != null) {
+            homeBase.value = trip.housingReadable
+
+        }
+
+    }
 
 
     Box(
@@ -212,18 +223,23 @@ fun Trip(id: String?, onClose: () -> Unit) {
                     }
 
                     if (selectedTab == "My Trip") {
-                        if (detailedActivitiesList != emptyList<Activity?>()) {
+                        if (userViewModel.tempTripActivities != emptyList<Activity>()) {
                             LazyColumn(modifier = Modifier.padding(top = 8.dp)) {
-                                items(detailedActivitiesList) { activity ->
-                                    if (activity != null) {
+                                items(userViewModel.tempTripActivities) { activity ->
                                         ListCard(
                                             activity = activity,
                                             isSelected = false, // Not selectable on this screen
                                             onCheckedChange = {}, // No action
                                             showCheckbox = false, // Hide the checkbox,
-                                            onClicked = {}
+                                            onClicked = {},
+                                            showDeleteIcon = true,
+                                            onDeleteClicked = {
+                                                if (trip != null) {
+                                                        scope.launch{userViewModel.updateTripActivities(trip.id!!,
+                                                            trip.primaryUser!!, activity, true)}
+                                                }
+                                            }
                                         )
-                                    }
                                 }
                             }
                         }
@@ -282,9 +298,9 @@ fun Trip(id: String?, onClose: () -> Unit) {
                                         userViewModel.wanttogoActivities,
                                         trip
                                     )
-                                } else if (detailedActivitiesList.isNotEmpty() && trip != null) {
+                                } else if (userViewModel.tempTripActivities.isNotEmpty() && trip != null) {
                                     recs = RecommendByDistance(
-                                        detailedActivitiesList[0]!!.location,
+                                        userViewModel.tempTripActivities[0].location,
                                         userViewModel.wanttogoActivities,
                                         trip
                                     )
@@ -316,14 +332,7 @@ fun Trip(id: String?, onClose: () -> Unit) {
                                         showCheckbox = false, // Hide the checkbox
                                         onClicked = {
                                             if (trip != null) {
-                                                coroutineScope.launch {
-                                                    onRecAdded(
-                                                        activity,
-                                                        userViewModel,
-                                                        coroutineScope,
-                                                        trip
-                                                    )
-                                                }
+                                                    scope.launch{userViewModel.updateTripActivities(trip.id!!, trip.primaryUser!!, activity)}
                                             }
                                         }
                                     )

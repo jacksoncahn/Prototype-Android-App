@@ -23,6 +23,7 @@ import kotlinx.serialization.json.buildJsonArray
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.put
+import kotlin.collections.List
 import kotlin.collections.plus
 
 //private val json = Json { ignoreUnknownKeys = true }
@@ -45,7 +46,8 @@ class UserViewModel: ViewModel() {
 //    var internalActivityViewModel = ActivitiesViewModel()
 
     var trips by mutableStateOf<List<Trip>>(emptyList())
-    var tripsActivities by mutableStateOf<Map<String, List<Activity>>>(emptyMap())
+
+    var tempTripActivities by mutableStateOf<List<Activity>>(emptyList())
 
     var tempUserStorage by mutableStateOf<User?>(null)
     
@@ -53,7 +55,6 @@ class UserViewModel: ViewModel() {
     var visited by mutableStateOf<List<String>>(emptyList())
     var notforme by mutableStateOf<List<String>>(emptyList())
     var skipped by mutableStateOf<List<String>>(emptyList())
-
 
     var wanttogoActivities by mutableStateOf<List<Activity>>(emptyList())
     var visitedActivities by mutableStateOf<List<Activity>>(emptyList())
@@ -142,6 +143,45 @@ class UserViewModel: ViewModel() {
             )
             ApiClient.tripUpdateOrCreate(trip)
         }
+
+        fetchUserTrips()
+    }
+
+    suspend fun updateTripActivities(
+        id: String,
+        primaryUser: String,
+        activity: Activity,
+        remove: Boolean = false
+    ) {
+        println("updatetripactivities called")
+
+        if (remove) {
+            tempTripActivities -= activity
+        } else {
+            tempTripActivities += activity
+        }
+
+        val tripActivitiesJson: JsonArray? = tempTripActivities.let { activities ->
+            buildJsonArray {
+                activities.forEach { activity ->
+                    val day = trips.find { it.id == id }?.tripActivitiesReadable?.find { it.activityId == activity.id }?.day
+                    add(
+                        buildJsonObject {
+                            put("activityId", activity.id)
+                            put("day", day)
+                        }
+                    )
+                }
+            }
+        }
+        println("createOrUpdateTrip tripActivities: $tempTripActivities")
+
+        val trip = Trip(
+            id = id,
+            primaryUser = primaryUser,
+            tripActivities = tripActivitiesJson
+        )
+        ApiClient.tripUpdateOrCreate(trip)
 
         fetchUserTrips()
     }

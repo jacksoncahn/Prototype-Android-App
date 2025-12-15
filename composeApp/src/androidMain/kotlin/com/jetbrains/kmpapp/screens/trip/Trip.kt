@@ -269,6 +269,7 @@ fun Trip(id: String?, onClose: () -> Unit) {
                             Column(modifier = Modifier.padding(16.dp)) {
                                 Text(
                                     text = "Trip Details",
+                                    color = Color.White,
                                     style = MaterialTheme.typography.headlineMedium
                                 )
                                 Spacer(modifier = Modifier.height(8.dp))

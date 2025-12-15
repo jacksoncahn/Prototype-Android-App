@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jetbrains.kmpapp.components.ListCard
+import com.jetbrains.kmpapp.components.TripListCard
 import com.mapnook.api.posts.ActivitiesViewModel
 import com.mapnook.api.posts.Trip
 import com.mapnook.api.posts.Activity
@@ -127,18 +128,16 @@ fun TripList(navigateTo: (String) -> Unit) {
                 items(userViewModel.trips, key = { it.id!! }) { trip ->
                     val representativeActivity = representativeActivities.value[trip.id.toString()]
                     println("representative Activity: $representativeActivity")
-                    if (representativeActivity != null) {
-                        ListCard(
+                        TripListCard(
                             activity = representativeActivity,
                             isSelected = false,
                             onCheckedChange = {},
                             showCheckbox = false,
                             onClicked = { navigateTo("trip/${trip.id}") },
-                            title = trip.name,
+                            title = trip.name!!,
                             showDeleteIcon = true,
                             onDeleteClicked = { tripToDelete = trip }
                         )
-                    }
                 }
             }
 

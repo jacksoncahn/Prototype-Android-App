@@ -298,13 +298,14 @@ fun Trip(id: String?, onClose: () -> Unit) {
                                         userViewModel.wanttogoActivities,
                                         trip
                                     )
-                                } else if (userViewModel.tempTripActivities.isNotEmpty() && trip != null) {
-                                    recs = RecommendByDistance(
-                                        userViewModel.tempTripActivities[0].location,
-                                        userViewModel.wanttogoActivities,
-                                        trip
-                                    )
                                 }
+//                                else if (userViewModel.tempTripActivities.isNotEmpty() && trip != null) {
+//                                    recs = RecommendByDistance(
+//                                        userViewModel.tempTripActivities[0].location,
+//                                        userViewModel.wanttogoActivities,
+//                                        trip
+//                                    )
+//                                }
                             }
                         }
 

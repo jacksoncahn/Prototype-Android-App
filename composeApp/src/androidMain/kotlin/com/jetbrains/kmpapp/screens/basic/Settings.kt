@@ -124,7 +124,7 @@ fun Settings(onClose: () -> Unit) { // Accept the ViewModel
                         Text(
                             text = tabName,
                             color = Color.White,
-                            fontSize = 10.sp
+                            fontSize = 12.sp
                         )
                     }
                 }

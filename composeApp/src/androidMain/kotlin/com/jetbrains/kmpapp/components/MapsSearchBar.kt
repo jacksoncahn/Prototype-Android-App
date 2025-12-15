@@ -15,6 +15,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 
 import androidx.compose.runtime.*
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import kotlinx.coroutines.tasks.await
 
@@ -97,6 +98,7 @@ fun MapsSearchBar(
         predictions.forEach { prediction ->
             Text(
                 text = prediction.getFullText(null).toString(),
+                color = Color.White,
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable {

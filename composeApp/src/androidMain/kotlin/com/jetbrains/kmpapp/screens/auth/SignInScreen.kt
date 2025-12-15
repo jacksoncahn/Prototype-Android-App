@@ -44,9 +44,9 @@ fun SignInScreen(onSignInClick: () -> Unit) {
 
     Column(
         modifier = Modifier.fillMaxSize().background(Color.Black),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Spacer(modifier = Modifier.weight(1f))
         Box(modifier = Modifier.fillMaxWidth()) {
 
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -90,6 +90,7 @@ fun SignInScreen(onSignInClick: () -> Unit) {
                 }
             }
         }
+        Spacer(modifier = Modifier.weight(2f))
     }
 }
 

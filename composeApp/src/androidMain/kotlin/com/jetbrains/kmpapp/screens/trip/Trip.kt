@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Tab
@@ -31,6 +32,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.TabRowDefaults
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.runtime.rememberCoroutineScope
@@ -45,6 +48,7 @@ import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.jetbrains.kmpapp.components.ListCard
 import com.jetbrains.kmpapp.components.MapsSearchBar
+import com.jetbrains.kmpapp.theme.AppThemeObject.colors
 import com.jetbrains.kmpapp.utils.shortlisting.RecommendByDistance
 import com.mapnook.api.posts.ActivitiesViewModel
 import com.mapnook.auth.UserViewModel
@@ -168,6 +172,7 @@ fun Trip(id: String?, onClose: () -> Unit) {
     }
 
 
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -199,7 +204,7 @@ fun Trip(id: String?, onClose: () -> Unit) {
                 color = Color.White
             )
 
-            Spacer(modifier = Modifier.height(50.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
             Surface(
                 modifier = Modifier
@@ -209,15 +214,31 @@ fun Trip(id: String?, onClose: () -> Unit) {
                     topStart = 16.dp,
                     topEnd = 16.dp
                 ), // Rounded corners at the top
-                color = MaterialTheme.colorScheme.background
+                color = Color.Black
             ) {
-                Column {
-                    TabRow(selectedTabIndex = tabs.indexOf(selectedTab)) {
+                Column(modifier = Modifier.fillMaxSize()) {
+                    TabRow(
+                        selectedTabIndex = tabs.indexOf(selectedTab),
+                        containerColor = Color.Black,          // background of the tab row
+                        contentColor = Color.White,            // default content color
+                        indicator = { tabPositions ->
+                            TabRowDefaults.Indicator(
+                                modifier = Modifier.tabIndicatorOffset(
+                                    tabPositions[tabs.indexOf(selectedTab)]
+                                ),
+                                color = Color.White             // indicator color
+                            )
+                        }
+                    ) {
                         tabs.forEach { title ->
                             Tab(
                                 selected = selectedTab == title,
                                 onClick = { selectedTab = title },
-                                text = { Text(title) }
+                                selectedContentColor = Color.White,
+                                unselectedContentColor = Color.Gray,
+                                text = {
+                                    Text(title)
+                                }
                             )
                         }
                     }
@@ -252,37 +273,68 @@ fun Trip(id: String?, onClose: () -> Unit) {
                                 )
                                 Spacer(modifier = Modifier.height(8.dp))
 
-                                if (editingHomeBase.value) {
-                                    Button(onClick = { editingHomeBase.value = false }, modifier = Modifier.align(Alignment.End)) {
-                                        Text("cancel search")
-                                    }
-                                    MapsSearchBar(onLocationSelected)
-                                } else {
-                                    if (homeBase.value.address == null || homeBase.value.address == "null") {
-                                        Button(onClick = { editingHomeBase.value = true }) {
-                                            Text("click to add your home base")
+                                    if (editingHomeBase.value) {
+                                        Button(
+                                            onClick = { editingHomeBase.value = false },
+                                            colors = ButtonDefaults.buttonColors(
+                                                containerColor = Color.White,
+                                                contentColor = Color.Black
+                                            ),
+                                            modifier = Modifier.align(Alignment.End)) {
+                                            Text("cancel search")
                                         }
-                                    } else if (homeBase.value.address != null) {
-                                        Row(horizontalArrangement = Arrangement.SpaceBetween) {
-                                            Text(homeBase.value.address!!, modifier = Modifier.fillMaxWidth(
-                                                0.6f
-                                            ))
-                                            Button(onClick = {
-                                                coroutineScope.launch {
-                                                    println("CLICKED REMOVE HOME BASE")
-                                                    userViewModel.createOrUpdateTrip(id = id, primaryUser = userViewModel.user!!.id, housing = Housing(null, null))
+                                        MapsSearchBar(onLocationSelected)
+                                    } else {
+                                        if (homeBase.value.address == null || homeBase.value.address == "null") {
+                                            Button(
+                                                onClick = { editingHomeBase.value = true },
+
+                                                colors = ButtonDefaults.buttonColors(
+                                                    containerColor = Color.White,
+                                                    contentColor = Color.Black
+                                                ),
+                                            )
+                                            {
+                                                Text("click to add your home base")
+                                            }
+
+                                        } else if (homeBase.value.address != null) {
+                                            Row(horizontalArrangement = Arrangement.SpaceBetween) {
+                                                Text(homeBase.value.address!!, modifier = Modifier.fillMaxWidth(
+                                                    0.6f
+                                                ), color = Color.White)
+                                                Button(
+                                                    onClick = {
+
+                                                        coroutineScope.launch {
+                                                            println("CLICKED REMOVE HOME BASE")
+                                                            userViewModel.createOrUpdateTrip(id = id, primaryUser = userViewModel.user!!.id, housing = Housing(null, null))
+                                                        }
+                                                    },
+                                                    colors = ButtonDefaults.buttonColors(
+                                                        containerColor = Color.White,
+                                                        contentColor = Color.Black
+                                                    )
+                                                    )
+                                                {
+                                                    Text("Remove housing")
                                                 }
-                                            }) {
-                                                Text("Remove housing")
+                                            }
+                                            Spacer(modifier = Modifier.height(16.dp))
+                                            Button(
+                                                onClick = {
+                                                    editingHomeBase.value = true },
+
+                                                colors = ButtonDefaults.buttonColors(
+                                                    containerColor = Color.White,
+                                                    contentColor = Color.Black)
+                                            )
+                                                {
+                                                Text("New home base")
                                             }
                                         }
-                                        Spacer(modifier = Modifier.height(16.dp))
-                                        Button(onClick = { editingHomeBase.value = true }) {
-                                            Text("New home base")
-                                        }
                                     }
-                                }
-                                Spacer(modifier = Modifier.height(8.dp))
+                                    Spacer(modifier = Modifier.height(8.dp))
 
                             }
                         }
@@ -337,7 +389,41 @@ fun Trip(id: String?, onClose: () -> Unit) {
                                             }
                                         }
                                     )
-                                }
+                            }
+//                            if (trip != null && trip.housingReadable.location == null) {
+//                                Spacer(modifier = Modifier.height(20.dp))
+//                                Text(
+//                                    "Please add a home base to your trip to get activity recommendations",
+//                                    modifier = Modifier.padding(start = 20.dp, end = 20.dp),
+//                                    color = Color.White
+//                                )
+//                            } else {
+//                                LazyColumn(modifier = Modifier.padding(top = 8.dp)) {
+//                                    item {
+//                                        Spacer(modifier = Modifier.height(20.dp))
+//                                        Text(
+//                                            text = "Click an activity to add it to your trip",
+//                                            modifier = Modifier.padding(start = 20.dp, end = 20.dp),
+//                                            color = Color.White
+//                                        )
+//                                        Spacer(modifier = Modifier.height(8.dp))
+//                                    }
+//                                    items(recs) { activity ->
+//                                        ListCard(
+//                                            activity = activity,
+//                                            isSelected = false, // Not selectable on this screen
+//                                            onCheckedChange = {}, // No action
+//                                            showCheckbox = false, // Hide the checkbox
+//                                            onClicked = {
+//                                                if (trip != null) {
+//                                                    coroutineScope.launch {
+//                                                        userViewModel.updateTripActivities(trip.id!!, userViewModel.user!!.id!!, activity)
+//                                                    }
+//                                                }
+//                                            }
+//                                        )
+//                                    }
+//                                }
                             }
 
                         }

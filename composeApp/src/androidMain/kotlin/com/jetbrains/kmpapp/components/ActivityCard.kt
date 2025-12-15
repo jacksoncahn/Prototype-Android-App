@@ -144,21 +144,21 @@ fun ActivityCardLarge(modifier: Modifier, detailView: MutableState<Boolean>, act
                 }
 
                 Row(modifier = Modifier.align(BottomEnd).padding(16.dp)) {
-                    IconButton(onClick = {scope.launch {userViewModel.saveUserAction(activity.id!!, "yes"); viewModel.visibleActivities -= activity; viewModel.selectedActivity = viewModel.visibleActivities.firstOrNull()}}, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp))) {
+                    IconButton(onClick = {scope.launch {viewModel.visibleActivities -= activity; viewModel.selectedActivity = viewModel.visibleActivities.firstOrNull(); userViewModel.saveUserAction(activity.id!!, "yes")}}, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp))) {
                         Icon(Icons.Default.ThumbUp, contentDescription = "want to go")
                     }
                     Spacer(modifier = Modifier.padding(horizontal = 8.dp))
-                    IconButton(onClick = {scope.launch {userViewModel.saveUserAction(activity.id!!, "no"); viewModel.visibleActivities -= activity; viewModel.selectedActivity = viewModel.visibleActivities[0]}}, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp))) {
+                    IconButton(onClick = {scope.launch {viewModel.visibleActivities -= activity; viewModel.selectedActivity = viewModel.visibleActivities.firstOrNull(); userViewModel.saveUserAction(activity.id!!, "no")}}, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp))) {
                         Icon(Icons.Default.ThumbDown, contentDescription = "not for me")
                     }
                 }
 
                 Row(modifier = Modifier.align(BottomStart).padding(16.dp)) {
-                    IconButton(onClick = {scope.launch {userViewModel.saveUserAction(activity.id!!, "skipped"); viewModel.visibleActivities -= activity; viewModel.selectedActivity = viewModel.visibleActivities[0]}}, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp))) {
+                    IconButton(onClick = {scope.launch {viewModel.visibleActivities -= activity; viewModel.selectedActivity = viewModel.visibleActivities.firstOrNull(); userViewModel.saveUserAction(activity.id!!, "skipped")}}, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp))) {
                         Icon(Icons.AutoMirrored.Filled.Redo, contentDescription = "skip activity")
                     }
                     Spacer(modifier = Modifier.padding(horizontal = 8.dp))
-                    IconButton(onClick = {scope.launch {userViewModel.saveUserAction(activity.id!!, "visited"); viewModel.visibleActivities -= activity; viewModel.selectedActivity = viewModel.visibleActivities[0]}}, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp))) {
+                    IconButton(onClick = {scope.launch {viewModel.visibleActivities -= activity; viewModel.selectedActivity = viewModel.visibleActivities.firstOrNull(); userViewModel.saveUserAction(activity.id!!, "visited")}}, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp))) {
                         Icon(Icons.Default.RemoveRedEye, contentDescription = "mark already visited")
                     }
                 }
@@ -256,21 +256,21 @@ fun ActivityCardSmall(modifier: Modifier, detailView: MutableState<Boolean>, act
              }
 
             Row(modifier = Modifier.align(BottomEnd).padding(16.dp)) {
-                IconButton(onClick = { scope.launch{userViewModel.saveUserAction(activity.id!!, "yes"); viewModel.visibleActivities -= activity; viewModel.selectedActivity = viewModel.visibleActivities.firstOrNull()} }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp))) {
+                IconButton(onClick = { scope.launch{viewModel.visibleActivities -= activity; viewModel.selectedActivity = viewModel.visibleActivities.firstOrNull(); userViewModel.saveUserAction(activity.id!!, "yes")} }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp))) {
                         Icon(Icons.Default.ThumbUp, contentDescription = "want to go")
                 }
                 Spacer(modifier = Modifier.padding(horizontal = 8.dp))
-                IconButton(onClick = { scope.launch{userViewModel.saveUserAction(activity.id!!, "no"); viewModel.visibleActivities -= activity; viewModel.selectedActivity = viewModel.visibleActivities.firstOrNull()} }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp))) {
+                IconButton(onClick = { scope.launch{viewModel.visibleActivities -= activity; viewModel.selectedActivity = viewModel.visibleActivities.firstOrNull(); userViewModel.saveUserAction(activity.id!!, "no")} }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp))) {
                         Icon(Icons.Default.ThumbDown, contentDescription = "not for me")
                 }
             }
 
             Row(modifier = Modifier.align(BottomStart).padding(16.dp)) {
-                IconButton(onClick = { scope.launch{userViewModel.saveUserAction(activity.id!!, "skipped"); viewModel.visibleActivities -= activity; viewModel.selectedActivity = viewModel.visibleActivities.firstOrNull()} }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp))) {
+                IconButton(onClick = { scope.launch{viewModel.visibleActivities -= activity; viewModel.selectedActivity = viewModel.visibleActivities.firstOrNull(); userViewModel.saveUserAction(activity.id!!, "skipped")} }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp))) {
                         Icon(Icons.AutoMirrored.Filled.Redo, contentDescription = "skip")
                 }
                 Spacer(modifier = Modifier.padding(horizontal = 8.dp))
-                IconButton(onClick = { scope.launch{userViewModel.saveUserAction(activity.id!!, "visited"); viewModel.visibleActivities -= activity; viewModel.selectedActivity = viewModel.visibleActivities.firstOrNull()} }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp))) {
+                IconButton(onClick = { scope.launch{viewModel.visibleActivities -= activity; viewModel.selectedActivity = viewModel.visibleActivities.firstOrNull(); userViewModel.saveUserAction(activity.id!!, "visited")} }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp))) {
                         Icon(Icons.Default.RemoveRedEye, contentDescription = "already visited")
                 }
             }

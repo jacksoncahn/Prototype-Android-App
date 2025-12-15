@@ -260,9 +260,11 @@ class UserViewModel: ViewModel() {
                 for (userAction in response) {
                     if (userAction.activityId !in wanttogo) {
                         val activity = fetchActivity(userAction.activityId!!)
-                        wanttogo += userAction.activityId
-                        if (activity != null) {
-                            wanttogoActivities += activity
+                        if (userAction.activityId !in wanttogo) {
+                            wanttogo += userAction.activityId
+                            if (activity != null) {
+                                wanttogoActivities += activity
+                            }
                         }
                     }
                 }
@@ -271,9 +273,11 @@ class UserViewModel: ViewModel() {
                 for (userAction in response) {
                     if (userAction.activityId !in notforme) {
                         val activity = fetchActivity(userAction.activityId!!)
-                        notforme += userAction.activityId
-                        if (activity != null) {
-                            notformeActivities += activity
+                        if (userAction.activityId !in notforme) {
+                            notforme += userAction.activityId
+                            if (activity != null) {
+                                notformeActivities += activity
+                            }
                         }
                     }
                 }
@@ -282,9 +286,11 @@ class UserViewModel: ViewModel() {
                 for (userAction in response) {
                     if (userAction.activityId !in skipped) {
                         val activity = fetchActivity(userAction.activityId!!)
-                        skipped += userAction.activityId
-                        if (activity != null) {
-                            skippedActivities += activity
+                        if (userAction.activityId !in skipped) {
+                            skipped += userAction.activityId
+                            if (activity != null) {
+                                skippedActivities += activity
+                            }
                         }
                     }
                 }
@@ -293,9 +299,11 @@ class UserViewModel: ViewModel() {
                 for (userAction in response) {
                     if (userAction.activityId !in visited) {
                         val activity = fetchActivity(userAction.activityId!!)
-                        visited += userAction.activityId
-                        if (activity != null) {
-                            visitedActivities += activity
+                        if (userAction.activityId !in visited) {
+                            visited += userAction.activityId
+                            if (activity != null) {
+                                visitedActivities += activity
+                            }
                         }
                     }
                 }
@@ -313,7 +321,6 @@ class UserViewModel: ViewModel() {
     }
 
     suspend fun deleteUserAction(activityId: String, type: String) {
-        ApiClient.deleteUserAction(user!!.id!!, activityId, type)
         when (type) {
             "yes" -> {
                 wanttogo -= activityId
@@ -332,6 +339,7 @@ class UserViewModel: ViewModel() {
                 visitedActivities -= visitedActivities.first { it.id == activityId }
             }
         }
+        ApiClient.deleteUserAction(user!!.id!!, activityId, type)
         fetchUserActions(type)
     }
 

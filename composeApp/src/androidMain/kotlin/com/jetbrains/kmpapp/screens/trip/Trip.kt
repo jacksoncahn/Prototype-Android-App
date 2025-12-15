@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Tab
@@ -31,6 +32,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.TabRowDefaults
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.runtime.rememberCoroutineScope
@@ -45,6 +48,7 @@ import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.jetbrains.kmpapp.components.ListCard
 import com.jetbrains.kmpapp.components.MapsSearchBar
+import com.jetbrains.kmpapp.theme.AppThemeObject.colors
 import com.jetbrains.kmpapp.utils.shortlisting.RecommendByDistance
 import com.mapnook.api.posts.ActivitiesViewModel
 import com.mapnook.auth.UserViewModel
@@ -115,13 +119,6 @@ fun Trip(id: String?, onClose: () -> Unit) {
         viewModelStoreOwner = LocalActivity.current as ComponentActivity
     )
 
-    //any vars or vals that are created using "by remember" will TRIGGER RECOMPOSITIONS when they change
-    //so when we change housing, e.g. change editingHomeBase (or some other such variable with the type detailed above), we recompose everything,  create a new trip val, etc.
-    //this is probably inefficient, but it works atm
-
-    //also, we are fetching full (detailed versions of ->) activities using activityId stored in trip dataclass, WHEN THIS COMPOSABLE COMPOSES
-    //because to do so when we initially fetch trips would cause the trip list population to take a noticeably long time, especially if the user navigates straight to that page
-
     var selectedTab by remember { mutableStateOf("My Trip") }
 
     val tabs = listOf("My Trip", "Add Activities", "Trip Details")
@@ -188,7 +185,7 @@ fun Trip(id: String?, onClose: () -> Unit) {
                 color = Color.White
             )
 
-            Spacer(modifier = Modifier.height(50.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
             Surface(
                 modifier = Modifier
@@ -198,144 +195,191 @@ fun Trip(id: String?, onClose: () -> Unit) {
                     topStart = 16.dp,
                     topEnd = 16.dp
                 ), // Rounded corners at the top
-                color = MaterialTheme.colorScheme.background
+                color = Color.Black
             ) {
-                Column {
-                    TabRow(selectedTabIndex = tabs.indexOf(selectedTab)) {
+                Column(modifier = Modifier.fillMaxSize()) {
+                    TabRow(
+                        selectedTabIndex = tabs.indexOf(selectedTab),
+                        containerColor = Color.Black,          // background of the tab row
+                        contentColor = Color.White,            // default content color
+                        indicator = { tabPositions ->
+                            TabRowDefaults.Indicator(
+                                modifier = Modifier.tabIndicatorOffset(
+                                    tabPositions[tabs.indexOf(selectedTab)]
+                                ),
+                                color = Color.White             // indicator color
+                            )
+                        }
+                    ) {
                         tabs.forEach { title ->
                             Tab(
                                 selected = selectedTab == title,
                                 onClick = { selectedTab = title },
-                                text = { Text(title) }
+                                selectedContentColor = Color.White,
+                                unselectedContentColor = Color.Gray,
+                                text = {
+                                    Text(title)
+                                }
                             )
                         }
                     }
+                    when (selectedTab) {
+                        "My Trip" -> {
+                            if (detailedActivitiesList.isNotEmpty()) {
+                                LazyColumn(modifier = Modifier.padding(top = 8.dp)) {
+                                    items(detailedActivitiesList) { activity ->
+                                        if (activity != null) {
+                                            ListCard(
+                                                activity = activity,
+                                                isSelected = false, // Not selectable on this screen
+                                                onCheckedChange = {}, // No action
+                                                showCheckbox = false, // Hide the checkbox,
+                                                onClicked = {}
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        "Trip Details" -> {
+                            if (id != null) {
+                                Column(modifier = Modifier.padding(16.dp)) {
+                                    Text(
+                                        text = "Trip Details", color = Color.White,
+                                        style = MaterialTheme.typography.headlineMedium
+                                    )
+                                    Spacer(modifier = Modifier.height(8.dp))
 
-                    if (selectedTab == "My Trip") {
-                        if (detailedActivitiesList != emptyList<Activity?>()) {
-                            LazyColumn(modifier = Modifier.padding(top = 8.dp)) {
-                                items(detailedActivitiesList) { activity ->
-                                    if (activity != null) {
+                                    if (editingHomeBase.value) {
+                                        Button(
+                                            onClick = { editingHomeBase.value = false },
+                                            colors = ButtonDefaults.buttonColors(
+                                                containerColor = Color.White,
+                                                contentColor = Color.Black
+                                            ),
+                                            modifier = Modifier.align(Alignment.End)) {
+                                            Text("cancel search")
+                                        }
+                                        MapsSearchBar(onLocationSelected)
+                                    } else {
+                                        if (homeBase.value.address == null || homeBase.value.address == "null") {
+                                            Button(
+                                                onClick = { editingHomeBase.value = true },
+
+                                                colors = ButtonDefaults.buttonColors(
+                                                    containerColor = Color.White,
+                                                    contentColor = Color.Black
+                                                ),
+                                            )
+                                            {
+                                                Text("click to add your home base")
+                                            }
+
+                                        } else if (homeBase.value.address != null) {
+                                            Row(horizontalArrangement = Arrangement.SpaceBetween) {
+                                                Text(homeBase.value.address!!, modifier = Modifier.fillMaxWidth(
+                                                    0.6f
+                                                ), color = Color.White)
+                                                Button(
+                                                    onClick = {
+
+                                                        coroutineScope.launch {
+                                                            println("CLICKED REMOVE HOME BASE")
+                                                            userViewModel.createOrUpdateTrip(id = id, primaryUser = userViewModel.user!!.id, housing = Housing(null, null))
+                                                        }
+                                                    },
+                                                    colors = ButtonDefaults.buttonColors(
+                                                        containerColor = Color.White,
+                                                        contentColor = Color.Black
+                                                    )
+                                                    )
+                                                {
+                                                    Text("Remove housing")
+                                                }
+                                            }
+                                            Spacer(modifier = Modifier.height(16.dp))
+                                            Button(
+                                                onClick = {
+                                                    editingHomeBase.value = true },
+
+                                                colors = ButtonDefaults.buttonColors(
+                                                    containerColor = Color.White,
+                                                    contentColor = Color.Black)
+                                            )
+                                                {
+                                                Text("New home base")
+                                            }
+                                        }
+                                    }
+                                    Spacer(modifier = Modifier.height(8.dp))
+
+                                }
+                            }
+                        }
+                        "Add Activities" -> { // Recommendations
+                            if (id != null) {
+                                LaunchedEffect(trip) {
+                                    val location = trip?.housingReadable?.location
+                                    if (location != null) {
+                                        recs = RecommendByDistance(
+                                            location,
+                                            userViewModel.wanttogoActivities,
+                                            trip
+                                        )
+                                    } else if (detailedActivitiesList.isNotEmpty() && trip != null) {
+                                        recs = RecommendByDistance(
+                                            detailedActivitiesList[0]!!.location,
+                                            userViewModel.wanttogoActivities,
+                                            trip
+                                        )
+                                    }
+                                }
+                            }
+
+                            if (trip != null && trip.housingReadable.location == null) {
+                                Spacer(modifier = Modifier.height(20.dp))
+                                Text(
+                                    "Please add a home base to your trip to get activity recommendations",
+                                    modifier = Modifier.padding(start = 20.dp, end = 20.dp),
+                                    color = Color.White
+                                )
+                            } else {
+                                LazyColumn(modifier = Modifier.padding(top = 8.dp)) {
+                                    item {
+                                        Spacer(modifier = Modifier.height(20.dp))
+                                        Text(
+                                            text = "Click an activity to add it to your trip",
+                                            modifier = Modifier.padding(start = 20.dp, end = 20.dp),
+                                            color = Color.White
+                                        )
+                                        Spacer(modifier = Modifier.height(8.dp))
+                                    }
+                                    items(recs) { activity ->
                                         ListCard(
                                             activity = activity,
                                             isSelected = false, // Not selectable on this screen
                                             onCheckedChange = {}, // No action
-                                            showCheckbox = false, // Hide the checkbox,
-                                            onClicked = {}
+                                            showCheckbox = false, // Hide the checkbox
+                                            onClicked = {
+                                                if (trip != null) {
+                                                    coroutineScope.launch {
+                                                        onRecAdded(
+                                                            activity,
+                                                            userViewModel,
+                                                            coroutineScope,
+                                                            trip
+                                                        )
+                                                    }
+                                                }
+                                            }
                                         )
                                     }
                                 }
                             }
                         }
-                    } else if (selectedTab == "Trip Details") {
-                        if (id != null) {
-                            Column(modifier = Modifier.padding(16.dp)) {
-                                Text(
-                                    text = "Trip Details",
-                                    style = MaterialTheme.typography.headlineMedium
-                                )
-                                Spacer(modifier = Modifier.height(8.dp))
-
-                                if (editingHomeBase.value) {
-                                    Button(onClick = { editingHomeBase.value = false }, modifier = Modifier.align(Alignment.End)) {
-                                        Text("cancel search")
-                                    }
-                                    MapsSearchBar(onLocationSelected)
-                                } else {
-                                    if (homeBase.value.address == null || homeBase.value.address == "null") {
-                                        Button(onClick = { editingHomeBase.value = true }) {
-                                            Text("click to add your home base")
-                                        }
-                                    } else if (homeBase.value.address != null) {
-                                        Row(horizontalArrangement = Arrangement.SpaceBetween) {
-                                            Text(homeBase.value.address!!, modifier = Modifier.fillMaxWidth(
-                                                0.6f
-                                            ))
-                                            Button(onClick = {
-                                                coroutineScope.launch {
-                                                    println("CLICKED REMOVE HOME BASE")
-                                                    userViewModel.createOrUpdateTrip(id = id, primaryUser = userViewModel.user!!.id, housing = Housing(null, null))
-                                                }
-                                            }) {
-                                                Text("Remove housing")
-                                            }
-                                        }
-                                        Spacer(modifier = Modifier.height(16.dp))
-                                        Button(onClick = { editingHomeBase.value = true }) {
-                                            Text("New home base")
-                                        }
-                                    }
-                                }
-                                Spacer(modifier = Modifier.height(8.dp))
-
-                            }
-                        }
-
-                    } else { // Recommendations
-                        // Recommendations Tab UI
-                        if (id != null) {
-                            LaunchedEffect(trip) {
-                                val location = trip?.housingReadable?.location
-                                if (location != null) {
-                                    recs = RecommendByDistance(
-                                        location,
-                                        userViewModel.wanttogoActivities,
-                                        trip
-                                    )
-                                } else if (detailedActivitiesList.isNotEmpty() && trip != null) {
-                                    recs = RecommendByDistance(
-                                        detailedActivitiesList[0]!!.location,
-                                        userViewModel.wanttogoActivities,
-                                        trip
-                                    )
-                                }
-                            }
-                        }
-
-                        if (trip != null && trip.housingReadable.location == null) {
-                            Spacer(modifier = Modifier.height(20.dp))
-                            Text(
-                                "Please add a home base to your trip to get activity recommendations",
-                                modifier = Modifier.padding(start = 20.dp, end = 20.dp)
-                            )
-                        } else {
-                            LazyColumn(modifier = Modifier.padding(top = 8.dp)) {
-                                item {
-                                    Spacer(modifier = Modifier.height(20.dp))
-                                    Text(
-                                        text = "Click an activity to add it to your trip",
-                                        modifier = Modifier.padding(start = 20.dp, end = 20.dp)
-                                    )
-                                    Spacer(modifier = Modifier.height(8.dp))
-                                }
-                                items(recs) { activity ->
-                                    ListCard(
-                                        activity = activity,
-                                        isSelected = false, // Not selectable on this screen
-                                        onCheckedChange = {}, // No action
-                                        showCheckbox = false, // Hide the checkbox
-                                        onClicked = {
-                                            if (trip != null) {
-                                                coroutineScope.launch {
-                                                    onRecAdded(
-                                                        activity,
-                                                        userViewModel,
-                                                        coroutineScope,
-                                                        trip
-                                                    )
-                                                }
-                                            }
-                                        }
-                                    )
-                                }
-                            }
-
-                        }
-
                     }
                 }
             }
         }
     }
-
 }

@@ -86,7 +86,7 @@ fun ActivityCard(modifier: Modifier, detailView: MutableState<Boolean>, activity
 }
 
 @Composable
-fun ActivityCardLarge(modifier: Modifier, detailView: MutableState<Boolean>, activity: Activity, scope: CoroutineScope) {
+fun ActivityCardLarge(modifier: Modifier, detailView: MutableState<Boolean>, activity: Activity, scope: CoroutineScope, tripActivity: Boolean = false) {
 
     //should access shared viewModel for activities
     val viewModel: ActivitiesViewModel = viewModel(
@@ -100,6 +100,8 @@ fun ActivityCardLarge(modifier: Modifier, detailView: MutableState<Boolean>, act
 
     val descriptionLarge = remember {mutableStateOf(false)}
 
+    val backgroundColor = if (tripActivity) Color.DarkGray else Color.Black
+
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -111,7 +113,7 @@ fun ActivityCardLarge(modifier: Modifier, detailView: MutableState<Boolean>, act
     ) {
         Column(
             modifier = Modifier.verticalScroll(rememberScrollState())
-                .background(color = Color.Black)
+                .background(color = backgroundColor)
                 .fillMaxSize()
         ) {
             Box(modifier = Modifier.fillMaxWidth()) {
@@ -124,12 +126,13 @@ fun ActivityCardLarge(modifier: Modifier, detailView: MutableState<Boolean>, act
                 )
 
 
-                Box(modifier = Modifier.padding(16.dp).align(TopEnd)) {
-                    IconButton(onClick = { detailView.value = false }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp))) {
-                        Icon(Icons.AutoMirrored.Filled.CallReceived, contentDescription = "Enlarge")
+                if (!tripActivity) {
+                    Box(modifier = Modifier.padding(16.dp).align(TopEnd)) {
+                        IconButton(onClick = { detailView.value = false }, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp))) {
+                            Icon(Icons.AutoMirrored.Filled.CallReceived, contentDescription = "Enlarge")
+                        }
                     }
                 }
-
 
                 Column(horizontalAlignment = Start, modifier = Modifier.padding(all = 16.dp).width(250.dp)) {
                     Text(
@@ -141,23 +144,25 @@ fun ActivityCardLarge(modifier: Modifier, detailView: MutableState<Boolean>, act
                         modifier = Modifier.padding(horizontal = 4.dp).padding(top = 4.dp))
                 }
 
-                Row(modifier = Modifier.align(BottomEnd).padding(16.dp)) {
-                    IconButton(onClick = {scope.launch {viewModel.visibleActivities -= activity; viewModel.selectedActivity = viewModel.visibleActivities.firstOrNull(); userViewModel.saveUserAction(activity.id!!, "yes")}}, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp))) {
-                        Icon(Icons.Default.ThumbUp, contentDescription = "want to go")
+                if (!tripActivity) {
+                    Row(modifier = Modifier.align(BottomEnd).padding(16.dp)) {
+                        IconButton(onClick = {scope.launch {viewModel.visibleActivities -= activity; viewModel.selectedActivity = viewModel.visibleActivities.firstOrNull(); userViewModel.saveUserAction(activity.id!!, "yes")}}, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp))) {
+                            Icon(Icons.Default.ThumbUp, contentDescription = "want to go")
+                        }
+                        Spacer(modifier = Modifier.padding(horizontal = 8.dp))
+                        IconButton(onClick = {scope.launch {viewModel.visibleActivities -= activity; viewModel.selectedActivity = viewModel.visibleActivities.firstOrNull(); userViewModel.saveUserAction(activity.id!!, "no")}}, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp))) {
+                            Icon(Icons.Default.ThumbDown, contentDescription = "not for me")
+                        }
                     }
-                    Spacer(modifier = Modifier.padding(horizontal = 8.dp))
-                    IconButton(onClick = {scope.launch {viewModel.visibleActivities -= activity; viewModel.selectedActivity = viewModel.visibleActivities.firstOrNull(); userViewModel.saveUserAction(activity.id!!, "no")}}, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp))) {
-                        Icon(Icons.Default.ThumbDown, contentDescription = "not for me")
-                    }
-                }
 
-                Row(modifier = Modifier.align(BottomStart).padding(16.dp)) {
-                    IconButton(onClick = {scope.launch {viewModel.visibleActivities -= activity; viewModel.selectedActivity = viewModel.visibleActivities.firstOrNull(); userViewModel.saveUserAction(activity.id!!, "skipped")}}, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp))) {
-                        Icon(Icons.AutoMirrored.Filled.Redo, contentDescription = "skip activity")
-                    }
-                    Spacer(modifier = Modifier.padding(horizontal = 8.dp))
-                    IconButton(onClick = {scope.launch {viewModel.visibleActivities -= activity; viewModel.selectedActivity = viewModel.visibleActivities.firstOrNull(); userViewModel.saveUserAction(activity.id!!, "visited")}}, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp))) {
-                        Icon(Icons.Default.RemoveRedEye, contentDescription = "mark already visited")
+                    Row(modifier = Modifier.align(BottomStart).padding(16.dp)) {
+                        IconButton(onClick = {scope.launch {viewModel.visibleActivities -= activity; viewModel.selectedActivity = viewModel.visibleActivities.firstOrNull(); userViewModel.saveUserAction(activity.id!!, "skipped")}}, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp))) {
+                            Icon(Icons.AutoMirrored.Filled.Redo, contentDescription = "skip activity")
+                        }
+                        Spacer(modifier = Modifier.padding(horizontal = 8.dp))
+                        IconButton(onClick = {scope.launch {viewModel.visibleActivities -= activity; viewModel.selectedActivity = viewModel.visibleActivities.firstOrNull(); userViewModel.saveUserAction(activity.id!!, "visited")}}, modifier = Modifier.background(color = Color.White.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp))) {
+                            Icon(Icons.Default.RemoveRedEye, contentDescription = "mark already visited")
+                        }
                     }
                 }
             }
@@ -196,6 +201,7 @@ fun ActivityCardLarge(modifier: Modifier, detailView: MutableState<Boolean>, act
                         }
                     }
                 }
+                Spacer(modifier = Modifier.height(40.dp))
             }
 
             Column(modifier = Modifier.padding(16.dp)) {

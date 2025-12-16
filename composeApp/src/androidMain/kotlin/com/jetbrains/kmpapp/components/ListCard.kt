@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
@@ -38,7 +39,9 @@ fun ListCard(
     onClicked: () -> Unit,
     title: String? = null,
     showDeleteIcon: Boolean = false, // Controls visibility of the delete icon
-    onDeleteClicked: () -> Unit = {} // Callback for delete action
+    onDeleteClicked: () -> Unit = {},
+    tripActivity: Boolean = false, // Callback for delete action
+    onAddClicked: () -> Unit = {}
 ) {
     Row(
         modifier = Modifier
@@ -67,7 +70,11 @@ fun ListCard(
 
         Column(modifier = Modifier.padding(horizontal = 8.dp).widthIn(max = 150.dp).height(70.dp)) {
             if (title == null) {
-                Text(activity.name ?: "Unnamed Location", color = Color.White, style = MaterialTheme.typography.bodyLarge)
+                Text(
+                    activity.name ?: "Unnamed Location",
+                    color = Color.White,
+                    style = MaterialTheme.typography.bodyLarge
+                )
             } else {
                 Text(title, color = Color.White, style = MaterialTheme.typography.bodyLarge)
             }
@@ -90,6 +97,12 @@ fun ListCard(
         if (showDeleteIcon) {
             IconButton(onClick = onDeleteClicked, modifier = Modifier.padding(end = 8.dp)) {
                 Icon(Icons.Default.Delete, contentDescription = "Delete Trip", tint = Color.White)
+            }
+        }
+
+        if (tripActivity) {
+            IconButton(onClick = onAddClicked, modifier = Modifier.padding(end = 8.dp)) {
+                Icon(Icons.Default.Add, contentDescription = "Delete Trip", tint = Color.White)
             }
         }
     }

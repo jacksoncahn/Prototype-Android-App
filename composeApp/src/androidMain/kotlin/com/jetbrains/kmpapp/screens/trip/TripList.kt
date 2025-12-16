@@ -131,7 +131,7 @@ fun TripList(navigateTo: (String) -> Unit) {
                             isSelected = false,
                             onCheckedChange = {},
                             showCheckbox = false,
-                            onClicked = { navigateTo("trip/${trip.id}") },
+                            onClicked = { coroutineScope.launch{userViewModel.tempTripActivities = emptyList(); navigateTo("trip/${trip.id}")} },
                             title = trip.name!!,
                             showDeleteIcon = true,
                             onDeleteClicked = { tripToDelete = trip }

@@ -139,7 +139,7 @@ fun Trip(id: String?, onClose: () -> Unit) {
 
     var selectedTab by remember { mutableStateOf("My Trip") }
 
-    val tabs = listOf("My Trip", "Add Activities", "Trip Details")
+    val tabs = listOf("My Trip", "Recommended", "Trip Details")
 
     val trip = userViewModel.trips.find { it.id.toString() == id }
 
@@ -204,59 +204,59 @@ fun Trip(id: String?, onClose: () -> Unit) {
                     )
                 }
                 ActivityCardLarge(Modifier, mutableStateOf(true), selectedActivity!!, coroutineScope, true)
-                if (selectedTab == "My Trip") {
-                    IconButton(
-                        onClick = {
-                            if (trip != null) {
-                                scope.launch{
-                                    userViewModel.updateTripActivities(trip.id!!,
-                                        trip.primaryUser!!,
-                                        selectedActivity!!,
-                                        true
-                                    )};
-                                selectedActivity = null
-                            }
-                        },
-                        modifier = Modifier
-                            .align(Alignment.BottomCenter)
-                            .padding(start = 16.dp, end = 16.dp)
-                            .zIndex(1f) // ensures it hovers above
-
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Delete,
-                            contentDescription = "Delete from trip",
-                            tint = Color.White,
-                            modifier = Modifier.size(64.dp)
-                        )
-                    }
-                } else if (selectedTab == "Add Activities") {
-                    IconButton(
-                        onClick = {
-                            if (trip != null) {
+            }
+            if (selectedTab == "My Trip") {
+                IconButton(
+                    onClick = {
+                        if (trip != null) {
                             scope.launch{
                                 userViewModel.updateTripActivities(trip.id!!,
-                                trip.primaryUser!!,
-                                    selectedActivity!!
-                                )};
-                                selectedActivity = null
+                                    trip.primaryUser!!,
+                                    selectedActivity!!,
+                                    true
+                                ); selectedActivity = null
                             }
-                                  },
-                        modifier = Modifier
-                            .align(Alignment.BottomCenter)
-                            .padding(start = 16.dp, end = 16.dp)
-                            .zIndex(1f) // ensures it hovers above
+                        }
+                    },
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .padding(start = 16.dp, end = 16.dp, bottom = 40.dp)
+                        .zIndex(1f) // ensures it hovers above4
 
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Add,
-                            contentDescription = "Add to trip",
-                            tint = Color.White,
-                            modifier = Modifier.size(72.dp)
-                        )
-                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = "Delete from trip",
+                        tint = Color.White,
+                        modifier = Modifier.size(64.dp)
+                    )
                 }
+            } else if (selectedTab == "Recommended") {
+                IconButton(
+                    onClick = {
+                        if (trip != null) {
+                            scope.launch{
+                                userViewModel.updateTripActivities(trip.id!!,
+                                    trip.primaryUser!!,
 
+                                    selectedActivity!!
+
+                                );  selectedActivity = null}
+                        }
+                    },
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .padding(start = 16.dp, end = 16.dp, bottom = 40.dp)
+                        .zIndex(1f) // ensures it hovers above
+
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = "Add to trip",
+                        tint = Color.White,
+                        modifier = Modifier.size(67.dp)
+                    )
+                }
             }
         } else {
             IconButton(

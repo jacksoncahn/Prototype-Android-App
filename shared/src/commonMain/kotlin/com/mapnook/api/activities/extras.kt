@@ -1,9 +1,6 @@
-package com.mapnook.api.posts
+package com.mapnook.api.activities
 
-import androidx.lifecycle.viewModelScope
 import com.mapnook.api.ApiClient
-import kotlinx.coroutines.launch
-import kotlin.collections.plus
 
 suspend fun fetchActivity(activityId: String): Activity? {
         try {

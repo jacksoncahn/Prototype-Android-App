@@ -34,7 +34,7 @@ import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.jetbrains.kmpapp.components.Searchbar
 import com.jetbrains.kmpapp.components.ActivityCard
-import com.mapnook.api.posts.ActivitiesViewModel
+import com.mapnook.api.activities.ActivitiesViewModel
 import kotlinx.coroutines.launch
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.LocalActivity

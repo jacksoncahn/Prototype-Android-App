@@ -48,17 +48,14 @@ import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.jetbrains.kmpapp.components.ListCard
 import com.jetbrains.kmpapp.components.MapsSearchBar
-import com.jetbrains.kmpapp.theme.AppThemeObject.colors
 import com.jetbrains.kmpapp.utils.shortlisting.RecommendByDistance
-import com.mapnook.api.posts.ActivitiesViewModel
-import com.mapnook.auth.UserViewModel
-import com.mapnook.api.posts.Activity
-import com.mapnook.api.posts.Housing
-import com.mapnook.api.posts.Trip
-import com.mapnook.api.posts.TripActivity
-import com.mapnook.api.posts.fetchActivity
+import com.mapnook.api.activities.ActivitiesViewModel
+import com.mapnook.api.user.UserViewModel
+import com.mapnook.api.activities.Activity
+import com.mapnook.api.trips.Housing
+import com.mapnook.api.trips.Trip
+import com.mapnook.api.activities.fetchActivity
 import kotlinx.coroutines.launch
-import kotlinx.serialization.json.Json
 
 //helper functions
 private fun handleLocationSelected(place: Place, trip: Trip, userViewModel: UserViewModel, coroutineScope: kotlinx.coroutines.CoroutineScope) {

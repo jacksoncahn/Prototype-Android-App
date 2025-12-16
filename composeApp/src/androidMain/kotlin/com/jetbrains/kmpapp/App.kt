@@ -38,8 +38,8 @@ import com.jetbrains.kmpapp.screens.basic.Settings
 import com.jetbrains.kmpapp.screens.trip.Trip
 import com.jetbrains.kmpapp.screens.trip.TripList
 import com.jetbrains.kmpapp.screens.trip.TripPlanner
-import com.mapnook.api.posts.ActivitiesViewModel
-import com.mapnook.auth.UserViewModel
+import com.mapnook.api.activities.ActivitiesViewModel
+import com.mapnook.api.user.UserViewModel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 

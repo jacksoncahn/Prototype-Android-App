@@ -2,9 +2,8 @@ package com.jetbrains.kmpapp.utils.shortlisting
 
 import com.google.maps.android.SphericalUtil
 import com.google.android.gms.maps.model.LatLng
-import com.mapnook.api.posts.ActivitiesViewModel
-import com.mapnook.api.posts.Activity
-import com.mapnook.api.posts.Trip
+import com.mapnook.api.activities.Activity
+import com.mapnook.api.trips.Trip
 import java.util.PriorityQueue
 
 //val p1 = LatLng(1.0, 1.0)

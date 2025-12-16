@@ -1,9 +1,7 @@
-package com.mapnook.api
+package com.mapnook.api.user
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
 //import kotlinx.datetime.LocalDateTime
-import kotlinx.serialization.json.JsonElement
 
 //@Serializable
 //data class Housing(

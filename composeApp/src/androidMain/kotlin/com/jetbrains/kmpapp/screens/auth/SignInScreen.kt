@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.mapnook.auth.UserViewModel
+import com.mapnook.api.user.UserViewModel
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable

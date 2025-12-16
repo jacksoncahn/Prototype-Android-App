@@ -27,7 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import com.mapnook.api.posts.Activity
+import com.mapnook.api.activities.Activity
 
 @Composable
 fun ListCard(

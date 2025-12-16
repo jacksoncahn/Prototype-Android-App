@@ -36,10 +36,9 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.android.gms.maps.model.LatLng
 import com.jetbrains.kmpapp.components.ListCard
-import com.mapnook.api.posts.ActivitiesViewModel
-import com.mapnook.api.posts.TripActivity
-import com.mapnook.auth.UserViewModel
-import com.rickclephas.kmp.observableviewmodel.ViewModel
+import com.mapnook.api.activities.ActivitiesViewModel
+import com.mapnook.api.trips.TripActivity
+import com.mapnook.api.user.UserViewModel
 import kotlinx.coroutines.launch
 
 @Composable

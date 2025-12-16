@@ -35,13 +35,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.jetbrains.kmpapp.components.ListCard
 import com.jetbrains.kmpapp.components.TripListCard
-import com.mapnook.api.posts.ActivitiesViewModel
-import com.mapnook.api.posts.Trip
-import com.mapnook.api.posts.Activity
-import com.mapnook.api.posts.fetchActivity
-import com.mapnook.auth.UserViewModel
+import com.mapnook.api.trips.Trip
+import com.mapnook.api.activities.Activity
+import com.mapnook.api.activities.fetchActivity
+import com.mapnook.api.user.UserViewModel
 import kotlinx.coroutines.launch
 import kotlin.collections.forEach
 

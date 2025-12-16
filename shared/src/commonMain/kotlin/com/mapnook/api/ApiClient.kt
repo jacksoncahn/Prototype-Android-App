@@ -1,8 +1,9 @@
 package com.mapnook.api
 
-import com.mapnook.api.posts.Activity
-import com.mapnook.api.posts.Trip
-import com.mapnook.auth.User
+import com.mapnook.api.activities.Activity
+import com.mapnook.api.trips.Trip
+import com.mapnook.api.user.User
+import com.mapnook.api.user.UserAction
 import io.ktor.client.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*

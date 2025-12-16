@@ -1,4 +1,4 @@
-package com.mapnook.api.posts
+package com.mapnook.api.activities
 
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient

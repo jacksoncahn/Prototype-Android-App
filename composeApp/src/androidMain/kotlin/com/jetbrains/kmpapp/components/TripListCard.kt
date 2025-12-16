@@ -33,7 +33,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.jetbrains.kmpapp.R
-import com.mapnook.api.posts.Activity
+import com.mapnook.api.activities.Activity
 
 @Composable
 fun TripListCard(

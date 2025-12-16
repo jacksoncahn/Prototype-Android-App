@@ -44,16 +44,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.Alignment.Companion.Start
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.Alignment.Companion.TopEnd
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
-import com.mapnook.api.posts.ActivitiesViewModel
-import com.mapnook.api.posts.Activity
-import com.mapnook.auth.UserViewModel
+import com.mapnook.api.activities.ActivitiesViewModel
+import com.mapnook.api.activities.Activity
+import com.mapnook.api.user.UserViewModel
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 @SuppressLint("CoroutineCreationDuringComposition")

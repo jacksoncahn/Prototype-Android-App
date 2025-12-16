@@ -28,7 +28,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.jetbrains.kmpapp.R
-import com.mapnook.auth.UserViewModel
+import com.mapnook.api.user.UserViewModel
 
 @Composable
 fun Menu(navController: NavController, modifier: Modifier = Modifier) {

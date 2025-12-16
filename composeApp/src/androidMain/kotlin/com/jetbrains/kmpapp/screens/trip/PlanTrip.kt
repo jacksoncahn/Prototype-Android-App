@@ -19,14 +19,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.mapnook.api.posts.ActivitiesViewModel
+import com.mapnook.api.activities.ActivitiesViewModel
 import com.jetbrains.kmpapp.components.ListCard
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
-import com.mapnook.api.posts.Activity
-import com.mapnook.api.posts.TripActivity
-import com.mapnook.api.posts.fetchActivity
-import com.mapnook.auth.UserViewModel
+import com.mapnook.api.user.UserViewModel
 
 @Composable
 fun PlanTrip(

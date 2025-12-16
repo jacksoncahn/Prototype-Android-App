@@ -1,4 +1,4 @@
-package com.mapnook.auth
+package com.mapnook.api.user
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -7,16 +7,14 @@ import kotlinx.serialization.Serializable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mapnook.api.ApiClient
-import com.mapnook.api.posts.Activity
-import com.mapnook.api.posts.Housing
-import com.mapnook.api.posts.Trip
-import com.mapnook.api.posts.TripActivity
-import com.mapnook.api.posts.fetchActivity
-import kotlinx.serialization.json.Json
+import com.mapnook.api.activities.Activity
+import com.mapnook.api.trips.Housing
+import com.mapnook.api.trips.Trip
+import com.mapnook.api.trips.TripActivity
+import com.mapnook.api.activities.fetchActivity
 import kotlinx.serialization.json.jsonObject
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.JsonArray
-import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.add
 import kotlinx.serialization.json.buildJsonArray

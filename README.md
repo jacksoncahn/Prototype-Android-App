@@ -67,3 +67,8 @@ In ./shared/src/commonMain/kotlin/com/mapnook, we have our backend - meant to be
 * api/activities also contains an Activity data class, as well as a file named extras.kt, which implements a simple function to fetch activity by id.
 * api/trips contains a data class for a Trip.
 
+Trip Planner Improvement Recommendations:
+* Implement adding to specific days of the trip (already implemented in the database, but not in frontend).
+* Combine recommender with trip planner- add weather recommendations to a trip, used to notify the user if there is an optimal day to place an activity on.
+* Implement a activity order per day and which day the activity should be on, to minimize the travel time for a user's trip.
+* Add a button on each activity to view the pin on the map

@@ -14,6 +14,7 @@ import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.URLBuilder
 import io.ktor.http.contentType
+import io.ktor.http.encodeURLPath
 import io.ktor.http.encodedPath
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
@@ -106,7 +107,8 @@ object ApiClient {
 
     //get user by email address
     suspend fun getUserByEmailAddress(email: String): User? {
-        val response = client.get("https://dbcopy-backend.vercel.app/users/$email")
+        val encodedEmail = email.encodeURLPath()
+        val response = client.get("https://dbcopy-backend.vercel.app/users/$encodedEmail")
 
         val raw = response.bodyAsText()
         println("Response From API: $raw")

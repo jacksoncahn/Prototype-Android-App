@@ -66,7 +66,7 @@ import com.jetbrains.kmpapp.R
         // Set the initial camera position to Prague.
         val prague = LatLng(50.0755, 14.4378)
         val cameraPositionState = rememberCameraPositionState {
-            position = CameraPosition.fromLatLngZoom(prague, 8f)
+            position = CameraPosition.fromLatLngZoom(prague, 5f)
         }
 
         val scope = rememberCoroutineScope()
@@ -129,7 +129,7 @@ import com.jetbrains.kmpapp.R
                     val lat = selected.location.getOrNull(1)
                     if (lat != null && lng != null) {
                         cameraPositionState.animate(
-                            CameraUpdateFactory.newLatLngZoom(LatLng(lat, lng), 8f)
+                            CameraUpdateFactory.newLatLngZoom(LatLng(lat, lng), 5f)
                         )
                     }
                 }

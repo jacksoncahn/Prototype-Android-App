@@ -3,7 +3,11 @@
 This app was built off of a basic Kotlin Multiplatform app template for Android and iOS. It includes shared business logic and data handling, and native UI implementations using Jetpack Compose and SwiftUI.
 * Swift UI is not implemented as of yet- it remains exactly like the template- but the Android frontend has been redone. 
 
-# Codebase Overview
+# Project Created for Mapnook
+* This was created as a prototype app version of a website for a Czech based company named Mapnook. 
+* It is unfortunately non-functional because we do not have access to the APIs and database that we had access to while developing the app. 
+
+# Codebase
 
 Android Only - ./composeApp/src/androidMain/kotlin/com/jetbrains/kmpapp
 * ./App.kt - the main composable function that contains routes to all pages, the menu button, and some code to be executed right after the app signs in.
@@ -72,3 +76,6 @@ Trip Planner Improvement Recommendations:
 * Combine recommender with trip planner- add weather recommendations to a trip, used to notify the user if there is an optimal day to place an activity on.
 * Implement a activity order per day and which day the activity should be on, to minimize the travel time for a user's trip.
 * Add a button on each activity to view the pin on the map
+
+
+Created by Brett Lamey (blamey@sandiego.edu) and Jackson Cahn (jacksoncahn71@gmail.com)

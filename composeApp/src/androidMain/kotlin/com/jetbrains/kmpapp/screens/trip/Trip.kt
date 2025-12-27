@@ -52,6 +52,7 @@ import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
+import com.jetbrains.kmpapp.BuildConfig
 import com.jetbrains.kmpapp.components.ActivityCard
 import com.jetbrains.kmpapp.components.ActivityCardLarge
 import com.jetbrains.kmpapp.components.ListCard
@@ -116,7 +117,7 @@ fun Trip(id: String?, onClose: () -> Unit) {
 
             // TODO: Implement this SECURELY
             //currently insecure, was having trouble getting this key from local properties
-            Places.initialize(context, "AIzaSyDptUiKvCPS2taP70fdpUEKcn6ib4AosI8")
+            Places.initialize(context, BuildConfig.MAPS_API_KEY)
         }
     }
 
